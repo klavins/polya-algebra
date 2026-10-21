@@ -18,3 +18,7 @@ ker_equivalence      # (Setoid.ker f).iseqv
 quotient_eq_iff_mod  # Quotient.eq
 to_fin               # a definition with a spec; Fin.ofNat, named in the description
 card_quotient_le     # Fintype.card_le_of_surjective with Quotient.mk_surjective
+bool_xor_group       # Fintype.card_bool; decide is the lesson, and the order of a group is defined here
+int_add_group        # the three theorems hold by definition (rfl); exact? finds a roundabout term for each
+neutral_unique       # eq_one_of_left_neutral is a one-line corollary of the problem's own mul_eq_left/mul_eq_right, by design
+int_group_of_left_axioms  # intGroupLeft_mul holds by definition (rfl); exact? finds a roundabout term

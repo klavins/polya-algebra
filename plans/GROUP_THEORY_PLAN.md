@@ -481,6 +481,56 @@ Notes from §1 (2026-10-21): the `ℤ` instance's description names the five cor
 deliberately not these names. `consequences` must prove `inv_one`, which §3's dihedral
 instance needs for `one_mul`. The `Bool` instance under `xor` closes every law by `decide`.
 
+**As built (2026-10-21).** `PolyaAlgebra/GroupTheory/Groups.lean`: 17 problems over 4
+concepts, in this order: `group_axioms` (`group`, the class, with an authored spec that
+accepts both binder styles; `unit_group`; `bool_xor_group`, with `card_bool`; `int_add_group`,
+with `int_mul_eq_add`, `int_one_eq_zero` and `int_inv_eq_neg`, the three `rfl` theorems later
+sections rewrite with); `consequences` (`cancel_adjacent`, the four adjacent cancellations;
+`neutral_unique`, `mul_eq_left`, `mul_eq_right` and `eq_one_of_left_neutral`; `inverse_unique`,
+`left_inv_eq_right_inv` and `inv_eq_of_mul_eq_one_right`; `inv_inv`, with `inv_one` and
+`inv_injective` through §1's `injective_of_left_inverse`; `mul_inv_rev`; `self_inverse_comm`,
+`Bool` by `decide`, the general theorem `mul_comm_of_inv_eq_self`, and `Bool` again from it);
+`cancellation` (`mul_left_cancel` and `mul_right_cancel` with their `↔` forms;
+`solve_equation`, `eq_inv_mul_iff_mul_eq` through `mul_left_cancel` and
+`(3 : ℤ) ∗ x = 7 ↔ x = 4` through `int_mul_eq_add` and `omega`; `Group.mulLeft_bijective`,
+Mathlib's name, with `bool_mul_true` by `decide`), with the `@goal`; and `one_sided_axioms`
+(Aside 1.10: `op_inv_of_left_axioms` and `op_e_of_left_axioms` on a bare operation, then
+`Group.ofLeftAxioms` as an `abbrev`, then `intGroupLeft : Group ℤ` from three laws of
+addition, the concept's running example), after the goal as extra credit. Extraction: 41
+problems, 0 errors; the budgets, prose-name, stub-shortcut and vocabulary checks are clean
+(0 of 41). The two problems that mention the class's field names in a `where` body
+(`Group.ofLeftAxioms` and what is built from it) pull the five restated laws into their context
+through the token scan and need a second round for the `Inv` instance; the extract says so as a
+warning, and the check passes.
+
+The student review (one blind agent per concept, `scripts/review/`, the brief with a
+`{SECTION_BLURB}`) ran the same day: every problem of the four concepts passed on the
+reviewers' first or second attempt, no double teaching was found outside the declared exception
+(the class itself), and the draft changed in these ways: the laws are stated one orientation
+each with the naming rule (`one_mul` for `𝟙 ∗ a = a`), and the class spec accepts either
+orientation through `grind`, since the natural transcription of a chain `𝟙 ∗ a = a = a ∗ 𝟙`
+is `a = mul a one`; `class Inv` is shown and the notation lines named at `unit_group`; the claim
+that `omega` sees through `∗` is confined to the inside of the instance; three preambles that
+gave the steps in order were cut to the idea; `inverse_unique` says the cancellations are not
+in its context, and `solve_equation`'s references go through `mul_left_cancel` and
+`int_mul_eq_add` so that the routes the prose invites are in the context; a false title ("Self-
+Inverse Elements Commute") became "A Group of Self-Inverse Elements is Commutative";
+`eq_one_of_left_neutral` and `bool_mul_true` were added; the `rw`-does-not-see-through-`fun`
+gotcha is said at `inv_inv` and `Group.mulLeft_bijective`.
+
+Three departures from the entry above, each forced by the tooling or the fence. (1) **The class
+does not `extends Inv G`**: the publisher skips the field check of a structure that extends
+another and hands the student an empty body, so `inv` is a third data field and the `Inv G`
+instance is a `@given` of `unit_group`, the first problem whose spec writes `⁻¹`; the five
+laws restated under the notation (`mul_assoc : a ∗ b ∗ c = a ∗ (b ∗ c)`, …) are `@given`s of
+`cancel_adjacent`, the first problem that rewrites with them, since a notation command cannot
+sit inside a problem block and the class's own spec is therefore stated with `Group.mul`.
+(2) **`finite_groups` is not a concept**: left multiplication is onto in every group, so a
+finiteness hypothesis on it is pointless, and the order of a group is defined in prose at
+`bool_xor_group` with `card_bool`; Exercise 1-8 is not built, and the one-sided axioms took the
+two remaining problems. (3) **The cancellation example is `ℤ`**, not `S₃`, whose instance is
+§3's; §3 should add `r ∗ s = r ∗ x → x = s` there if it has room.
+
 ### §3. Examples
 
 Milne 1.3–1.6, 1.16, 1.17. The finite groups the subject lives on, each a definition problem
@@ -1068,15 +1118,20 @@ are settled by the house rules and recorded so that a session does not reopen th
 
 ## Next step
 
-§2, Groups, in a fresh session: "Do the next section in Group Theory, which is §2 Groups".
-Read this entry's **Notes from §1**, **The fence**'s results under **Before §1**, `STYLE.md`,
-`plans/STUDENT_BACKGROUND.md` and §1 in full before writing; the §1 names a later section
-leans on are `injective_of_left_inverse`, `equiv_bijective`, `bijective_of_injective`,
-`card_of_equiv_prod`, `mod_add_mod_eq_add_mod`, `mod_mod_of_pos`, `find_spec_and_min`,
-`ker_equivalence`, `modSetoid`, `toFin`, `residue`, `card_quotient_le`, and `rot3`. After §2,
-run the student review with `scripts/review/` as §1 did, and add §2's links to `links.yaml`
-(`programming/instances → grouptheory/group_axioms`). Decisions 3–5 are taken; the owner may
-still overrule any of them before the section that depends on it (§6, §2, §8).
+§3, Examples, in a fresh session: "Do the next section in Group Theory, which is §3 Examples".
+Read §3's entry, §2's **As built** (the class has `inv` as a field and the `Inv` instance is a
+given; the five laws under the notation are `mul_assoc`, `one_mul`, `mul_one`,
+`inv_mul_cancel`, `mul_inv_cancel`, givens of `cancel_adjacent`), **The fence**'s results under
+**Before §1** (`ZMod n` with `[NeZero n]`, the dihedral `Fintype` through `finProdFinEquiv`,
+`decide` reaching `D₄`), `STYLE.md`, `plans/STUDENT_BACKGROUND.md`, and §1 and §2 in full
+before writing. The §2 names §3 leans on: `inv_one` and `mul_inv_rev` (the dihedral table's
+laws), `inv_inv`, `mul_eq_left`, the adjacent cancellations, `int_mul_eq_add`, and
+`mul_comm_of_inv_eq_self` (`V₄`); from §1, `mod_add_mod_eq_add_mod`, `mod_mod_of_pos`,
+`toFin`, `card_of_equiv_prod`, `rot3` and `equiv_bijective`. §3 defines `CommGroup` before the
+dihedral table's associativity, and adds the `S₃` cancellation example §2 could not. After §3,
+run the student review with `scripts/review/` as §1 and §2 did, and add §3's links to
+`links.yaml` (`programming/inductive_types → grouptheory/dihedral_groups`). Decisions 3–5 are
+taken; the owner may still overrule 3 and 5 before §6 and §8.
 
 ## The prompts that produced this plan
 

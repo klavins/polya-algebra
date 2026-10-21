@@ -37,6 +37,10 @@ UNKNOWN = """
     Subgroup.zpowers Subgroup.Normal Subgroup.index IsCyclic orderOf Nat.Prime Multiplicative ZMod
     DihedralGroup QuaternionGroup MulAction MulAction.orbit MulAction.stabilizer ConjAct IsPGroup
     QuotientGroup.mk QuotientGroup.leftRel Finset.sum Fintype.card_prod
+    mul_assoc one_mul mul_one inv_mul_cancel mul_inv_cancel inv_mul_cancel_left mul_inv_cancel_left
+    mul_inv_cancel_right inv_mul_cancel_right mul_eq_left mul_eq_right left_inv_eq_right_inv
+    inv_eq_of_mul_eq_one_right inv_inv inv_one inv_injective mul_inv_rev mul_left_cancel
+    mul_right_cancel mul_left_cancel_iff mul_right_cancel_iff eq_inv_mul_iff_mul_eq Group.ofLeftAxioms
     Fintype.exists_ne_map_eq_of_card_lt Finset.card_product finRotate
 """.split()
 

@@ -38,3 +38,11 @@ links:
     to: grouptheory/integers_and_remainders
     weight: 0.5
     note: The well-ordering of the naturals is proved there by strong induction; here `Nat.find` computes the least number with a property.
+  - from: programming/instances
+    to: grouptheory/group_axioms
+    weight: 0.9
+    note: A type joins a class through an instance there, for `Add` and `Mul`; here the student writes the class `Group` itself and makes `Unit`, `Bool` and `ℤ` its instances.
+  - from: programming/structures
+    to: grouptheory/group_axioms
+    weight: 0.6
+    note: A structure with several fields is declared there; here the class `Group` has three data fields and five laws, and an instance is built field by field with `where`.

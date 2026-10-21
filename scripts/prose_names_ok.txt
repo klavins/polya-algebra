@@ -8,3 +8,5 @@ composites: succ
 ker_equivalence: trans
 bool_equiv_fin_two: toFun, invFun, left_inv, right_inv
 mod_setoid: r, iseqv
+group: mul, one, inv, mul_assoc, one_mul, mul_one, inv_mul_cancel, mul_inv_cancel
+int_add_group: mul

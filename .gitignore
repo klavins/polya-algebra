@@ -15,3 +15,6 @@ __pycache__/
 
 # reference texts, kept out of the repository
 /refs/
+
+# the vocabulary audit's report, written by scripts/audit_vocabulary.py; regenerated on each run
+/audit/

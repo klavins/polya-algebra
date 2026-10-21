@@ -513,7 +513,6 @@ example (n a b : ℕ) : (modSetoid n) a b ↔ a % n = b % n := by
 @concept equivalence_classes
 @title Equivalence Classes and Quotients
 @kind definition
-@goal
 
 The class of `a` under an equivalence relation is the set of elements related to it, and the classes partition the type: each element lies in exactly one. Lean has a type whose elements are the classes, the quotient `Quotient s` of a setoid `s`. Cosets, quotient groups and sets of orbits are all quotients, so the subject needs to form a quotient, to define a function on one, and to count one.
 -/

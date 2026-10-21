@@ -3,7 +3,7 @@
 A Polya content repository for algebra. Its subjects are built by the student from the axioms:
 a group is a set with an operation that passes three tests, and the student writes that
 definition, meets the handful of groups every course lives on, and builds what a first course
-builds on them, under the names Mathlib uses. Today it holds the first section of its first
+builds on them, under the names Mathlib uses. Today it holds the first two sections of its first
 subject, Group Theory; `plans/GROUP_THEORY_PLAN.md` says what the rest is to be, and
 `plans/STUDENT_BACKGROUND.md` what its student knows on arrival.
 
@@ -14,7 +14,7 @@ One row per section of the plan, with where it stands.
 | § | Section | What is in it | Status |
 |---|---|---|---|
 | 1 | Prerequisites | Mathlib's sets and a set as a type; injective, surjective and bijective functions; equivalences and permutations; finite types, `Fintype.card`, `decide` over a finite type and counting by labelling; the integers, remainders, `Nat.find` and coprime numbers; equivalence relations as setoids; quotients, with the classes modulo `n` as the remainders. 24 problems over 7 concepts, reviewed once by a student agent per concept. | built, 2026-10-21 |
-| 2 | Groups | the student's `Group` class with its own symbols `∗` and `𝟙`; `Unit`, `Bool` and `ℤ` as instances; the consequences of the axioms; cancellation; finite groups | planned |
+| 2 | Groups | the student's `Group` class with its own symbols `∗`, `𝟙` and `⁻¹`; `Unit`, `Bool` under `xor` and `ℤ` under addition as instances; the consequences of the axioms (adjacent cancellation, uniqueness of the neutral element and of inverses, `inv_inv`, `mul_inv_rev`, self-inverse groups are commutative); cancellation, solving `a ∗ x = b`, left multiplication as a bijection; the one-sided axioms as extra credit, with `ℤ` built from three laws. 17 problems over 4 concepts, reviewed once by a student agent per concept. | built, 2026-10-21 |
 | 3 | Examples | `ZMod n` from `%`; the symmetric groups; the dihedral groups; products and commutative groups | planned |
 | 4 | Powers and the Order of an Element | natural and integer powers, their laws; `orderOf`; orders in finite groups | planned |
 | 5 | Subgroups | the subgroup criterion; the centre; intersections; generated and cyclic subgroups | planned |

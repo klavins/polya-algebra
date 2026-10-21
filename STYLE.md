@@ -323,6 +323,49 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
 - Reviewers found the double teaching the author did not see in four problems of twenty-one;
   the warm-ups they proposed were each one line of Lean. Run the review after every section.
 
+## Learned building §2 (2026-10-21)
+
+- **A `class … extends …` is not shape-checked**: the publisher hands the student the head with
+  an empty body and skips the field check (`checkspec._lift_structure`), so the student's class
+  carries `inv` as a plain field and the `Inv G` instance is a `@given`. The same holds for a
+  structure with binder-style fields `(a : G)` before the colon: write fields as `name : type`.
+- **A notation command cannot sit inside a problem block** (the extractor refuses it as a
+  target). It goes after the block with a docstring, as polya-basic writes `''`, and is
+  replayed wherever the name it abbreviates is pulled; the declarations that use it are
+  `@given`s of the next problem block that needs them, and the class's own spec is stated with
+  the raw fields (`Group.mul (Group.mul a b) c`).
+- **A class spec in the form `have h := @Group.law G _ a` then `grind`** accepts a field stated
+  with explicit or implicit binders and in either orientation (`a = mul a one` for `mul_one`),
+  and still rejects a wrong equation; `by apply Group.law` rejected the reversed orientation,
+  which the §2 reviewer found to be the natural transcription of a chain `𝟙 ∗ a = a = a ∗ 𝟙`.
+  So the preamble states each law once, one orientation each, and the description gives the
+  naming rule (`one_mul` for `𝟙 ∗ a = a`).
+- **An instance target has no mechanical check**; its `@spec` is a `decide` on the values that
+  pin the operation (`true ∗ true = false ∧ … ∧ (𝟙 : Bool) = false`), which rejects another
+  group on the same type (`Bool` under `==`) and accepts every spelling of the intended one.
+- **A hypothesis named like a theorem of the subject pulls that theorem**: the closure's token
+  scan resolved a binder `one_mul` to `GroupTheory.one_mul` and dragged the group layer into a
+  context that needed none of it (a "did not verify at once" warning). Theorems about a bare
+  operation name their data `op`, `e`, `inv` and their laws `assoc`, `e_op`, `inv_op`.
+- `omega` sees through a field defined as `(· + ·)` once the elements are introduced, so the
+  `ℤ` instance's laws close by the five core names or by `intro; omega`; `(3 : ℤ) ∗ 4 = 7`,
+  `(3 : ℤ)⁻¹ = -3` and an `↔` whose sides compute to the same thing close by `rfl` or `decide`.
+- `Fintype.card Bool = 2` closes by `decide`, and `decide` proves every law of `Bool` under
+  `xor` and of `Unit`.
+- **The reviewers' commonest finding was a context gap, not double teaching**: a preamble that
+  says "by cancellation on the left" while the reference goes another way, so that
+  `mul_left_cancel` is an unknown identifier in the check. Either the reference uses the route
+  the prose names (so the closure carries it) or the description says the context does not
+  hold it. A problem on a running example whose prose mentions a theorem of the example's
+  instance (`int_mul_eq_add`) must use it in the reference too.
+- A preamble that gives the steps in order ("write `b` as `b ∗ 𝟙`, replace that `𝟙` by
+  `a ∗ c`, and reassociate") makes the exercise a transcription; three were cut to the idea.
+  A title must be true as a statement: "Self-Inverse Elements Commute" is false of two
+  elements; "A Group of Self-Inverse Elements is Commutative" is the theorem.
+- A hypothesis drawn by `intro` from `Function.Injective (fun a => a⁻¹)` or from
+  `Function.Bijective (fun x => a ∗ x)` shows the function applied, `(fun a => a⁻¹) a`; `exact`
+  sees through it and `rw` does not, the `∘` gotcha of §1 again, said where it recurs.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:
@@ -347,8 +390,12 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
 renders the bundle answer-free (concepts, preambles, descriptions, starting code), `check.py
 SLUG FILE.lean` grades an answer with the publisher's own checker in the problem's real context
 (run it with `.lake/packages/polya-publisher/.venv/bin/python`), `reveal.py SLUG` prints the
-reference, and `PROMPT.md` is the reviewers' brief, with `{REPO}` and `{REVIEW_DIR}` to fill in
-and `{CONCEPT}`, `{FIRST}`, `{LAST}`, `{NUM}` per concept. One agent per concept, at most three
+reference, and `PROMPT.md` is the reviewers' brief, with `{REPO}`, `{REVIEW_DIR}` and
+`{SECTION_BLURB}` (two or three sentences: what the sections before taught, what this one is
+for, and the one or two Lean devices its plan entry says are new) to fill in, and `{CONCEPT}`,
+`{FIRST}`, `{LAST}`, `{NUM}` per concept. The review directory lives outside the repository
+(the session's scratchpad), since the brief forbids reading `.lake/`, and each agent is handed
+the path of its filled-in brief and told to follow it. One agent per concept, at most three
 at a time, each compiling only through `check.py`; a copy of `plans/STUDENT_BACKGROUND.md` goes
 in the review directory, since the reviewers may not read `plans/`. The brief asks the rule's
 question verbatim.
