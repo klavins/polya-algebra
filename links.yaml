@@ -46,3 +46,11 @@ links:
     to: grouptheory/group_axioms
     weight: 0.6
     note: A structure with several fields is declared there; here the class `Group` has three data fields and five laws, and an instance is built field by field with `where`.
+  - from: programming/inductive_types
+    to: grouptheory/dihedral_groups
+    weight: 0.8
+    note: An inductive type with constructors carrying data is declared there; here the dihedral group is one, with a constructor for the rotations and one for the reflections, and its table is a function defined by matching on both arguments.
+  - from: programming/structures
+    to: grouptheory/integers_mod_n
+    weight: 0.6
+    note: A structure with data fields is declared there; here `ZMod n` is a structure holding a remainder and the proof that it is below `n`, and its numerals come from an `OfNat` instance.

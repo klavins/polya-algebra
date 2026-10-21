@@ -42,6 +42,9 @@ UNKNOWN = """
     inv_eq_of_mul_eq_one_right inv_inv inv_one inv_injective mul_inv_rev mul_left_cancel
     mul_right_cancel mul_left_cancel_iff mul_right_cancel_iff eq_inv_mul_iff_mul_eq Group.ofLeftAxioms
     Fintype.exists_ne_map_eq_of_card_lt Finset.card_product finRotate
+    ZMod.ext ZMod.val_add ZMod.val_mul ZMod.val_one ZMod.val_inv card_zmod mul_comm mul_left_comm
+    mul_right_comm prod_mul_def DihedralGroup.r DihedralGroup.equivProd card_dihedral
+    Equiv.Perm.permGroup Prod.instGroup
 """.split()
 
 # the tools: every one of these must be known under the fence
@@ -72,6 +75,8 @@ KNOWN = """
     Function.Injective Function.Surjective Function.Bijective Function.Injective.comp
     Function.LeftInverse.injective Function.Injective.of_comp Equivalence
     Nat.lt_irrefl Nat.le_antisymm Classical.choice
+    Nat.add_assoc Nat.zero_add Nat.add_zero Nat.add_comm Nat.le_of_lt Nat.add_sub_of_le Int.add_comm
+    Prod.mul_def OfNat
 """.split()
 
 # instances: `#synth` lines that must fail (`-`) or succeed (`+`)
@@ -81,6 +86,8 @@ SYNTH = [
     "- Fintype (Fin 3 × Bool)",
     "- Fintype (Equiv.Perm (Fin 3))",
     "- Mul (Equiv.Perm (Fin 3))",
+    "- Inv (Fin 3 × Bool)",
+    "- Fintype (Fin 2 × Fin 3)",
     "+ One ℤ",
     "+ Fintype (Fin 4)",
     "+ Fintype Bool",

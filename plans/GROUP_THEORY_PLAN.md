@@ -565,6 +565,98 @@ the hypothesis and the prose says once what it means, or the instance is on `ZMo
 settled when §3 is built. `DihedralGroup n`'s `Fintype` needs a bijection with `Fin (2 * n)`
 through `finProdFinEquiv`, a small problem of its own.
 
+**As built (2026-10-21).** `PolyaAlgebra/GroupTheory/Examples.lean`: 19 problems over 5
+concepts, in this order: `integers_mod_n` (`zmod`, the structure with `deriving DecidableEq`
+and the `OfNat (ZMod n) k` instance in one problem; `zmod_add_neg`, `ZMod.add` and `ZMod.neg`
+with the two `rfl` equations `ZMod.val_add` and `ZMod.val_neg`; `zmod_group`, the instance
+with `ZMod.ext` as a given, the three `rfl` theorems `ZMod.val_mul`, `ZMod.val_one` and
+`ZMod.val_inv`, and `3 ∗ 4 = 2` in `ZMod 5` by `decide`; `zmod_fintype`, `finEquivZMod` with
+the `Fintype` instance, `card_zmod`, and every element of `ZMod 6` having an inverse by
+`decide`;
+`zmod_two_equiv_bool`, with `decide` showing the bijection carries the one table to the
+other); `symmetric_groups` (`perm_group`, `f ∗ g = g.trans f` with `Equiv.ext` for the
+cancellations; `reflect3`, `i ↦ -i` with `reflect3 ∗ reflect3 = 𝟙` and `rot3`'s cube restated in the
+group's symbols; `s3_not_comm`, the `≠` by `decide`, the rule `reflect3 ∗ rot3 = rot3⁻¹ ∗
+reflect3`, and the cancellation example §2 could not do, `rot3 ∗ x = rot3 ∗ reflect3 → x =
+reflect3`); `commutative_groups` (`comm_group`, `class CommGroup extends Group` with the
+`have`-then-`grind` spec; `comm_instances`, `ℤ`, `ZMod n` and `Bool`, with `mul_comm` restated as a
+given; `comm_rearrange`, `mul_left_comm` and `mul_right_comm`, which the dihedral table
+needs); `product_groups` (`prod_group`, the instance with `prod_mul_def` and `(1, 2) ∗ (1, 2)
+= (0, 1)` in `ZMod 2 × ZMod 3`; `prod_fintype`, `Fin 6 ≃ ZMod 2 × ZMod 3` through
+`Equiv.prodCongr` and `finProdFinEquiv`, its `Fintype` instance and the count `6`;
+`prod_comm_group`, with the commutativity of `ZMod 2 × ZMod 3` by `decide` over its pairs); `dihedral_groups` (`dihedral_mul`, the
+inductive and the table in one problem with `sr 0 ∗ r 1 ∗ sr 0 = r 3` in `D₄`;
+`dihedral_mul_assoc`, the four table equations as `rfl` givens, then the eight cases by
+`cases a <;> cases b <;> cases c <;> simp only [the four]` and one `rw` each;
+`dihedral_group`, the instance with `d4_not_comm`; `dihedral_fintype`, `DihedralGroup.equivProd`
+into `Fin 2 × Fin n` with the `Fintype` instance through `finProdFinEquiv` and `card_dihedral`
+from §1's `card_of_equiv_prod`; `klein_four`, every element of `D₂` self-inverse by `decide`,
+the `CommGroup (DihedralGroup 2)` instance from §2's `mul_comm_of_inv_eq_self`, and `1` not
+self-inverse in `ZMod 4` by `decide`), with the `@goal`. The order puts `commutative_groups` before `product_groups` and `dihedral_groups`,
+since the table's associativity rearranges products in `ZMod n`; the entry's `product_groups`
+split into two concepts, and the commutator was dropped for the budget. Extraction: 60
+problems, 0 errors; budgets, prose names, stub shortcuts and the vocabulary audit (0 of 59)
+clean; every spec was compiled against variants (both binder styles and both orientations of
+`mul_comm`, the dihedral table in the other orientation, `finEquivZMod` as an anonymous
+constructor, `equivProd` with an `if` inverse) and a wrong definition each.
+
+The student review (one blind agent per concept, `scripts/review/`, the brief with the
+section's blurb) ran the same day: every problem of the five concepts passed on the
+reviewers' first or second attempt, and no double teaching was found except the one the
+reviewer of `dihedral_mul_assoc` flagged, since fixed. The draft changed in these ways:
+`dihedral_mul`'s prose read the table in written order, against §3's own convention that in
+`f ∗ g` the right factor acts first, and now reads it the other way, with `sr i` glossed as `s`
+after the rotation `r i`; `dihedral_mul_assoc` no longer hands over `exact congrArg r (by rw
+…)`, a term-mode shape the student had never met over unnamed residues, and the four table
+equations are givens the proof rewrites with after `simp only` unfolds them; four preambles
+that handed over a witness, a proof in order or a tactic script (`zmod_add_neg`'s
+constructor, `zmod_group`'s steps, `comm_instances`'s route, `prod_group`'s two `rw`s) were
+cut to the idea or the reason; `zmod_group` now says to build the neutral element as
+`⟨0, _⟩` and why the numeral `0` strands `one_mul`; the prose named facts the context did
+not hold (`Bool` and `Unit` commutative "by `decide`" in `comm_instances`, `decide` over
+`ZMod 6` in `zmod_fintype`, "of order six" in `prod_comm_group` with no `Fintype` on a
+product), and each became an exercise whose reference pulls the instance: `CommGroup Bool`,
+`zmod_six_has_inv`, and the new problem `prod_fintype` with `zmod_two_three_comm` by
+`decide` over the thirty-six pairs; numeric checks were added where a running example had
+none (`3 ∗ 4 = 2` in `ZMod 5`, `rot3`'s cube in the group's symbols, `reflect3 ∗ rot3 =
+rot3⁻¹ ∗ reflect3`, `1` not self-inverse in `ZMod 4`); `s3_not_comm` says the first error a
+student meets (`decide` refuses a goal with a free variable) before the missing list of
+permutations; the `.symm` direction of `Fintype.ofEquiv`, the bare `rw [mul_comm]` trap, and
+`rw [mul_comm a b]` naming its product are said at first use; `ZMod.ext` is given with
+`subst h`, the taught form, not `cases h`; two concept descriptions lost forward references
+and the undefined letters `r`, `s`, and `n!`; and `ZMod 2 × ZMod 2` and `D₂`, both called
+the Klein four-group, are connected in `klein_four`'s preamble. The reviewers' commonest
+finding was again a context gap behind a prose promise, not double teaching.
+
+Five departures from the entry, each forced by the tooling or the fence. (1) **`ZMod n`'s
+laws go through named operations**: Mathlib's `linter.style.show`, in the lakefile's standard
+set, refuses a `show` that changes the goal, and `rw` cannot see through the constructor
+`⟨(a.val + b.val) % n, _⟩` an inline `mul` leaves in a law's goal; so `ZMod.add` and `ZMod.neg`
+are definitions of their own with `rfl` equations for their values, and each law is `apply
+ZMod.ext` then `rw` with them and the `%` lemmas. (2) **The `OfNat` instance is the
+structure's problem**, not a problem of its own, to stay within eighteen. (3) **The table's
+spec is `rfl`** in the orientation the description states: a `simp [DihedralGroup.mul,
+mul_comm]` spec, which accepts the other orientation, needs the `CommGroup (ZMod n)`
+instance, which the reference does not use and the context therefore lacks. (4) **A shared
+auxiliary proof pulls an unrelated definition into a context.** Lean deduplicates the
+abstracted proofs of definitions within a module: the first definition needing the instance
+`NeZero 2` mints `_proof_1 : NeZero (1 + 1)`, and every later definition needing it reuses that
+constant, so the build's dependency graph says `DihedralGroup.equivProd` uses
+`zmodTwoEquivBool._proof_1`, and the closure pulled `zmodTwoEquivBool` into the contexts of
+`dihedral_fintype` and `klein_four` without its own dependencies, where its `decide` failed
+("preamble closure: no progress"). The fix in the content: `zmodTwoEquivBool` tests `a.val = 1`
+and builds `⟨1, by decide⟩`, using no numeral of `ZMod 2`, so the first definition that needs
+`NeZero 2` is `equivProd` itself, which every later `D₂` context holds anyway. The rule, in
+`STYLE.md`: two definitions of a section that need the same `NeZero k` instance share a proof
+constant, and the later one's context will hold the earlier one. (5) **`one_sided_axioms`
+moved to a section of its own, `ExtraCredit.lean`, imported last by the root**: by the
+syllabus rule every concept declared before the goal is on its path, so once the goal moved
+from `cancellation` to `dihedral_groups` the one-sided axioms would have been recommended;
+in a last section they stay after the goal as it moves, and the extract still lists them as
+extra credit. Slugs are unchanged. `Prod.mul_def` exists under the fence (for `*`), so the
+product's equation is `prod_mul_def`; `check_prose_names.py` now falls back to the reference
+when the stub cannot compile (an inductive's stub has no constructors).
+
 ### §4. Powers and the Order of an Element
 
 Milne pp. 8–9. The Lean that is new here: a recursive definition of a power (Naturals' pattern)
@@ -1118,20 +1210,23 @@ are settled by the house rules and recorded so that a session does not reopen th
 
 ## Next step
 
-§3, Examples, in a fresh session: "Do the next section in Group Theory, which is §3 Examples".
-Read §3's entry, §2's **As built** (the class has `inv` as a field and the `Inv` instance is a
-given; the five laws under the notation are `mul_assoc`, `one_mul`, `mul_one`,
-`inv_mul_cancel`, `mul_inv_cancel`, givens of `cancel_adjacent`), **The fence**'s results under
-**Before §1** (`ZMod n` with `[NeZero n]`, the dihedral `Fintype` through `finProdFinEquiv`,
-`decide` reaching `D₄`), `STYLE.md`, `plans/STUDENT_BACKGROUND.md`, and §1 and §2 in full
-before writing. The §2 names §3 leans on: `inv_one` and `mul_inv_rev` (the dihedral table's
-laws), `inv_inv`, `mul_eq_left`, the adjacent cancellations, `int_mul_eq_add`, and
-`mul_comm_of_inv_eq_self` (`V₄`); from §1, `mod_add_mod_eq_add_mod`, `mod_mod_of_pos`,
-`toFin`, `card_of_equiv_prod`, `rot3` and `equiv_bijective`. §3 defines `CommGroup` before the
-dihedral table's associativity, and adds the `S₃` cancellation example §2 could not. After §3,
-run the student review with `scripts/review/` as §1 and §2 did, and add §3's links to
-`links.yaml` (`programming/inductive_types → grouptheory/dihedral_groups`). Decisions 3–5 are
-taken; the owner may still overrule 3 and 5 before §6 and §8.
+§4, Powers and the Order of an Element, in a fresh session: "Do the next section in Group
+Theory, which is §4 Powers and the Order of an Element". Read §4's entry, §3's **As built**
+(the running examples as they are named in Lean: `ZMod n` with `ZMod.val_mul`, `ZMod.ext` and
+`card_zmod`; `rot3` and `reflect3` in `Equiv.Perm (Fin 3)`; `CommGroup` with `mul_comm`,
+`mul_left_comm` and `mul_right_comm`; `prod_mul_def`; `DihedralGroup n` with `r`, `sr`,
+`card_dihedral`, `decide` reaching `D₄` through its `Fintype`), **The fence**'s results under
+**Before §1** (`zpow_add` sized at five problems: `zpow_add_one` by `cases` on `ℤ` with `show`
+on the definitional equations, which the `show` linter will refuse, so write them as `rfl`
+terms or `change`; `Int.induction_on`'s cases `zero`, `succ`, `pred`; the pigeonhole problem
+§1 left for §4), `STYLE.md` with **Learned building §3**, `plans/STUDENT_BACKGROUND.md`, and
+§1–§3 in full before writing. The §4 examples by the running-examples table: `rot3 ^ 3 = 𝟙`
+and `reflect3 ^ 2 = 𝟙` by `decide`, `(1 : ℤ) ^ k = k`, `orderOf (2 : ZMod 6) = 3`,
+`orderOf (sr i) = 2` in `Dₙ`, `orderOf (1 : ℤ) = 0`. The goal moves to §4's last concept;
+`ExtraCredit.lean` stays the root's last import. After §4, run the student review with
+`scripts/review/` as §1–§3 did, and add §4's links to `links.yaml` (`naturals/addition` and
+`naturals/induction → grouptheory/natural_powers`). Decisions 3–5 are taken; the owner may
+still overrule 3 and 5 before §6 and §8.
 
 ## The prompts that produced this plan
 

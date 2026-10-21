@@ -115,8 +115,8 @@ problem (the skill's rule 7).
 
 ## Notation and names
 
-**The group operation has its own symbol.** The class is `class Group (G : Type) extends Inv G`
-with fields `mul` and `one`, the notations `a ∗ b` (`infixl:70`, typed `\ast`) and `𝟙` (typed
+**The group operation has its own symbol.** The class is `class Group (G : Type u)` with the
+data fields `mul`, `one` and `inv` (an `Inv G` instance given beside it), the notations `a ∗ b` (`infixl:70`, typed `\ast`) and `𝟙` (typed
 `\b1`), and the five equations of Milne's Definition 1.1. The reason is the examples: a group
 is a set with *some* operation, and `ℤ` under addition, `ZMod n` under addition modulo `n`,
 `Sₙ` under composition and `Dₙ` under its table are instances of one class, each with `a ∗ b`
@@ -327,7 +327,8 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
 
 - **A `class … extends …` is not shape-checked**: the publisher hands the student the head with
   an empty body and skips the field check (`checkspec._lift_structure`), so the student's class
-  carries `inv` as a plain field and the `Inv G` instance is a `@given`. The same holds for a
+  carries `inv` as a plain field and the `Inv G` instance is a `@given`. (§3's `CommGroup` extends
+  `Group` all the same, with an authored spec as the whole check; see below.) The same holds for a
   structure with binder-style fields `(a : G)` before the colon: write fields as `name : type`.
 - **A notation command cannot sit inside a problem block** (the extractor refuses it as a
   target). It goes after the block with a docstring, as polya-basic writes `''`, and is
@@ -365,6 +366,70 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
 - A hypothesis drawn by `intro` from `Function.Injective (fun a => a⁻¹)` or from
   `Function.Bijective (fun x => a ∗ x)` shows the function applied, `(fun a => a⁻¹) a`; `exact`
   sees through it and `rw` does not, the `∘` gotcha of §1 again, said where it recurs.
+
+## Learned building §3 (2026-10-21)
+
+- **`show` is linted.** `linter.style.show` is in Mathlib's standard set, which the lakefile
+  turns on, so a `show` that changes the goal is a warning under `lake build` and the check,
+  and an error under publish; `lake env lean` on a scratch file does not apply the lakefile's
+  options, so a scratch compile must `set_option linter.mathlibStandardSet true` to see what
+  the build sees. A reference restates a goal with `change` or, better, avoids the need: the
+  value of a structure built inline, `⟨(a.val + b.val) % n, _⟩`, is invisible to `rw` in a
+  law's goal ("motive is not type correct" when it tries), so an operation on a structure is
+  a `def` of its own with a `rfl` equation for its value (`ZMod.add` with `ZMod.val_add`), and
+  the laws are `apply ZMod.ext` then `rw` with those equations and the arithmetic lemmas.
+- **A shared auxiliary proof pulls an unrelated definition into a context.** Lean abstracts
+  the proofs inside a definition into `_proof_n` constants and reuses one whose statement and
+  term match within the module, so the first definition in a section that needs the instance
+  `NeZero 2` mints `_proof_1 : NeZero (1 + 1)` and every later definition needing it depends
+  on that constant in the build's graph. The closure maps the constant to its parent and pulls
+  the whole definition, without the parent's own context (`zmodTwoEquivBool` with its
+  `decide`, into `dihedral_fintype`), and the extract reports "preamble closure: no progress".
+  Theorems do not abstract their proofs, so only definitions and instances share. Keep the
+  numerals of a fixed modulus out of a definition that an unrelated later definition should
+  not drag along (`a.val = 1` and `⟨1, by decide⟩` instead of `(1 : ZMod 2)`), or make the
+  first such definition one that every later context holds anyway.
+- **A `class … extends …` can be a problem after all**: the student receives the head with an
+  empty body (the publisher skips the field check), the description names the one field to
+  add, and the authored spec (`have h := @CommGroup.mul_comm G _ a b` then `grind`) is the
+  check, accepting both binder styles and both orientations. An instance of it is built with
+  `where` and the new field alone; Lean fills `toGroup` by instance search.
+- **A spec may use only what the reference uses**: a `simp [DihedralGroup.mul, mul_comm]` spec
+  that would accept the table in either orientation failed at extract, since the reference
+  needs no `CommGroup (ZMod n)` instance and the context has none. The table's spec is `rfl`
+  in the orientation the description dictates. `simp` with an argument it does not use is a
+  linter warning, so a spec never lists a lemma only some encodings need.
+- **A `/-- @spec -/` cannot be followed by `open … in`** (a doc comment must precede a
+  declaration): a spec that needs a constructor writes `DihedralGroup.r 1`; a theorem in a
+  block may carry `open DihedralGroup in`, and the stub keeps the line. Inside a declaration
+  named `DihedralGroup.mul` or `DihedralGroup.equivProd` the namespace is open by itself, so
+  `r i` resolves without it; a theorem named `DihedralGroup.mul_assoc` would shadow the
+  subject's `mul_assoc` in its own body, so the associativity theorem is `dihedral_mul_assoc`.
+- **`Prod.mul_def` exists under the fence** (Mathlib's notation layer, for `*`), so the
+  product's equation is `prod_mul_def`; the fence probe lists `Prod.mul_def` as known.
+- **Extra credit lives in a last section.** By the syllabus rule every concept declared before
+  the goal is on its path, so extra credit placed in the middle of the subject becomes
+  recommended the moment the goal moves past it. `ExtraCredit.lean`, imported last by the
+  root, holds what nothing builds on, and each section's goal move leaves it after the goal.
+- `Fin 2` literal patterns work in a `match`, `| (0, k) => … | (1, k) => …`, and Lean sees that
+  no third case is possible; `cases a <;> cases b <;> cases c` with `·` bullets afterwards
+  keeps an eight-case proof at nine lines, the unnamed variables reached with `_`.
+- `decide` reaches `D₄` and `D₂` through a `Fintype` built by `Fintype.ofEquiv` from
+  `Fin (2 * n)`; the whole section compiles in six seconds.
+- `check_prose_names.py` compiles the stub, and an inductive's stub has no constructors, so a
+  prose name that uses one fails to compile; the script now retries with the reference.
+- **The reviewers' findings, in order of frequency**: a prose promise the context cannot keep
+  ("by `decide`" on a type whose `Fintype` or `Group` instance the reference never uses, "of
+  order six" with no instance to count by), fixed by making the promise an exercise whose
+  reference pulls the instance; a preamble handing over a witness, the steps in order or a
+  tactic script, cut to the idea or to the reason the obvious route fails; a term-mode shape
+  never met (`exact congrArg r (by rw …)`) over variables `<;>` left unnamed, replaced by
+  `rfl` equations given in the context and `rw`; and prose that read the table in written
+  order against the subject's own convention that in `f ∗ g` the right factor acts first.
+  Say the first error a student meets (`decide` on a goal with a free variable) before the
+  deeper reason; say the direction a Mathlib function runs (`Fintype.ofEquiv` takes the
+  equivalence out of the finite type) the first time `.symm` is needed; and say once that a
+  bare `rw [mul_comm]` turns the first product it finds and `rw [mul_comm a b]` names one.
 
 ## Checks over a bundle
 

@@ -82,7 +82,29 @@ def check(job):
             n = line[len("#check @"):]
             if n not in bad:
                 bad.append(n)
-    # an error anywhere else means the file itself failed: say so
+    # an error anywhere else means the file itself failed: a stub whose body is the answer (an
+    # inductive's constructors) cannot compile the names that use it, so try the reference, and
+    # say so only when that fails too
+    other = [m.group(0) for m in re.finditer(r"<problem>:(\d+):\d+: error.*", out)
+             if not lines[int(m.group(1)) - 1].startswith("#check @")]
+    if other and prob.get("reference"):
+        return check_with(subj, prob, names, stub=prob["reference"])
+    return prob["slug"], bad + [f"(file error) {o}" for o in other[:2]]
+
+
+def check_with(subj, prob, names, stub):
+    checks = "\n".join(f"#check @{n}" for n in names)
+    src = problem_source(subj, prob, stub=stub, tail=checks)
+    out = compile_source(src)
+    lines = src.splitlines()
+    bad = []
+    for m in re.finditer(r"<problem>:(\d+):\d+: error[^:]*: (.*)", out):
+        ln = int(m.group(1))
+        line = lines[ln - 1] if ln - 1 < len(lines) else ""
+        if line.startswith("#check @"):
+            n = line[len("#check @"):]
+            if n not in bad:
+                bad.append(n)
     other = [m.group(0) for m in re.finditer(r"<problem>:(\d+):\d+: error.*", out)
              if not lines[int(m.group(1)) - 1].startswith("#check @")]
     return prob["slug"], bad + [f"(file error) {o}" for o in other[:2]]

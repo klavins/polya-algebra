@@ -22,3 +22,10 @@ bool_xor_group       # Fintype.card_bool; decide is the lesson, and the order of
 int_add_group        # the three theorems hold by definition (rfl); exact? finds a roundabout term for each
 neutral_unique       # eq_one_of_left_neutral is a one-line corollary of the problem's own mul_eq_left/mul_eq_right, by design
 int_group_of_left_axioms  # intGroupLeft_mul holds by definition (rfl); exact? finds a roundabout term
+zmod_group           # the three theorems hold by definition (rfl), as the integers' do
+s3_not_comm          # rot3_reflect3_ne is a decide on two permutations of three points, by design
+prod_group           # prod_mul_def holds by definition (rfl); the product in ZMod 2 × ZMod 3 is a decide
+dihedral_mul         # d4_table is a decide on the table, the warm-up on reading it
+dihedral_group       # d4_not_comm is a decide in D₄, the running example's non-commutativity
+prod_fintype         # card_zmod_two_three is a count of six by labelling; exact? finds a roundabout term
+klein_four           # zmod_four_one_inv is a decide in ZMod 4, the contrast with V₄

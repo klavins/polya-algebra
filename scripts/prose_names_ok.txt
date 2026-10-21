@@ -10,3 +10,11 @@ bool_equiv_fin_two: toFun, invFun, left_inv, right_inv
 mod_setoid: r, iseqv
 group: mul, one, inv, mul_assoc, one_mul, mul_one, inv_mul_cancel, mul_inv_cancel
 int_add_group: mul
+zmod: val_lt, MyNat, toFin
+zmod_add_neg: toFin
+zmod_two_equiv_bool: boolEquivFinTwo
+reflect3: rot3
+comm_group: toGroup, mul_comm
+comm_instances: toGroup
+dihedral_mul: sr
+zmod_fintype: isLt, val_lt
