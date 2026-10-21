@@ -1,0 +1,17 @@
+.lake/
+
+# the bundles themselves are committed: an instance installs the content from them
+bundles/.cache/
+
+# POLYA_SERVER, POLYA_API_KEY, POLYA_AUTHOR
+.env
+
+.DS_Store
+notes.txt
+__pycache__/
+
+# The tracker's open issues routed here, written by `issues pull` in ../polya-issues
+/reported.yaml
+
+# reference texts, kept out of the repository
+/refs/

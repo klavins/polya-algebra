@@ -1,0 +1,20 @@
+# Problems whose theorems close by instance search or one Mathlib lemma, on purpose; skipped by
+# scripts/check_stub_shortcuts.py. The Prerequisites section teaches Mathlib's names, so its
+# problems prove by hand what Mathlib already holds (the plan says it is the one section whose
+# problems may be one Mathlib name long); each lists the Mathlib name the warm-up stands in for.
+image_union          # Set.image_union
+restrict_mem_image   # Set.mem_image_of_mem; the warm-up on a set as a type
+image_eq_range       # Set.image_eq_range
+not_equiv            # a definition with a spec; the warm-up on Equiv, where and decide
+composites           # Function.Injective.comp, Function.Surjective.comp
+one_sided_inverses   # Function.LeftInverse.injective, Function.RightInverse.surjective
+equiv_bijective      # Equiv.bijective
+bijective_of_injective  # Finite.injective_iff_surjective, the lemma the description names
+fin_four_add_neg     # decide is the lesson
+mod_add_mod          # Nat.add_mod, backwards
+find_least           # Nat.find_spec and Nat.find_min', the lemmas the description names
+coprime              # decide and Nat.Coprime.dvd_of_dvd_mul_left, the lemma the description names
+ker_equivalence      # (Setoid.ker f).iseqv
+quotient_eq_iff_mod  # Quotient.eq
+to_fin               # a definition with a spec; Fin.ofNat, named in the description
+card_quotient_le     # Fintype.card_le_of_surjective with Quotient.mk_surjective

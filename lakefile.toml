@@ -1,0 +1,23 @@
+name = "polyaalgebra"
+defaultTargets = ["PolyaAlgebra"]
+
+[leanOptions]                        # the options every check runs under (Lake's math template's; polya/README.md)
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+# a Polya content project: one library, a subject per module under PolyaAlgebra/ (`polya --help`)
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "v4.31.0"
+
+# the publisher: Mathlib at the instance's revision comes through it, and `lake exe polya` runs it
+[[require]]
+name = "polya-publisher"
+git = "https://github.com/klavins/polya-publisher"
+rev = "v0.6.0"
+
+[[lean_lib]]
+name = "PolyaAlgebra"

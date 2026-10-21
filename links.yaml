@@ -1,0 +1,40 @@
+# Links into this repository's subject from another repository's, concept to concept: `from`
+# is the prerequisite, `to` the concept that builds on it, `weight` how strongly (0 to 1),
+# `note` why in one line. The file travels with the publish (`polya extract` carries into the
+# bundle the links touching the subject; `polya publish` loads them, naming one whose other
+# subject is not on the server). A repository's links join its own subjects to any other —
+# here polya-basic's, whose five subjects the student of Group Theory has finished — and a
+# subject's author may veto any link into their subject with `polya links`. Within a subject
+# the code decides the prerequisites; this file only joins subjects.
+#
+# A link is added when the concept it points to exists: the sections after the first add
+# theirs as they are built (the plan's "Before §1", item 6, lists them).
+links:
+  - from: settheory/set
+    to: grouptheory/mathlib_sets
+    weight: 0.9
+    note: A set is a predicate on a type there, and Mathlib's `Set α` is the same object under its own names, matched here.
+  - from: settheory/image
+    to: grouptheory/mathlib_sets
+    weight: 0.8
+    note: The image of a set under a function is defined there and its laws proved; the image of a union is proved again here for Mathlib's sets.
+  - from: settheory/image_preimage
+    to: grouptheory/functions
+    weight: 0.6
+    note: An injective function is described there in words; here it is Mathlib's `Function.Injective`, with surjective and bijective beside it.
+  - from: logic/relations
+    to: grouptheory/relations
+    weight: 0.9
+    note: A relation is a predicate of two arguments there; here one that is reflexive, symmetric and transitive is an equivalence relation, bundled as `Equivalence` and `Setoid`.
+  - from: logic/classical
+    to: grouptheory/equivalence_classes
+    weight: 0.6
+    note: The law of the excluded middle is met there; here `open Classical` uses it to make every relation decidable, so that a quotient of a finite type can be counted.
+  - from: naturals/dvd
+    to: grouptheory/integers_and_remainders
+    weight: 0.7
+    note: Divisibility is defined there on the student's naturals; here it is Lean's on `ℕ`, with remainders, greatest common divisors and coprime numbers.
+  - from: naturals/strong_induction
+    to: grouptheory/integers_and_remainders
+    weight: 0.5
+    note: The well-ordering of the naturals is proved there by strong induction; here `Nat.find` computes the least number with a property.

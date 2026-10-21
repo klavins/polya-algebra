@@ -1,0 +1,10 @@
+# Names a problem's prose writes in backticks on purpose although its context does not hold them;
+# scripts/check_prose_names.py skips these. Names of polya-basic's subjects (Set Theory's `setext`),
+# fields of the structures a stub fills in, and Lean keywords and syntax shown in prose.
+image_union: setext, Set., subset_antisym
+fin_four_add_neg: notEquiv, rot3
+int_cases: natCast
+composites: succ
+ker_equivalence: trans
+bool_equiv_fin_two: toFun, invFun, left_inv, right_inv
+mod_setoid: r, iseqv

@@ -1,0 +1,9 @@
+# What the library says about this repository, above its subjects (polya publish requires the
+# title and the description); `license` names the license its subjects carry unless their
+# @subject block says otherwise — each subject's directory holds the text in a LICENSE file.
+# An optional `subjects:` list of slugs is the order the library lists the subjects in; any
+# not named follow, by title.
+title: Polya Algebra
+description: "A collection of Polya subjects on algebra, built by the student from the axioms. A group is a set with an operation that passes three tests, and the student writes that definition, meets the handful of groups every course lives on, and builds what a first course builds on them: subgroups, homomorphisms, cosets and Lagrange's theorem, quotients, the isomorphism theorems, and group actions with the counting they make possible. Everything is spelled as Mathlib spells it, so that a later subject which imports Mathlib's algebra changes the imports and not the vocabulary. The outline follows J. S. Milne's Group Theory notes (https://www.jmilne.org/math/CourseNotes/GT.pdf), which supply the selection and order of the results and are gratefully acknowledged; the prose, the Lean and the problems are written here. The subjects carry the Creative Commons Attribution 4.0 license."
+license: CC-BY-4.0
+subjects: [grouptheory]
