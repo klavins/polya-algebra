@@ -54,3 +54,11 @@ links:
     to: grouptheory/integers_mod_n
     weight: 0.6
     note: A structure with data fields is declared there; here `ZMod n` is a structure holding a remainder and the proof that it is below `n`, and its numerals come from an `OfNat` instance.
+  - from: naturals/addition
+    to: grouptheory/natural_powers
+    weight: 0.8
+    note: Addition is defined there by recursion on the second argument, with its `Add` instance supplying `+`; here a power `g ^ n` is defined by the same recursion, with a `Pow` instance supplying `^`.
+  - from: naturals/induction
+    to: grouptheory/natural_powers
+    weight: 0.8
+    note: The laws of addition are proved there by induction on the recursive argument; here the laws of exponents are proved the same way on `ℕ`, and the integer powers by induction on `ℤ`.

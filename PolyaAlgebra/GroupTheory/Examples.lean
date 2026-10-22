@@ -474,7 +474,6 @@ theorem zmod_two_three_comm : ∀ a b : ZMod 2 × ZMod 3, a ∗ b = b ∗ a := b
 @concept dihedral_groups
 @title The Dihedral Groups
 @kind definition
-@goal
 
 The dihedral group Dₙ is the group of symmetries of a regular `n`-gon: `n` rotations and `n` reflections, `2n` elements in all, multiplied by composing symmetries. It is the subject's standard non-commutative example, small enough to compute in and rich enough to have subgroups of every kind; D₂ is the Klein four-group. This concept builds it over `ZMod n` from a four-line table and counts it.
 -/

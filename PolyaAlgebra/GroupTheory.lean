@@ -1,6 +1,7 @@
 import PolyaAlgebra.GroupTheory.Prerequisites
 import PolyaAlgebra.GroupTheory.Groups
 import PolyaAlgebra.GroupTheory.Examples
+import PolyaAlgebra.GroupTheory.Powers
 import PolyaAlgebra.GroupTheory.ExtraCredit
 
 /-! @subject grouptheory
@@ -18,6 +19,8 @@ Everything is the student's: the class `Group` itself, each of the eight groups 
 **Groups** writes the definition: a class with the operation, the neutral element and the inverse as its data and the five laws as its fields, under the group's own symbols `a ∗ b`, `𝟙` and `a⁻¹`, so that the one-element set, the Booleans under exclusive or and the integers under addition are instances of one class, each with `∗` meaning its own operation. Then the first consequences of the axioms, under Mathlib's names: the neutral element and inverses are unique, the inverse of a product is the product of the inverses in reverse order, a group whose elements are their own inverses is commutative; and the cancellation laws, with the solution of `a ∗ x = b` and left multiplication as a permutation of the group.
 
 **Examples** builds the groups the subject lives on, each a definition before anything is proved about it. The integers modulo `n` are a structure holding a remainder and its bound, with addition and reduction as the operation, counted by labelling its elements with `Fin n`, and `ZMod 2` matched with the group of order two; the permutations of a type form the symmetric group under composition, and on three points a rotation and a reflection fail to commute; a commutative group is a class extending `Group` by one law, with `ℤ` and `ZMod n` as instances and two rearrangement rules; the product of two groups multiplies componentwise; and the dihedral group of the `n`-gon is an inductive type with a constructor for the rotations and one for the reflections, a four-line table whose associativity is proved from the commutativity of `ZMod n`, a count of `2n` elements, and the Klein four-group as `D₂`.
+
+**Powers and the Order of an Element** defines `g ^ n` by recursion, as a product of `n` copies of `g`, and proves the laws of exponents by induction, with the integer powers of `1` being the natural numbers; extends the exponent to `ℤ` by taking the inverse of a natural power, and proves the laws again by induction in both directions; defines the order of an element as the least positive exponent that returns to the neutral element, with `0` for infinite order, and shows that the powers repeat with this period, so that `g ^ n = 𝟙` exactly when the order divides `n`, with `2` of order `3` in `ZMod 6`, every reflection of a dihedral group of order `2`, and `1` of infinite order in `ℤ`; and shows that in a finite group every element has finite order, by the pigeonhole principle on its powers, and that its inverse is one of its powers.
 
 **Extra Credit**, after the goal, holds what nothing builds on: a left neutral element and left inverses already make a group.
 -/

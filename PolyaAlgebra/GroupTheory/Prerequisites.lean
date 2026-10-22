@@ -162,7 +162,7 @@ theorem surjective_of_right_inverse {α : Type u} {β : Type v} {f : α → β} 
 @title Bijections as Equivalences
 @kind definition
 
-A bijection between two types, packaged with its inverse, is an equivalence, written `α ≃ β`: Mathlib's way of saying that two types are the same up to renaming, and this subject's way of saying that two groups are the same, once the equivalence respects the operation. A permutation of `X` is an equivalence `X ≃ X`, and the permutations of three points are the first non-commutative group we meet.
+A bijection between two types, packaged with its inverse, is an equivalence, written `α ≃ β`: Mathlib's way of saying that two types are the same up to renaming, and this subject's way of saying that two groups are the same, once the equivalence respects the operation. A permutation of `X` is an equivalence `X ≃ X`, and the permutations of three points are the first non-commutative group met.
 -/
 
 /-!

@@ -45,6 +45,11 @@ UNKNOWN = """
     ZMod.ext ZMod.val_add ZMod.val_mul ZMod.val_one ZMod.val_inv card_zmod mul_comm mul_left_comm
     mul_right_comm prod_mul_def DihedralGroup.r DihedralGroup.equivProd card_dihedral
     Equiv.Perm.permGroup Prod.instGroup
+    pow_zero pow_succ pow_succ' pow_one one_pow pow_add pow_mul zpow_natCast zpow_negSucc zpow_zero
+    zpow_one zpow_neg zpow_add_one zpow_sub_one zpow_add zpow_sub IsOfFinOrder orderOf
+    pow_orderOf_eq_one orderOf_le_of_pow_eq_one orderOf_pos_iff orderOf_eq_iff pow_mod_orderOf
+    orderOf_dvd_iff_pow_eq_one orderOf_one orderOf_eq_one_iff isOfFinOrder_of_finite orderOf_pos
+    Fintype.exists_ne_map_eq_of_card_lt Monoid.npow Monoid.Pow
 """.split()
 
 # the tools: every one of these must be known under the fence
@@ -77,6 +82,9 @@ KNOWN = """
     Nat.lt_irrefl Nat.le_antisymm Classical.choice
     Nat.add_assoc Nat.zero_add Nat.add_zero Nat.add_comm Nat.le_of_lt Nat.add_sub_of_le Int.add_comm
     Prod.mul_def OfNat
+    Nat.mul_add_one Nat.lt_or_gt_of_ne Nat.not_le not_forall Classical.not_imp dif_pos dif_neg
+    Int.add_sub_assoc Int.sub_add_cancel Int.sub_eq_add_neg Nat.dvd_of_mod_eq_zero Nat.pos_of_ne_zero
+    Nat.mod_zero Finite.exists_equiv_fin Nat.decidableBallLT Int.instNatPow instPowNat
 """.split()
 
 # instances: `#synth` lines that must fail (`-`) or succeed (`+`)
@@ -94,6 +102,10 @@ SYNTH = [
     "+ DecidableEq (Equiv.Perm (Fin 3))",
     "+ Decidable (∀ x : Fin 4, x + x + x + x = 0)",
     "+ Mul (ℕ × ℕ)",
+    "- Pow (Equiv.Perm (Fin 3)) ℕ",
+    "- Pow (Equiv.Perm (Fin 3)) ℤ",
+    "- Pow ℤ ℤ",
+    "+ Pow ℤ ℕ",
 ]
 
 
@@ -116,7 +128,8 @@ def main():
         f.write("\n".join(lines) + "\n")
         path = f.name
     try:
-        r = subprocess.run(["lake", "env", "lean", path], cwd=ROOT, capture_output=True, text=True)
+        # every test is a line and most are meant to fail, so lift Lean's default limit of 100 errors
+        r = subprocess.run(["lake", "env", "lean", "-DmaxErrors=10000", path], cwd=ROOT, capture_output=True, text=True)
         out = r.stdout + r.stderr
     finally:
         os.unlink(path)

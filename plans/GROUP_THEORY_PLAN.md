@@ -681,6 +681,91 @@ and `Int.induction_on`, each in the problem that needs it.
 Budget: 18. Hazard: `zpow_add` is the first proof with cases on `ℤ`; write it first, in a
 scratch file, and let its length decide whether `integer_powers` is four problems or six.
 
+**As built (2026-10-21).** `PolyaAlgebra/GroupTheory/Powers.lean`: 21 problems over 4
+concepts, in this order: `natural_powers` (`npow`, `Group.npow` by recursion with the
+`Pow G ℕ` instance under `@[default_instance high]`, `pow_zero` and `pow_succ` by `rfl`, and
+`rot3 ^ 3 = 𝟙 ∧ reflect3 ^ 2 = 𝟙` by `decide`; `pow_one` with `one_pow` and `pow_succ'`;
+`pow_add` with `pow_mul`, the two laws in one block; `int_pow`, `(3 : ℤ) ^ 2 = 6` by `decide`
+and `(1 : ℤ) ^ k = k` by induction and `omega`); `integer_powers` (`zpow`, `Group.zpow` by
+cases on `ℤ` with the `Pow G ℤ` instance, `zpow_natCast` and `zpow_negSucc` by `rfl`, and
+`(2 : ℤ) ^ (-3 : ℤ) = -6`; `zpow_neg` with `zpow_zero`, `zpow_one`, the tactic `change` taught
+on them, and `rot3 ^ (-1 : ℤ) = rot3 ∗ rot3` by `decide`; `zpow_add_one` with `zpow_sub_one`,
+the hazard, ten lines by `cases` and `change`; `one_zpow`, the warm-up where `induction` on
+`ℤ` is taught; `zpow_add` with `zpow_sub`); `order_of_element` (`is_of_fin_order`, the
+student's `IsOfFinOrder`, Mathlib's name and statement, with `rot3` of finite order through
+`s3_pow_check` and `1 : ℤ` not; `order_of`, the definition by `if h : IsOfFinOrder g then
+Nat.find h else 0` under `open Classical in` as a `noncomputable def`, with a two-example spec;
+`order_of_cases`, the two equations `orderOf_of_isOfFinOrder` and `orderOf_of_not_isOfFinOrder`
+by `dif_pos` and `dif_neg`, and `orderOf (1 : ℤ) = 0`; `pow_order_of_eq_one` with
+`orderOf_le_of_pow_eq_one` and `orderOf_pos_iff`; `order_of_eq_iff`, Mathlib's
+characterization, with `orderOf (2 : ZMod 6) = 3` by `decide` through it;
+`order_of_dvd_iff_pow_eq_one` with `pow_mod_orderOf` and `orderOf_dvd_of_pow_eq_one`;
+`order_of_eq_one_iff` with `orderOf_one`; `order_of_eq_two_iff` with `orderOf (sr i) = 2` in
+`Dₙ` as its instance); and `orders_in_finite_groups` (`pigeonhole`,
+`Fintype.exists_ne_map_eq_of_card_lt` from `Fintype.card_le_of_injective` through `not_forall`
+and `Classical.not_imp`, the injective case closed by `omega`; `exists_pow_eq_of_finite`, two
+powers coincide, under `[Finite G]` through `Finite.exists_equiv_fin` and the pigeonhole on
+`Fin (n + 1) → Fin n`; `finite_order_of_finite`, `pow_sub_eq_one_of_pow_eq`,
+`isOfFinOrder_of_finite` and `orderOf_pos`; `inv_eq_pow`, `inv_eq_pow_orderOf_sub_one` and
+`2⁻¹ = 4 ∧ 2 ^ (orderOf 2 - 1) = 4` in `ZMod 6`), with the `@goal`.
+Extraction: 81 problems, 0 errors; budgets, prose names, stub shortcuts and the vocabulary
+audit (0 of 81) clean; every spec was compiled against variants (`Nat.succ` and `match`
+spellings of the recursion, `.ofNat` patterns, `n > 0` and `n ≥ 1` for the order's condition,
+`dite` for the `if`) and a wrong definition each; `links.yaml` carries `naturals/addition` and
+`naturals/induction → grouptheory/natural_powers`.
+
+The student review (one blind agent per concept, `scripts/review/`, the brief with the
+section's blurb) ran the same day: every problem of the four concepts passed on the reviewers'
+first attempt but one (`zpow_add_one`, on the second, after a bare `rw [pow_succ']` turned the
+wrong power), and the draft changed in these ways. Two problems were added where a reviewer
+flagged double teaching: `one_zpow`, so that `induction` on `ℤ` is learned on `𝟙 ^ n = 𝟙`
+before the law of exponents, as §4's `one_pow` taught it on `ℕ`, and the tactic `change` moved
+from the hazard `zpow_add_one` to `zpow_neg`, where the mathematics is nil, with the gotcha
+that a numeral in the restatement takes the goal's type unless ascribed (`g ^ (1 : ℕ)`);
+`order_of_eq_two_iff`, the general fact behind "every reflection has order `2`", so that the
+dihedral example instantiates a theorem, and with it the `g ^ 2 = 𝟙 ∗ g ∗ g` gotcha said where
+it bites. Three context gaps were fixed in the content: `int_one_pow`'s zero case now goes
+through `pow_zero` and `int_one_eq_zero`, which the prose had promised; `rot3_isOfFinOrder`
+uses `s3_pow_check`, the student's own proof; `pow_add`'s description names its context.
+`orderOf_dvd_iff_pow_eq_one`'s sixteen-line direction became `orderOf_dvd_of_pow_eq_one`,
+Mathlib's name, and `pow_mod_orderOf` restates `g ^ n` alone before rewriting, since
+`Nat.mod_add_div` backwards replaces every `n`. Preambles that handed over a case split, the
+lemma per case or the proof in words were cut to the idea (`zpow_neg`, `zpow_add_one`,
+`int_pow`, `order_of_eq_iff`, `order_of_dvd_iff_pow_eq_one`, `order_of_eq_one_iff`); the
+`order_of` definition is now shown on the first section's example rather than handed over;
+`Pow` is shown as a class and the recursive call inside `npow` is named; forward references
+left the concept descriptions and `pow_one`; `by_cases` is said to be new; the first error a
+student meets (`decide` on `orderOf` itself) is said before the route around it; and titles
+were made to state the fact or name the thing. The fourth reviewer solved its three problems by transcription, which it
+read as the preambles doing the student's work, and flagged the finiteness theorem for double
+teaching (`Finite.exists_equiv_fin`, `Nonempty` and a function built on the spot, arriving with
+the first proof in which finiteness enters): the device became `exists_pow_eq_of_finite`, a
+problem of its own, and `isOfFinOrder_of_finite` keeps the mathematics; the pigeonhole's
+description no longer hands over the case split, its preamble no longer claims that §1 named
+`Fintype.card_le_of_injective`, and `omega` closes the injective case; `inv_eq_pow` names
+`pow_orderOf_eq_one`, which its proof needs, and its check is `2⁻¹ = 4 ∧ 2 ^ (orderOf 2 - 1)
+= 4`, which no one-liner closes and which shows the number. No double teaching was found in
+`natural_powers` or `order_of_element`.
+
+Six departures from the entry, each forced by the tooling, the fence or the review. (1) **The
+power instance is marked `@[default_instance high]`**, Mathlib's own device for `Monoid.Pow`: a
+numeral exponent `(3 : ℤ) ^ 2` is elaborated through default instances alone, where core's
+`instPowNat` over `NatPow ℤ` wins and gives `9`; the mark rides into the stub and the prose says
+what it is for (`STYLE.md`, **Learned building §4**). (2) **The finite-group theorems take
+`[Finite G]`**, since `linter.unusedFintypeInType` refuses a `[Fintype G]` a statement never
+uses; the pigeonhole runs on `Fin (n + 1) → Fin n` through `Finite.exists_equiv_fin`, the form
+§1 had planned, and `orderOf_pos` under `[Finite G]` serves every later `[Fintype G]` context.
+(3) **`zpow_mul` is not built** and `pow_add` and `pow_mul` share a block; `zpow_sub` came free
+with `zpow_add`, and `one_zpow` was added by the review. (4) **`IsOfFinOrder` is a problem of
+its own** before `orderOf`, Mathlib's own split, so that the definition by `if h : IsOfFinOrder
+g` carries one Lean fact and the examples of finite and infinite order precede the order
+itself; the two `dif` equations are a problem of their own after it, so that no later proof
+unfolds the definition. (5) **`zpow_mod_orderOf` and `g⁻¹ = g ^ (orderOf g - 1)` became one**:
+the inverse as a power, checked on `2` in `ZMod 6`; the integer-exponent form waits for the
+section that needs it. (6) **Twenty-one problems, not eighteen**: the three the review added (`one_zpow`,
+`order_of_eq_two_iff`, `exists_pow_eq_of_finite`) are each a warm-up or a general fact that
+the one-idea rule asks for, and the budget yielded to the rule.
+
 ### §5. Subgroups
 
 Milne 1.11–1.16. The Lean that is new here: a `Membership` instance (Set Theory wrote one by
@@ -1210,8 +1295,31 @@ are settled by the house rules and recorded so that a session does not reopen th
 
 ## Next step
 
-§4, Powers and the Order of an Element, in a fresh session: "Do the next section in Group
-Theory, which is §4 Powers and the Order of an Element". Read §4's entry, §3's **As built**
+§5, Subgroups, in a fresh session: "Do the next section in Group Theory, which is §5
+Subgroups". Read §5's entry, §4's **As built** (the names as they are in Lean: `g ^ n` with
+`pow_zero`, `pow_succ`, `pow_succ'`, `pow_add`, `pow_mul`, `one_pow`; `g ^ (k : ℤ)` with
+`zpow_natCast`, `zpow_negSucc`, `zpow_zero`, `zpow_one`, `zpow_neg`, `zpow_add_one`,
+`zpow_sub_one`, `zpow_add`, `zpow_sub`, and `induction k with | zero | succ k ih | pred k ih` on
+an integer; `IsOfFinOrder`, `orderOf` with its two `dif` equations, `pow_orderOf_eq_one`,
+`orderOf_le_of_pow_eq_one`, `orderOf_pos_iff`, `orderOf_eq_iff`, `pow_mod_orderOf`,
+`orderOf_dvd_iff_pow_eq_one`, `orderOf_one`, `orderOf_eq_one_iff`, `orderOf_sr`,
+`orderOf_zmod_six_two`; `Fintype.exists_ne_map_eq_of_card_lt`, `exists_pow_eq_of_finite`,
+`isOfFinOrder_of_finite` and `orderOf_pos` under `[Finite G]`, `inv_eq_pow_orderOf_sub_one`),
+`STYLE.md` with **Learned
+building §4** (the `[Finite G]` rule, `open Classical in` wherever `Nat.find` appears), and
+§1–§4 in full before writing. The §5 hazard named in the entry: the coercion `↥H` of a subgroup
+to a type, tested at the first extract. The §5 examples by the running-examples table: the
+rotations `{r i}` of `Dₙ`, `⟨2⟩ = {0, 2, 4}` in `ZMod 6`, `nℤ` in `ℤ`; `center S₃ = ⊥` by
+`decide` (no `Fintype` on `Equiv.Perm (Fin 3)`: state it over `D₃` or as a `∀` the student
+proves), `center D₄ = {𝟙, r 2}`, `center ℤ = ⊤`; `zpowers 1 = ⊤` in `ℤ` and `ZMod n`. The
+goal moves to §5's last concept; `ExtraCredit.lean` stays the root's last import. After §5, run
+the student review with `scripts/review/` as §1–§4 did, and add §5's link to `links.yaml`
+(`programming/structures → grouptheory/subgroups`). Decisions 3–5 are taken; the owner may
+still overrule 3 and 5 before §6 and §8.
+
+The previous next step, kept for the record: §4, Powers and the Order of an Element, in a fresh
+session: "Do the next section in Group Theory, which is §4 Powers and the Order of an
+Element". Read §4's entry, §3's **As built**
 (the running examples as they are named in Lean: `ZMod n` with `ZMod.val_mul`, `ZMod.ext` and
 `card_zmod`; `rot3` and `reflect3` in `Equiv.Perm (Fin 3)`; `CommGroup` with `mul_comm`,
 `mul_left_comm` and `mul_right_comm`; `prod_mul_def`; `DihedralGroup n` with `r`, `sr`,

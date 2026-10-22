@@ -18,3 +18,8 @@ comm_group: toGroup, mul_comm
 comm_instances: toGroup
 dihedral_mul: sr
 zmod_fintype: isLt, val_lt
+pow_one: zero
+zpow_add: zero
+order_of: Classical
+one_zpow: zero
+order_of_eq_one_iff: Dₙ

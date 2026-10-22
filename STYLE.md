@@ -431,6 +431,75 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   equivalence out of the finite type) the first time `.symm` is needed; and say once that a
   bare `rw [mul_comm]` turns the first product it finds and `rw [mul_comm a b]` names one.
 
+## Learned building §4 (2026-10-21)
+
+- **The power instance carries `@[default_instance high]`**, as Mathlib's `Monoid.Pow` does, and
+  for the same reason. A numeral exponent, `(3 : ℤ) ^ 2`, is elaborated through the default
+  instances alone, and core's `instPowNat` (through `NatPow ℤ`, Lean's own `3 ^ 2 = 9`) is one;
+  a plain `instance : Pow G ℕ` is never consulted for it, so `(3 : ℤ) ^ 2 = 6` fails by `decide`
+  while `(1 : ℤ) ^ k = k` with `k : ℕ` compiles, since an ordinary search prefers the instance
+  declared last. A generic `instance : NatPow G` loses both ways: at equal priority a concrete
+  key (`NatPow ℤ`) beats a star key (`NatPow ?G`) whatever the declaration order. The mark rides
+  into the stub, so the student fills the body and the prose says in one sentence what the mark
+  is for. A negative numeral exponent needs its type, `g ^ (-3 : ℤ)`.
+- **A statement that does not use `Fintype.card` takes `[Finite G]`**: `linter.unusedFintypeInType`
+  refuses `[Fintype G]` in a theorem whose type never mentions it, and a warning is an error under
+  publish. `Finite.exists_equiv_fin G : ∃ n, Nonempty (G ≃ Fin n)` gives the bijection for a
+  pigeonhole argument, and a later `[Fintype G]` context finds `Finite G` by itself, so
+  `orderOf_pos` under `[Finite G]` serves everywhere.
+- **`Nat.find` in a statement or a proof needs `open Classical in` on that theorem**, as on the
+  definition: `Nat.find_spec h` as a term fails to synthesize `DecidablePred` even when the goal
+  already holds the instance. A `/-- @spec -/` cannot carry `open … in`, so its proof opens with
+  the tactic `classical`, which supplies the same instance. The two cases of a definition by
+  `if h : c then … else …` are exposed by `unfold` and picked by core's `dif_pos h` and
+  `dif_neg h`; `orderOf_of_isOfFinOrder : orderOf g = Nat.find h` and its negative companion are
+  the equations later proofs rewrite with, so that `by_cases h : IsOfFinOrder g` opens every
+  proof about the order and the `if` is never unfolded again.
+- **`change` restates a goal up to definitional unfolding where `show` is linted**: the integer
+  equations `Int.ofNat k + 1 = Int.ofNat (k + 1)`, `Int.negSucc 0 + 1 = 0`,
+  `Int.negSucc (j + 1) + 1 = Int.negSucc j`, `-(Int.ofNat (k + 1)) = Int.negSucc k` and
+  `-(Int.negSucc k) = Int.ofNat (k + 1)` all hold by `rfl`, and `change (g ^ (j + 1))⁻¹ = (g ^
+  (j + 1 + 1))⁻¹ ∗ g` puts a `zpow` goal into the form the laws rewrite. A `cases` on an integer
+  opens into a `cases` on the natural number inside it.
+- **`Int.induction_on` is Mathlib's `induction_eliminator` for `ℤ`**, so a plain `induction n
+  with | zero | succ k ih | pred k ih` uses it with no `using`; the goals read `↑k + 1` and
+  `-↑k - 1`.
+- **`g ^ 2` is `(𝟙 ∗ g) ∗ g` by definition, not `g ∗ g`**: an `exact mul_inv_cancel (sr i)`
+  against `sr i ^ 2 = 𝟙` needs `rw [pow_succ, pow_one]` first. `cases h` on `h : sr i = 𝟙`
+  closes a goal, since `𝟙` unfolds to the other constructor `r 𝟙`.
+- **`not_imp` is ambiguous under the fence** (`_root_.not_imp` and `Classical.not_imp`); the
+  reference writes `Classical.not_imp`.
+- **Slugs are snake_case**: the extractor refuses `@problem orderOf` ("needs a slug").
+- **The fence probe passes `-DmaxErrors=10000` to `lean`**: once the UNKNOWN list has more than
+  a hundred names Lean stops at its default limit, every later `#synth` test goes unrun, and the
+  probe reports instances FOUND that were never tried. `set_option maxErrors` in the file does
+  not take effect.
+- **The reviewers' findings, in order of frequency**: a context gap behind a prose promise
+  (`pow_zero` promised in `npow` and absent from `int_pow`, whose reference closed the zero case
+  by `rfl`; `s3_pow_check` absent from `is_of_fin_order`), fixed by routing the reference through
+  the promised fact; a Lean device arriving in the concept's hardest problem (`change` in
+  `zpow_add_one`, `induction` on `ℤ` in `zpow_add`), fixed by teaching it one problem earlier on
+  a trivial fact (`zpow_neg`, the new `one_zpow`), as §4's `one_pow` taught induction on `ℕ`; a
+  preamble handing over the case split, the lemma per case or the proof in words; a reference
+  over the fifteen-line rule (`orderOf_dvd_iff_pow_eq_one`, split under Mathlib's
+  `orderOf_dvd_of_pow_eq_one`); a title promising a theorem the problem did not prove ("The
+  Elements of Order One and Two" with no `orderOf_eq_two_iff`), fixed by adding the theorem and
+  making the running example its instance; and the first error a student meets left unsaid
+  (`decide` on `orderOf` itself, a numeral in a `change` taking the goal's type). A concept whose every
+  problem passes by transcription is a concept whose preambles do the student's work (the
+  fourth reviewer's finding on the finite-group problems): cut each to the idea and the one Lean
+  fact the mathematics does not reveal, and split a device (`Finite.exists_equiv_fin` with
+  `Nonempty`, a function built on the spot) from the theorem it serves. A numeric check that
+  restates the theorem invites `exact theorem _`, which here failed on `Finite (ZMod 6)` not
+  being in the context; state the check as the theorem evaluated (`2⁻¹ = 4 ∧ 2 ^ (orderOf 2 -
+  1) = 4`). The review found no double teaching in `natural_powers` or `order_of_element`, and
+  all but one problem passed on the reviewers' first attempt.
+- **The closure misses an anonymous instance and the repair pulls it**: seven problems of §4
+  (`int_pow`, `is_of_fin_order` and the five that open the order's definition) report "did not
+  verify at once: repair added instance", the `Pow G ℕ` instance (`instPowNatOfGroup`) not
+  reaching the context in the first round although the reference's term names it, as §2's
+  `Inv G` instance did not; the bundle holds the repaired preamble.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:

@@ -29,3 +29,7 @@ dihedral_mul         # d4_table is a decide on the table, the warm-up on reading
 dihedral_group       # d4_not_comm is a decide in D₄, the running example's non-commutativity
 prod_fintype         # card_zmod_two_three is a count of six by labelling; exact? finds a roundabout term
 klein_four           # zmod_four_one_inv is a decide in ZMod 4, the contrast with V₄
+npow                 # pow_zero and pow_succ hold by definition (rfl), as the integers' equations do; s3_pow_check is a decide in S₃
+int_pow              # int_three_pow_two is a decide in ℤ, the running example's power as a multiple
+zpow                 # zpow_natCast and zpow_negSucc hold by definition (rfl); int_two_zpow_neg_three is a decide in ℤ
+zpow_neg             # zpow_zero holds by definition (rfl); zpow_one is pow_one by unfolding; s3_zpow_check is a decide in S₃
