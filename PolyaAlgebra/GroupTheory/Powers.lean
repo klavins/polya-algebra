@@ -567,7 +567,6 @@ theorem orderOf_sr {n : ℕ} [NeZero n] (i : ZMod n) : orderOf (sr i) = 2 := by
 @concept orders_in_finite_groups
 @title Orders in a Finite Group
 @kind theorem
-@goal
 
 In a finite group every element has finite order: by the pigeonhole principle two of its powers coincide, and their quotient is `𝟙`. The order is then positive, and the inverse of `g` is itself a power of `g`. These facts are what Lagrange's theorem and the counting arguments to come rest on, and they are the first place where the finiteness of a group enters a proof.
 -/

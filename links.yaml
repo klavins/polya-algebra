@@ -62,3 +62,7 @@ links:
     to: grouptheory/natural_powers
     weight: 0.8
     note: The laws of addition are proved there by induction on the recursive argument; here the laws of exponents are proved the same way on `ℕ`, and the integer powers by induction on `ℤ`.
+  - from: programming/structures
+    to: grouptheory/subgroups
+    weight: 0.7
+    note: A structure with data fields and proof fields is declared there; here a subgroup is a structure holding a set and the three closure conditions, with a `Membership` instance so that `x ∈ H` is membership in its carrier.

@@ -23,3 +23,12 @@ zpow_add: zero
 order_of: Classical
 one_zpow: zero
 order_of_eq_one_iff: Dₙ
+subgroup: carrier
+int_multiples: nℤ
+subgroup_ext: ZMod.ext, subst
+top_bot: bot
+subgroup_le: le
+is_cyclic: IsOfFinOrder
+int_cyclic: nℤ
+subgroup: mem
+pow_mem: zpow_add_one, zpow_sub_one

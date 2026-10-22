@@ -203,8 +203,9 @@ and `Fin n`, and `D₃` stands in for `S₃` wherever an order is counted.
      own, just before the problem that needs it**, and the plan names each: a class with its own
      notation (§2, the definition of `Group` itself, on which nothing else is new); recursion
      for powers (§4, Naturals' pattern) and `Int.induction_on` for `zpow_add` (§4); a `Membership`
-     instance and the coercion of a subgroup to a type (§5); `CoeFun` for the student's
-     homomorphisms (§6, met on `Equiv` in §1); a `HasQuotient` instance for `G ⧸ H` (§7);
+     instance for the student's structure (§5; the coercion of a subgroup to a type turned out
+     to be §1's `↥S`, since a coercion instance never reaches a later context); a named
+     application for the student's homomorphisms (§6, for the same reason); a `HasQuotient` instance for `G ⧸ H` (§7);
      `Quotient.lift₂` for the quotient group (§9); `extends SMul` (§11); a type synonym with a
      copied instance (§11, `ConjAct`); `Finset.induction_on` (§12). A definition problem may
      carry the one Lean fact its shape needs, said in the description as the skill allows ("a
@@ -791,10 +792,109 @@ Budget: 20, which is over: the three examples of `generated_subgroups` can be tw
 `@given` `CoeSort` does not reach later contexts, so it is a problem's target here, and the
 first extract tests it.
 
+**As built (2026-10-21).** `PolyaAlgebra/GroupTheory/Subgroups.lean`: 21 problems over 4
+concepts, in this order: `subgroups` (`subgroup`, the structure with `carrier`, `one_mem'`,
+`mul_mem'` and `inv_mem'` and the `Membership G (Subgroup G)` instance, five specs; `rotations`,
+`DihedralGroup.rotations n` with carrier `Set.range r`, `r_mem_rotations` and
+`sr_not_mem_rotations`, with `Subgroup.one_mem`, `mul_mem` and `inv_mem` as its givens;
+`int_multiples`, `intMultiples n` with carrier `{x | n ∣ x}` by `Int.dvd_zero`, `Int.dvd_add`
+and `Int.dvd_neg`, and `mem_intMultiples`; `zmod_six_evens`, `zmodSixEvens` with carrier
+`{0, 2, 4}` by `decide` and `mem_zmodSixEvens`; `subgroup_as_type`, `Subgroup.coe_mem` and
+`Subgroup.card_le_card_group : Fintype.card H.carrier ≤ Fintype.card G` under `open Classical
+in`; `subgroup_group`, `instance : Group H.carrier` with `Subgroup.coe_mul`, `coe_one` and
+`coe_inv`; `subgroup_ext`, `Subgroup.ext` by `cases … with | mk c _ _ _`, `Set.ext` and
+`subst`; `top_bot`, the `Top` and `Bot` instances with `Subgroup.mem_top` and `mem_bot`;
+`subgroup_le`, the `LE` instance as `∀ ⦃x⦄, x ∈ H → x ∈ K` with `Subgroup.bot_le`, `le_top` and
+`le_antisymm`; `pow_mem`, `Subgroup.pow_mem`, `zpow_mem` and `zmod_six_two_zpow_mem`);
+`centre` (`center`, `Subgroup.center G` with carrier `{z | ∀ g, g ∗ z = z ∗ g}` and
+`mem_center_iff`; `center_eq_top`, `Subgroup.center_eq_top_iff`, `center_eq_top` under
+`[CommGroup G]` and `center_int`; `center_dihedral`, `d3_center : center (DihedralGroup 3) = ⊥`
+and `d4_center`, membership as `x = r 0 ∨ x = r 2`, both by `simp only` with the `mem_` equations
+and `decide`, and `d4_center_ne_top` through `center_eq_top_iff` and `d4_not_comm`);
+`intersections` (`inf`, the `Min` instance with `Subgroup.mem_inf`, `inf_le_left`, `inf_le_right`,
+`le_inf` and `intMultiples_two_inf_three` by `omega`; `s_inf`, the `InfSet` instance with
+`Subgroup.mem_sInf`, `sInf_le`, `le_sInf` and `mem_sInf_pair : x ∈ sInf {H, K} ↔ x ∈ H ⊓ K`);
+and `generated_subgroups` (`closure`, `Subgroup.closure X = sInf {H | X ⊆ H.carrier}` with
+`mem_closure`, `subset_closure` and `closure_le`; `zpowers`, `Subgroup.zpowers g` with carrier
+`{x | ∃ k : ℤ, g ^ k = x}`, `mem_zpowers_iff` and `mem_zpowers`; `zpowers_eq_closure`;
+`is_cyclic`, `IsCyclic G` as a `def` into `Prop` with `IsCyclic.mul_comm`; `int_cyclic`,
+`int_zpow_eq_mul : n ^ k = n * k`, `mem_zpowers_int : x ∈ zpowers n ↔ n ∣ x`,
+`zpowers_eq_intMultiples` and `isCyclic_int`; `zmod_cyclic`, `ZMod.val_one_pow : ((1 : ZMod n) ^
+k).val = k % n`, `isCyclic_zmod` and `zpowers_two_zmod_six : zpowers 2 = zmodSixEvens`), with the
+`@goal`. The criterion 1.11 is `Subgroup.ofDiv` in `ExtraCredit.lean`, concept
+`subgroup_criterion`, with `one_mem_of_div` and `inv_mem_of_div` before it; `ExtraCredit.lean`
+now imports `Subgroups`. Extraction: 103 problems, 0 errors; budgets and concept lengths clean
+(the longest problems at 26 lines, the longest concept at 399 characters); every spec compiled
+against variants (explicit binders and `carrier a` in the structure, the carrier of `rotations`
+with the equation reversed, `nℤ` as an existential, `{0, 2, 4}` as a disjunction, `⊤` as
+`{x | True}`, `⊥` as `{x | x = 𝟙}`, `≤` as `⊆` of carriers, the centre with the equation
+reversed, `zpowers` as a `Set.range` and with the equation reversed, `IsCyclic` through
+`Function.Surjective` and with the equation reversed, `closure` with the membership spelled
+out) and a wrong definition each (a structure asking less, `{0, 3}`, a centre asking `g ∗ z = z`,
+natural powers only, a product instance taking `b.1 ∗ a.1`); `links.yaml` carries
+`programming/structures → grouptheory/subgroups`.
+
+Six departures from the entry. (1) **There is no `CoeSort` instance.** The hazard the entry
+named is real for a target as much as for a given: elaboration unfolds the coercion, no compiled
+term names the instance, the closure never carries it, and the next problem's statement
+`(a : H)` failed with `type expected` at the first extract, as Profinite Spaces §8 had found.
+The rule is polya-topology's, spell the type out, and the spelling that costs no new device is
+the first section's: a subgroup as a type is `H.carrier`, through Mathlib's `Set` coercion,
+which is in every context; the prose says once that Mathlib writes `↥H`. The same holds for §6's
+`CoeFun` (see **Next step**). (2) **The criterion 1.11 is extra credit**: nothing after it uses
+it, and by the syllabus rule anything before the goal is recommended. (3) **`closure {r 1, sr 0}
+= ⊤` in `Dₙ` waits for §8**, where `(r 1) ^ k = r k` is built; its place in the running-examples
+table is taken by `zpowers 2 = zmodSixEvens`, the first cyclic subgroup computed, and
+`closure_mono` and a `le_def` are not built, since nothing before §9 needs them (the three
+order facts of `⊓` were built after the review, below). (4) **`center_eq_top_iff`** has no Mathlib name; `center_eq_top`
+under `[CommGroup G]` is Mathlib's, and `center ℤ = ⊤` is its instance; the centre of `S₃` is
+stated on `D₃`, as the previous next step said, and `D₄`'s as a membership. (5) **`IsCyclic` is
+a `def` into `Prop`**, not Mathlib's class, with `IsCyclic.mul_comm` as the student's name for
+"cyclic groups are commutative"; the two helper facts `int_zpow_eq_mul` and `ZMod.val_one_pow`
+carry the examples. (6) **Twenty-one problems, not twenty**, plus the extra-credit one: the two
+examples `nℤ` and `{0, 2, 4}` are separate problems, so that `∣` with its three core lemmas and a
+set literal under `decide` do not arrive together, and `≤` is a problem of its own after `⊤` and
+`⊥`, for the budget; `Subgroup.ext` is a problem rather than a given, since every later equation
+of subgroups goes through it, and the three restatements `one_mem`, `mul_mem`, `inv_mem` are
+givens of `rotations`, the §2 pattern, for the definition problem's budget.
+
+The student review (one blind agent per concept, `scripts/review/`, `intersections` and the
+extra-credit `subgroup_criterion` sharing a brief) ran the same day: every problem of the four
+concepts and the extra credit passed on the reviewers' first attempt, no reviewer found double
+teaching, and the draft changed in these ways. The commonest finding was again a context gap
+behind a prose promise or a trained habit. The two `mem_` equations of `generated_subgroups`
+were stated and never used, so `Subgroup.mem_zpowers_iff` was unknown in the four problems after
+it and `mem_closure` in the one after it, while every problem since `int_multiples` had said its
+`mem_` equation "is what later proofs rewrite with"; the references of `zpowers_eq_closure`,
+`IsCyclic.mul_comm`, `mem_zpowers_int`, `isCyclic_zmod` and `zpowers_two_zmod_six` now rewrite
+with them, and `mem_closure` is proved as `Subgroup.mem_sInf`, so that the previous problem's
+equation is in its context. The context of `inf` lacked the `LE` instance although the concept
+description promised a greatest lower bound, fixed by stating `inf_le_left`, `inf_le_right` and
+`le_inf`; the numeral `0` of `ZMod n` is not in `rotations`' context, so its preamble names the
+witness `𝟙`; and `pow_mem`'s description says that the integer case is a `cases` and not the
+induction the previous section trained, since `zpow_add_one` is not there. Preambles that handed
+over the witness, the lemma per step or the tactic script were cut to the idea in
+`subgroup_group`, `subgroup_ext`, `center`, `center_eq_top`, `center_dihedral`,
+`zpowers_eq_closure`, `is_cyclic`, `zmod_cyclic`, `inf` and `subgroup_of_div`, the centre's and
+the intersections' reviewers finding that every problem passed by transcription. The one tactic
+new to the student, `revert`, arrived in `center_dihedral` and was replaced by `simp only` under
+the binder, which the examples section taught; `⊢` in an `at` clause left `top_bot`'s reference;
+the first error a student meets is now said in `zmod_six_evens` (`decide` before any `intro`) and
+`center_dihedral` (`failed to synthesize Decidable`); `outParam` is trimmed from the displayed
+`Membership` and the instance's body is no longer given; `Min` and `InfSet` are shown as `Top`
+was, with the keystrokes for `⊤`, `⊥` and `⊓`; three theorems were added where a reviewer found a
+promise unkept, `d4_center_ne_top` (the equivalence in its non-commutative direction, through
+`d4_not_comm`), the three order facts of `⊓`, and `mem_sInf_pair`, the family problem's instance;
+`isCyclic_zmod` is in tactic style; and "state" became "prove, which holds by definition"
+throughout. The section stays at 21 problems.
+
 ### §6. Homomorphisms
 
-Milne 1.20–1.23 and p. 20. The Lean that is new here: a `CoeFun` instance for the student's
-structure, which §1's `Equiv` showed the use of.
+Milne 1.20–1.23 and p. 20. The Lean that is new here: applying the student's structure as a
+function. The entry planned a `CoeFun` instance, which §1's `Equiv` showed the use of; §5 found
+that a coercion instance never reaches a later problem's context (**As built**, departure 1), so
+the application is spelled out through a named function (`f.toFun x`, or a named `apply`), and
+the §6 session chooses the spelling before writing.
 
 - `homomorphisms`: the student's structure (`MonoidHom` or `GroupHom`, **Decisions** 3) with
   `toFun` and `map_mul'`, a `CoeFun` instance, the notation `G →* H`; Milne 1.21 as the first
@@ -1295,46 +1395,45 @@ are settled by the house rules and recorded so that a session does not reopen th
 
 ## Next step
 
-§5, Subgroups, in a fresh session: "Do the next section in Group Theory, which is §5
-Subgroups". Read §5's entry, §4's **As built** (the names as they are in Lean: `g ^ n` with
-`pow_zero`, `pow_succ`, `pow_succ'`, `pow_add`, `pow_mul`, `one_pow`; `g ^ (k : ℤ)` with
-`zpow_natCast`, `zpow_negSucc`, `zpow_zero`, `zpow_one`, `zpow_neg`, `zpow_add_one`,
-`zpow_sub_one`, `zpow_add`, `zpow_sub`, and `induction k with | zero | succ k ih | pred k ih` on
-an integer; `IsOfFinOrder`, `orderOf` with its two `dif` equations, `pow_orderOf_eq_one`,
-`orderOf_le_of_pow_eq_one`, `orderOf_pos_iff`, `orderOf_eq_iff`, `pow_mod_orderOf`,
-`orderOf_dvd_iff_pow_eq_one`, `orderOf_one`, `orderOf_eq_one_iff`, `orderOf_sr`,
-`orderOf_zmod_six_two`; `Fintype.exists_ne_map_eq_of_card_lt`, `exists_pow_eq_of_finite`,
-`isOfFinOrder_of_finite` and `orderOf_pos` under `[Finite G]`, `inv_eq_pow_orderOf_sub_one`),
-`STYLE.md` with **Learned
-building §4** (the `[Finite G]` rule, `open Classical in` wherever `Nat.find` appears), and
-§1–§4 in full before writing. The §5 hazard named in the entry: the coercion `↥H` of a subgroup
-to a type, tested at the first extract. The §5 examples by the running-examples table: the
-rotations `{r i}` of `Dₙ`, `⟨2⟩ = {0, 2, 4}` in `ZMod 6`, `nℤ` in `ℤ`; `center S₃ = ⊥` by
-`decide` (no `Fintype` on `Equiv.Perm (Fin 3)`: state it over `D₃` or as a `∀` the student
-proves), `center D₄ = {𝟙, r 2}`, `center ℤ = ⊤`; `zpowers 1 = ⊤` in `ℤ` and `ZMod n`. The
-goal moves to §5's last concept; `ExtraCredit.lean` stays the root's last import. After §5, run
-the student review with `scripts/review/` as §1–§4 did, and add §5's link to `links.yaml`
-(`programming/structures → grouptheory/subgroups`). Decisions 3–5 are taken; the owner may
-still overrule 3 and 5 before §6 and §8.
+§6, Homomorphisms, in a fresh session: "Do the next section in Group Theory, which is §6
+Homomorphisms". Read §6's entry (its device note changed after §5: no `CoeFun` instance; a
+homomorphism applies through a named function, and the session chooses the spelling first),
+§5's **As built** (the names as they are in Lean: `Subgroup` with `carrier`, `one_mem'`,
+`mul_mem'`, `inv_mem'`, `x ∈ H`, `H.one_mem`, `H.mul_mem ha hb`, `H.inv_mem ha`, `Subgroup.ext`,
+`H.carrier` as the type of a subgroup with `Group H.carrier`, `Subgroup.coe_mul`, `coe_one`,
+`coe_inv`, `coe_mem`, `card_le_card_group`; `⊤`, `⊥`, `≤` with `mem_top`, `mem_bot`, `bot_le`,
+`le_top`, `le_antisymm`; `pow_mem`, `zpow_mem`; `Subgroup.center G` with `mem_center_iff`,
+`center_eq_top_iff`, `center_eq_top`, `center_int`, `d3_center`, `d4_center`; `H ⊓ K` with
+`mem_inf`, `sInf S` with `mem_sInf`, `sInf_le`, `le_sInf`; `Subgroup.closure X` with
+`mem_closure`, `subset_closure`, `closure_le`; `Subgroup.zpowers g` with `mem_zpowers_iff`,
+`mem_zpowers`, `zpowers_eq_closure`; `IsCyclic G` with `IsCyclic.mul_comm`; the examples
+`DihedralGroup.rotations n`, `intMultiples n` with `mem_intMultiples`, `zmodSixEvens` with
+`mem_zmodSixEvens`, `zmod_six_two_zpow_mem`, `int_zpow_eq_mul`, `mem_zpowers_int`,
+`zpowers_eq_intMultiples`, `isCyclic_int`, `ZMod.val_one_pow`, `isCyclic_zmod`,
+`zpowers_two_zmod_six`; and `Subgroup.ofDiv` in Extra Credit), `STYLE.md` with **Learned
+building §5** (a coercion instance never reaches a later context; a coercion equation coerces
+both factors; `by decide` on a field with implicit binders; `decide` cannot see inside a `def`
+subgroup), and §1–§5 in full before writing. The §6 examples by the running-examples table: the
+reduction `ZMod 6 →* ZMod 2`, the reduction `ℤ →* ZMod n` (the cheaper route is `k ↦ 1 ^ k` by
+`zpow_add`, with `ZMod.val_one_pow` already built for natural exponents), the orientation
+`Dₙ →* Bool`, `Prod.fst`; `ZMod 2 ≃* Bool` from `zmodTwoEquivBool` and `zmodTwoEquivBool_mul`;
+`DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` by `decide`; `V₄` not isomorphic to `ZMod 4`; the kernels
+`⟨2⟩ = zmodSixEvens`, `nℤ = intMultiples n`, the rotations. The goal moves to §6's last concept;
+`ExtraCredit.lean` stays the root's last import and now imports `Subgroups`. After §6, run the
+student review with `scripts/review/` as §1–§5 did (the §5 review's findings are under §5's
+**As built**). Decision 3 is taken (`MonoidHom`); the owner may still overrule 3 and 5 before §6
+and §8.
 
-The previous next step, kept for the record: §4, Powers and the Order of an Element, in a fresh
-session: "Do the next section in Group Theory, which is §4 Powers and the Order of an
-Element". Read §4's entry, §3's **As built**
-(the running examples as they are named in Lean: `ZMod n` with `ZMod.val_mul`, `ZMod.ext` and
-`card_zmod`; `rot3` and `reflect3` in `Equiv.Perm (Fin 3)`; `CommGroup` with `mul_comm`,
-`mul_left_comm` and `mul_right_comm`; `prod_mul_def`; `DihedralGroup n` with `r`, `sr`,
-`card_dihedral`, `decide` reaching `D₄` through its `Fintype`), **The fence**'s results under
-**Before §1** (`zpow_add` sized at five problems: `zpow_add_one` by `cases` on `ℤ` with `show`
-on the definitional equations, which the `show` linter will refuse, so write them as `rfl`
-terms or `change`; `Int.induction_on`'s cases `zero`, `succ`, `pred`; the pigeonhole problem
-§1 left for §4), `STYLE.md` with **Learned building §3**, `plans/STUDENT_BACKGROUND.md`, and
-§1–§3 in full before writing. The §4 examples by the running-examples table: `rot3 ^ 3 = 𝟙`
-and `reflect3 ^ 2 = 𝟙` by `decide`, `(1 : ℤ) ^ k = k`, `orderOf (2 : ZMod 6) = 3`,
-`orderOf (sr i) = 2` in `Dₙ`, `orderOf (1 : ℤ) = 0`. The goal moves to §4's last concept;
-`ExtraCredit.lean` stays the root's last import. After §4, run the student review with
-`scripts/review/` as §1–§3 did, and add §4's links to `links.yaml` (`naturals/addition` and
-`naturals/induction → grouptheory/natural_powers`). Decisions 3–5 are taken; the owner may
-still overrule 3 and 5 before §6 and §8.
+The previous next step, kept for the record: §5, Subgroups, in a fresh session: "Do the next
+section in Group Theory, which is §5 Subgroups". Read §5's entry, §4's **As built**, `STYLE.md`
+with **Learned building §4**, and §1–§4 in full before writing. The §5 hazard named in the
+entry: the coercion `↥H` of a subgroup to a type, tested at the first extract. The §5 examples by
+the running-examples table: the rotations `{r i}` of `Dₙ`, `⟨2⟩ = {0, 2, 4}` in `ZMod 6`, `nℤ` in
+`ℤ`; `center S₃ = ⊥` by `decide` (no `Fintype` on `Equiv.Perm (Fin 3)`: state it over `D₃` or as
+a `∀` the student proves), `center D₄ = {𝟙, r 2}`, `center ℤ = ⊤`; `zpowers 1 = ⊤` in `ℤ` and
+`ZMod n`. The goal moves to §5's last concept; `ExtraCredit.lean` stays the root's last import.
+After §5, run the student review with `scripts/review/` as §1–§4 did, and add §5's link to
+`links.yaml` (`programming/structures → grouptheory/subgroups`).
 
 ## The prompts that produced this plan
 

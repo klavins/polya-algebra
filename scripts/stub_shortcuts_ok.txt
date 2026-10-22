@@ -33,3 +33,13 @@ npow                 # pow_zero and pow_succ hold by definition (rfl), as the in
 int_pow              # int_three_pow_two is a decide in ℤ, the running example's power as a multiple
 zpow                 # zpow_natCast and zpow_negSucc hold by definition (rfl); int_two_zpow_neg_three is a decide in ℤ
 zpow_neg             # zpow_zero holds by definition (rfl); zpow_one is pow_one by unfolding; s3_zpow_check is a decide in S₃
+int_multiples        # mem_intMultiples holds by definition, the equation the description asks for; the subgroup is the lesson
+zmod_six_evens       # mem_zmodSixEvens holds by definition; the subgroup by decide is the lesson
+subgroup_as_type     # set_fintype_card_le_univ; the warm-up on a subgroup as a type, routed through Fintype.card_le_of_injective as the description says
+top_bot              # mem_top is trivial and mem_bot holds by definition; the two instances are the lesson
+subgroup_le          # le_top is the unfolding of the instance; the instance and le_antisymm are the lesson
+center               # mem_center_iff holds by definition; the definition is the lesson
+inf                  # mem_inf holds by definition; the instance and 2ℤ ⊓ 3ℤ = 6ℤ are the lesson
+s_inf                # mem_sInf holds by definition and sInf_le is its one-line unfolding; the instance and le_sInf are the lesson
+closure              # mem_closure holds by definition; subset_closure and closure_le are the lesson
+zpowers              # mem_zpowers_iff holds by definition; the subgroup is the lesson

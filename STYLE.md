@@ -164,8 +164,10 @@ places.
 2. **A device that cannot be separated from its mathematics is taught in a problem of its own,
    just before the problem that needs it**, and the plan names each: a class with its own
    notation (§2, the definition of `Group` itself); recursion for powers and `Int.induction_on`
-   (§4); a `Membership` instance and the coercion of a subgroup to a type (§5); `CoeFun` for
-   homomorphisms (§6); a `HasQuotient` instance (§7); `Quotient.lift₂` (§9); `extends SMul` and
+   (§4); a `Membership` instance for the student's structure (§5; the coercion of a subgroup
+   to a type is §1's `↥S`, written `H.carrier`, since a coercion instance never reaches a later
+   context, **Learned building §5**); a named application for homomorphisms (§6, for the same
+   reason); a `HasQuotient` instance (§7); `Quotient.lift₂` (§9); `extends SMul` and
    a type synonym with a copied instance (§11); `Finset.induction_on` (§12). A definition
    problem may carry the one Lean fact its shape needs, said in the description, and nothing
    more.
@@ -499,6 +501,60 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   verify at once: repair added instance", the `Pow G ℕ` instance (`instPowNatOfGroup`) not
   reaching the context in the first round although the reference's term names it, as §2's
   `Inv G` instance did not; the bundle holds the repaired preamble.
+
+## Learned building §5 (2026-10-21)
+
+- **A coercion instance never reaches a later problem's context.** Elaboration unfolds a
+  `CoeSort` or `CoeFun` instance on the spot, so no compiled term names it, the build's graph
+  carries no dependency on it, and the repair loop (which answers `failed to synthesize` and
+  `unknown identifier`) never sees the `type expected` it leaves behind: a problem-owned
+  `instance : CoeSort (Subgroup G) (Type u)` failed the next problem's statement `(a : H)` at the
+  first extract, exactly as polya-topology's given one did (Profinite Spaces §8). The rule is
+  theirs: spell the type out. **A subgroup as a type is `H.carrier`**, the set as a type of the
+  first section, through Mathlib's own `Set` coercion, which is in every context; the group
+  instance is `Group H.carrier`, the count `Fintype.card H.carrier`, and the prose says once that
+  Mathlib writes `↥H`. §6's homomorphisms must apply through a named function, not a `CoeFun`
+  instance, for the same reason.
+- **A coercion equation must coerce both factors**: `((a ∗ b : H.carrier) : G) = a ∗ b` elaborates
+  the right side as a product in `H.carrier` coerced afterwards, so it is `↑(a ∗ b) = ↑(a ∗ b)` and
+  a wrong instance passes it. Write `(a : G) ∗ (b : G)`; the spec battery caught it.
+- **`by decide` proves a structure field with implicit binders directly**: a tactic block is never
+  given implicit lambdas, so the goal of `mul_mem' := by decide` is the whole
+  `∀ {a b : ZMod 6}, a ∈ {0, 2, 4} → …`, which `Fintype.decidableForallFintype` decides, and
+  membership in a set literal `{0, 2, 4}` is decidable under the fence. A membership in a `def`
+  such as `zmodSixEvens` is not: rewrite with its `mem_` equation first, and state a later
+  `decide` over the set or the disjunction.
+- **A carrier written as `Set.range f` hands `intro ⟨k, hk⟩` a beta-redex**, `hk : (fun k => g ^ k) k
+  = a`, which `rw` cannot use; `zpowers` has carrier `{x | ∃ k : ℤ, g ^ k = x}` instead, and the
+  rotations keep `Set.range r` because `r` is a constructor, not a lambda.
+- **`decide` cannot see inside a `def` subgroup** (`failed to synthesize Decidable`): after
+  `apply Subgroup.ext`, `simp only [mem_center_iff, mem_bot]` rewrites `x ∈ center G` and
+  `x ∈ ⊥` under the `∀`, and `decide` runs through `D₃` and `D₄`; `intro x`, `rw`, `revert x`
+  would do the same, but `revert` is a tactic the student has not met and `simp only` is.
+- `Membership.mem` takes the collection first, `⟨fun H x => x ∈ H.carrier⟩`; a slug is snake_case,
+  so the problem for `sInf` is `s_inf`; a binder a proof uses only implicitly is `_`
+  (`fun _ hx _ hH => hH hx`), or the unused-variable linter fires; `Int.dvd_zero`, `Int.dvd_add`
+  and `Int.dvd_neg` make `nℤ` three one-liners, and `omega` decides `2 ∣ x ∧ 3 ∣ x ↔ 6 ∣ x`.
+- The `Membership` instance, the `Top`, `Bot`, `LE`, `Min` and `InfSet` instances and the
+  `Group H.carrier` instance all reached later contexts without a repair: a compiled term names
+  each of them.
+- **An equation stated "for later proofs to rewrite with" must be used by a later reference**, or
+  it is not in the later context: the `mem_` equations of `zpowers` and `closure` were stated and
+  never used, so `rw [Subgroup.mem_zpowers_iff]`, the move every earlier problem had trained,
+  failed in four problems. Route the next references through the equation (`mem_closure :=
+  Subgroup.mem_sInf` carries the previous problem's equation along too).
+- **The reviewers' findings, in order of frequency**: a context gap behind a trained habit or a
+  concept promise (the `mem_` equations above; the `LE` instance absent from `inf` while the
+  concept description promised a greatest lower bound; a numeral instance absent from
+  `rotations`), fixed by routing references through the equations and stating the promised facts
+  (`inf_le_left`, `inf_le_right`, `le_inf`); preambles handing over the witness, the lemma per step
+  or the tactic script, in ten problems, cut to the idea, two reviewers finding every problem of
+  their concept passed by transcription; a tactic the student had not met (`revert`) arriving in
+  new mathematics, replaced by `simp only`; `⊢` in an `at` clause in a reference; the first error
+  unsaid; a background class described rather than shown (`Min`, `InfSet`); a promise no exercise
+  kept (the centre as a measure of non-commutativity, the empty family), each fixed by a theorem
+  (`d4_center_ne_top`, `mem_sInf_pair`). No double teaching was found in any concept, and every
+  problem passed on the reviewers' first attempt.
 
 ## Checks over a bundle
 

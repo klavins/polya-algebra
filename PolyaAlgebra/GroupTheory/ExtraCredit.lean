@@ -8,7 +8,7 @@ import Mathlib.Algebra.Quotient         -- the ⧸ notation (HasQuotient)
 import Mathlib.Order.Notation           -- ⊤, ⊥, ⊓, ⊔ as classes
 import Mathlib.Data.Nat.Find            -- Nat.find
 import Mathlib.Data.Int.Init            -- Int.induction_on
-import PolyaAlgebra.GroupTheory.Groups
+import PolyaAlgebra.GroupTheory.Subgroups
 
 /-! @section Extra Credit -/
 
@@ -105,6 +105,54 @@ def intGroupLeft : Group ℤ :=
   Group.ofLeftAxioms (· + ·) 0 (- ·) Int.add_assoc Int.zero_add Int.add_left_neg
 
 theorem intGroupLeft_mul : intGroupLeft.mul 3 4 = 7 := rfl
+
+/-! @end -/
+
+/-!
+@concept subgroup_criterion
+@title The Subgroup Criterion
+@kind theorem
+
+A subset is a subgroup as soon as it is nonempty and contains `a ∗ b⁻¹` with any `a` and `b` it contains: one closure condition in place of three. Nothing later depends on it, but it is the test most books state, and proving it is an exercise in getting the neutral element and the inverses out of a single condition.
+-/
+
+/-!
+@problem subgroup_of_div
+@title A Subgroup From One Closure Condition
+@concept subgroup_criterion
+
+@preamble
+A nonempty subset `s` of `G` that contains `a ∗ b⁻¹` whenever it contains `a` and `b` is a subgroup. The one condition only ever produces elements of the form `a ∗ b⁻¹`, so the test is to recognize each of `𝟙`, `a⁻¹` and `a ∗ b` as such a product of two elements already in `s`, through a law of the second section read as an equation between the two; the nonemptiness supplies the first element to start from, and each step uses the one before it. Mathlib's `Subgroup.ofDiv` is the construction; the two theorems before it carry the first two steps, so that each proof stays short, and the third step uses the second. The context holds `mul_inv_cancel`, `one_mul` and `inv_inv`.
+@description
+Show from the two hypotheses that `𝟙 ∈ s`, and that `a⁻¹ ∈ s` for every `a ∈ s`; then define `Subgroup.ofDiv s hne hs`, the subgroup with carrier `s`.
+-/
+
+theorem one_mem_of_div {G : Type u} [Group G] {s : Set G} (hne : ∃ x, x ∈ s)
+    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) : 𝟙 ∈ s := by
+  obtain ⟨x, hx⟩ := hne
+  rw [← mul_inv_cancel x]
+  exact hs x x hx hx
+
+theorem inv_mem_of_div {G : Type u} [Group G] {s : Set G} (hne : ∃ x, x ∈ s)
+    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) {a : G} (ha : a ∈ s) : a⁻¹ ∈ s := by
+  rw [← one_mul a⁻¹]
+  exact hs 𝟙 a (one_mem_of_div hne hs) ha
+
+def Subgroup.ofDiv {G : Type u} [Group G] (s : Set G) (hne : ∃ x, x ∈ s)
+    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) : Subgroup G where
+  carrier := s
+  one_mem' := one_mem_of_div hne hs
+  mul_mem' := by
+    intro a b ha hb
+    rw [← inv_inv b]
+    exact hs a b⁻¹ ha (inv_mem_of_div hne hs hb)
+  inv_mem' := by
+    intro a ha
+    exact inv_mem_of_div hne hs ha
+
+/-- @spec -/
+example {G : Type u} [Group G] (s : Set G) (hne : ∃ x, x ∈ s)
+    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) : (Subgroup.ofDiv s hne hs).carrier = s := rfl
 
 /-! @end -/
 

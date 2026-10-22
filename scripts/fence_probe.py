@@ -50,6 +50,11 @@ UNKNOWN = """
     pow_orderOf_eq_one orderOf_le_of_pow_eq_one orderOf_pos_iff orderOf_eq_iff pow_mod_orderOf
     orderOf_dvd_iff_pow_eq_one orderOf_one orderOf_eq_one_iff isOfFinOrder_of_finite orderOf_pos
     Fintype.exists_ne_map_eq_of_card_lt Monoid.npow Monoid.Pow
+    Subgroup.ext Subgroup.one_mem Subgroup.mul_mem Subgroup.inv_mem Subgroup.mem_top Subgroup.mem_bot
+    Subgroup.mem_inf Subgroup.mem_sInf Subgroup.mem_closure Subgroup.subset_closure Subgroup.closure_le
+    Subgroup.mem_zpowers_iff Subgroup.mem_zpowers Subgroup.zpowers_eq_closure Subgroup.mem_center_iff
+    Subgroup.center_eq_top Subgroup.ofDiv Subgroup.pow_mem Subgroup.zpow_mem Subgroup.coe_mul
+    Subgroup.coe_one Subgroup.coe_inv Subgroup.card_le_card_group IsCyclic.commGroup
 """.split()
 
 # the tools: every one of these must be known under the fence
@@ -85,6 +90,10 @@ KNOWN = """
     Nat.mul_add_one Nat.lt_or_gt_of_ne Nat.not_le not_forall Classical.not_imp dif_pos dif_neg
     Int.add_sub_assoc Int.sub_add_cancel Int.sub_eq_add_neg Nat.dvd_of_mod_eq_zero Nat.pos_of_ne_zero
     Nat.mod_zero Finite.exists_equiv_fin Nat.decidableBallLT Int.instNatPow instPowNat
+    Membership CoeSort LE InfSet sInf Set.mem_univ Set.mem_singleton Set.mem_singleton_iff
+    Set.mem_insert_iff Set.decidableSetOf Subtype.val Subtype.fintype Fintype.card_subtype_le
+    Int.dvd_zero Int.dvd_add Int.dvd_neg Int.one_dvd Int.mul_add Int.mul_sub Int.mul_one Int.mul_zero
+    Int.one_mul Nat.zero_mod
 """.split()
 
 # instances: `#synth` lines that must fail (`-`) or succeed (`+`)
@@ -106,6 +115,8 @@ SYNTH = [
     "- Pow (Equiv.Perm (Fin 3)) ℤ",
     "- Pow ℤ ℤ",
     "+ Pow ℤ ℕ",
+    "+ Decidable ((2 : Fin 6) ∈ ({0, 2, 4} : Set (Fin 6)))",
+    "+ Decidable (∀ x : Fin 6, x ∈ ({0, 2, 4} : Set (Fin 6)) → x ≠ 1)",
 ]
 
 
