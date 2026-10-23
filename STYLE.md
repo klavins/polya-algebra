@@ -17,7 +17,7 @@ that touches algebra. Under the fence the name `Group` must be an unknown identi
 it `Monoid`, `MonoidHom`, `Subgroup`, `ZMod`, `DihedralGroup`, `orderOf`, `MulAction` and the
 rest of Mathlib's group theory. What the fence supplies is the language the subject is written
 in: sets, functions and equivalences, finite types and their cardinalities, setoids and
-quotients, `Nat.find`, induction on `ℤ`, and the notation classes `Inv`, `Pow` and `SMul`,
+quotients, `Nat.find`, induction on `ℤ`, and the notation classes `Mul`, `One`, `Inv`, `Pow` and `SMul`,
 which carry no algebra. Core Lean supplies the arithmetic: `ℤ`, `%`, `Nat.gcd`, `Nat.Coprime`,
 `omega` and `decide`.
 
@@ -70,8 +70,9 @@ Two things follow from the rule being about what is taught, not about Mathlib.
 ## Every new structure is the student's to define
 
 Every algebraic notion this repository introduces is defined by the student, as a problem with
-a `@spec`, before anything is proved about it: `Group` and `CommGroup`, the examples (`ZMod n`,
-the symmetric and dihedral groups, the product), powers and `orderOf`, `Subgroup`, `closure`
+a `@spec`, before anything is proved about it: `Group` and `CommGroup` with their additive twins
+`AddGroup` and `AddCommGroup`, the examples (`ZMod n`, the symmetric and dihedral groups, the
+product), powers and multiples, `orderOf`, `Subgroup` and `AddSubgroup`, `closure`
 and `zpowers`, `IsCyclic`, homomorphisms and isomorphisms, kernels and images, cosets, the
 coset relation, `G ⧸ H`, `index`, `Nat.Prime`, `Subgroup.Normal`, the quotient group,
 `MulAction`, orbits, stabilizers, `ConjAct`, `IsPGroup`. The owner's decision of 2026-10-21:
@@ -115,16 +116,43 @@ problem (the skill's rule 7).
 
 ## Notation and names
 
-**The group operation has its own symbol.** The class is `class Group (G : Type u)` with the
-data fields `mul`, `one` and `inv` (an `Inv G` instance given beside it), the notations `a ∗ b` (`infixl:70`, typed `\ast`) and `𝟙` (typed
-`\b1`), and the five equations of Milne's Definition 1.1. The reason is the examples: a group
-is a set with *some* operation, and `ℤ` under addition, `ZMod n` under addition modulo `n`,
-`Sₙ` under composition and `Dₙ` under its table are instances of one class, each with `a ∗ b`
-meaning that group's operation, `(3 : ℤ) ∗ 4 = 7` by `rfl`. Mathlib's `*` and `1` cannot carry
-this (`Mul ℤ` is multiplication, `One ℤ` the integer `1`); Mathlib keeps a second additive
-hierarchy and the wrapper `Multiplicative` to avoid it, an API choice the owner has ruled out
-(the plan's Decision 4). The prose says once, in the section that defines the class, that
-Mathlib writes `a * b` and `1`.
+**The group operation is `*`, the neutral element `1`, the inverse `a⁻¹`: Mathlib's symbols; an
+additive group writes `+`, `0` and `-a`.** The class is `class Group (G : Type u)` with the data
+fields `mul`, `one` and `inv` and the five equations of Milne's Definition 1.1; the symbols reach
+it through the instances `Group.toMul`, `Group.toOne` and `Group.toInv` of the notation classes
+`Mul`, `One` and `Inv`, the targets of a problem of their own (`group_notation`). A type that
+already carries `*` or `1` with another meaning cannot be a multiplicative group, and `ℤ` carries
+both, so the plus-like examples are the student's `AddGroup`, the same class under additive
+names (`add`, `zero`, `neg`; `add_assoc`, `zero_add`, `add_zero`, `neg_add_cancel`,
+`add_neg_cancel`), with `AddGroup.toAdd`, `AddGroup.toZero` and `AddGroup.toNeg`: `AddGroup ℤ`
+from the integers' own operations and the five core laws, `AddGroup (ZMod n)` from the student's
+laws of addition modulo `n`, and `AddGroup Bool` with `xor`, `true + true = false` and
+`0 = false`. Because the instance's `+` is the type's own, every law reaches `3 + x` as written,
+and `omega` and `decide` work on it unchanged. `Unit`, `Sₙ`, `Dₙ` (table `r (i + j)`,
+`sr (j + -i)`), products and subgroups are multiplicative; a product of additive groups is
+additive. (The plan's Decision 4, taken 2026-10-23 after the wrapper `Multiplicative` of
+2026-10-22 proved cumbersome in the examples.)
+
+**Every general definition and theorem carries `@[to_additive NAME]`**, which makes its additive
+copy: `mul_left_cancel` gives `add_left_cancel`, `g ^ n` gives the multiple `n • a`, `orderOf`
+gives `addOrderOf`, `Subgroup.zpowers` gives `AddSubgroup.zmultiples`. Write the name out, in
+full below `GroupTheory` (`@[to_additive AddSubgroup.add_mem]`): the publisher's closure finds a
+declaration only by a name the source writes, and Lean's own translation is sometimes not
+Mathlib's (`mul_inv_rev` would be `add_neg_rev`, Mathlib's `neg_add_rev`; `orderOf_eq_one_iff`
+would be `addOrderOf_eq_zero_iff`, reading the number `1` as the identity). Each section file
+sets `set_option linter.translateGenerateName false` after `namespace GroupTheory`, so that a
+written name equal to the generated one is not a warning. `lake env lean
+scripts/additive_names.lean` prints every pair Lean holds, and `scripts/explicit_additive_names.py`
+writes them into bare marks; run both after adding marks, and compare the pairs before and after.
+`to_additive` cannot make a class or a structure, nor a definition by recursion (the copy's
+equation lemmas do not match), so **each such notion has an additive twin the student writes**
+as a short problem right after the original: `AddGroup`, `AddCommGroup` (inside `comm_group`),
+`AddGroup.nsmul` with `SMul ℕ A`, `AddGroup.zsmul` with `SMul ℤ A`, `AddSubgroup`; after the
+problem block, one line per pair, `attribute [to_additive existing AddGroup] Group`, with the
+twin named in the brackets so that the closure pulls it wherever the line replays. Instances
+carry names (`Prod.instGroup`, `Subgroup.instMembership`), since a mark on an anonymous
+instance cannot be written. A map from a multiplicative group to an additive one has no class,
+and the subject avoids it: the parity maps go to `Equiv.Perm (Fin 2)`.
 
 **Names follow Mathlib** all the same, so that the arrival at Mathlib's algebra changes the
 imports and not the vocabulary: `mul_assoc`, `one_mul`, `mul_one`, `inv_mul_cancel`,
@@ -163,8 +191,9 @@ places.
    cosets, the quotient type is old.
 2. **A device that cannot be separated from its mathematics is taught in a problem of its own,
    just before the problem that needs it**, and the plan names each: a class with its own
-   notation (§2, the definition of `Group` itself); recursion for powers and `Int.induction_on`
-   (§4); a `Membership` instance for the student's structure (§5; the coercion of a subgroup
+   notation (§2, the definition of `Group` itself), the additive class and the mark
+   `@[to_additive]` (§2, `add_group` and `to_additive`, the mark used at once through its copy on
+   `ℤ`); recursion for powers and `Int.induction_on` (§4), and the multiple `n • a` (§4, `nsmul`); a `Membership` instance for the student's structure (§5; the coercion of a subgroup
    to a type is §1's `↥S`, written `H.carrier`, since a coercion instance never reaches a later
    context, **Learned building §5**); a named application for homomorphisms (§6, for the same
    reason); a `HasQuotient` instance (§7); `Quotient.lift₂` (§9); `extends SMul` and
@@ -330,7 +359,9 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
 - **A `class … extends …` is not shape-checked**: the publisher hands the student the head with
   an empty body and skips the field check (`checkspec._lift_structure`), so the student's class
   carries `inv` as a plain field and the `Inv G` instance is a `@given`. (§3's `CommGroup` extends
-  `Group` all the same, with an authored spec as the whole check; see below.) The same holds for a
+  `Group` all the same, with an authored spec as the whole check; see below. Since 2026-10-22 the
+  `Mul G`, `One G` and `Inv G` instances are the targets of `group_notation`, so a student writes
+  them.) The same holds for a
   structure with binder-style fields `(a : G)` before the colon: write fields as `name : type`.
 - **A notation command cannot sit inside a problem block** (the extractor refuses it as a
   target). It goes after the block with a docstring, as polya-basic writes `''`, and is
@@ -340,18 +371,18 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
 - **A class spec in the form `have h := @Group.law G _ a` then `grind`** accepts a field stated
   with explicit or implicit binders and in either orientation (`a = mul a one` for `mul_one`),
   and still rejects a wrong equation; `by apply Group.law` rejected the reversed orientation,
-  which the §2 reviewer found to be the natural transcription of a chain `𝟙 ∗ a = a = a ∗ 𝟙`.
+  which the §2 reviewer found to be the natural transcription of a chain `1 * a = a = a * 1`.
   So the preamble states each law once, one orientation each, and the description gives the
-  naming rule (`one_mul` for `𝟙 ∗ a = a`).
+  naming rule (`one_mul` for `1 * a = a`).
 - **An instance target has no mechanical check**; its `@spec` is a `decide` on the values that
-  pin the operation (`true ∗ true = false ∧ … ∧ (𝟙 : Bool) = false`), which rejects another
+  pin the operation (`true * true = false ∧ … ∧ (1 : Bool) = false`), which rejects another
   group on the same type (`Bool` under `==`) and accepts every spelling of the intended one.
 - **A hypothesis named like a theorem of the subject pulls that theorem**: the closure's token
   scan resolved a binder `one_mul` to `GroupTheory.one_mul` and dragged the group layer into a
   context that needed none of it (a "did not verify at once" warning). Theorems about a bare
   operation name their data `op`, `e`, `inv` and their laws `assoc`, `e_op`, `inv_op`.
 - `omega` sees through a field defined as `(· + ·)` once the elements are introduced, so the
-  `ℤ` instance's laws close by the five core names or by `intro; omega`; `(3 : ℤ) ∗ 4 = 7`,
+  `ℤ` instance's laws close by the five core names or by `intro; omega`; `(3 : ℤ) * 4 = 7`,
   `(3 : ℤ)⁻¹ = -3` and an `↔` whose sides compute to the same thing close by `rfl` or `decide`.
 - `Fintype.card Bool = 2` closes by `decide`, and `decide` proves every law of `Bool` under
   `xor` and of `Unit`.
@@ -361,12 +392,12 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   the prose names (so the closure carries it) or the description says the context does not
   hold it. A problem on a running example whose prose mentions a theorem of the example's
   instance (`int_mul_eq_add`) must use it in the reference too.
-- A preamble that gives the steps in order ("write `b` as `b ∗ 𝟙`, replace that `𝟙` by
-  `a ∗ c`, and reassociate") makes the exercise a transcription; three were cut to the idea.
+- A preamble that gives the steps in order ("write `b` as `b * 1`, replace that `1` by
+  `a * c`, and reassociate") makes the exercise a transcription; three were cut to the idea.
   A title must be true as a statement: "Self-Inverse Elements Commute" is false of two
   elements; "A Group of Self-Inverse Elements is Commutative" is the theorem.
 - A hypothesis drawn by `intro` from `Function.Injective (fun a => a⁻¹)` or from
-  `Function.Bijective (fun x => a ∗ x)` shows the function applied, `(fun a => a⁻¹) a`; `exact`
+  `Function.Bijective (fun x => a * x)` shows the function applied, `(fun a => a⁻¹) a`; `exact`
   sees through it and `rw` does not, the `∘` gotcha of §1 again, said where it recurs.
 
 ## Learned building §3 (2026-10-21)
@@ -427,7 +458,7 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   tactic script, cut to the idea or to the reason the obvious route fails; a term-mode shape
   never met (`exact congrArg r (by rw …)`) over variables `<;>` left unnamed, replaced by
   `rfl` equations given in the context and `rw`; and prose that read the table in written
-  order against the subject's own convention that in `f ∗ g` the right factor acts first.
+  order against the subject's own convention that in `f * g` the right factor acts first.
   Say the first error a student meets (`decide` on a goal with a free variable) before the
   deeper reason; say the direction a Mathlib function runs (`Fintype.ofEquiv` takes the
   equivalence out of the finite type) the first time `.symm` is needed; and say once that a
@@ -461,14 +492,14 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   equations `Int.ofNat k + 1 = Int.ofNat (k + 1)`, `Int.negSucc 0 + 1 = 0`,
   `Int.negSucc (j + 1) + 1 = Int.negSucc j`, `-(Int.ofNat (k + 1)) = Int.negSucc k` and
   `-(Int.negSucc k) = Int.ofNat (k + 1)` all hold by `rfl`, and `change (g ^ (j + 1))⁻¹ = (g ^
-  (j + 1 + 1))⁻¹ ∗ g` puts a `zpow` goal into the form the laws rewrite. A `cases` on an integer
+  (j + 1 + 1))⁻¹ * g` puts a `zpow` goal into the form the laws rewrite. A `cases` on an integer
   opens into a `cases` on the natural number inside it.
 - **`Int.induction_on` is Mathlib's `induction_eliminator` for `ℤ`**, so a plain `induction n
   with | zero | succ k ih | pred k ih` uses it with no `using`; the goals read `↑k + 1` and
   `-↑k - 1`.
-- **`g ^ 2` is `(𝟙 ∗ g) ∗ g` by definition, not `g ∗ g`**: an `exact mul_inv_cancel (sr i)`
-  against `sr i ^ 2 = 𝟙` needs `rw [pow_succ, pow_one]` first. `cases h` on `h : sr i = 𝟙`
-  closes a goal, since `𝟙` unfolds to the other constructor `r 𝟙`.
+- **`g ^ 2` is `(1 * g) * g` by definition, not `g * g`**: an `exact mul_inv_cancel (sr i)`
+  against `sr i ^ 2 = 1` needs `rw [pow_succ, pow_one]` first. `cases h` on `h : sr i = 1`
+  closes a goal, since `1` unfolds to the other constructor `r 1`.
 - **`not_imp` is ambiguous under the fence** (`_root_.not_imp` and `Classical.not_imp`); the
   reference writes `Classical.not_imp`.
 - **Slugs are snake_case**: the extractor refuses `@problem orderOf` ("needs a slug").
@@ -515,9 +546,9 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   instance is `Group H.carrier`, the count `Fintype.card H.carrier`, and the prose says once that
   Mathlib writes `↥H`. §6's homomorphisms must apply through a named function, not a `CoeFun`
   instance, for the same reason.
-- **A coercion equation must coerce both factors**: `((a ∗ b : H.carrier) : G) = a ∗ b` elaborates
-  the right side as a product in `H.carrier` coerced afterwards, so it is `↑(a ∗ b) = ↑(a ∗ b)` and
-  a wrong instance passes it. Write `(a : G) ∗ (b : G)`; the spec battery caught it.
+- **A coercion equation must coerce both factors**: `((a * b : H.carrier) : G) = a * b` elaborates
+  the right side as a product in `H.carrier` coerced afterwards, so it is `↑(a * b) = ↑(a * b)` and
+  a wrong instance passes it. Write `(a : G) * (b : G)`; the spec battery caught it.
 - **`by decide` proves a structure field with implicit binders directly**: a tactic block is never
   given implicit lambdas, so the goal of `mul_mem' := by decide` is the whole
   `∀ {a b : ZMod 6}, a ∈ {0, 2, 4} → …`, which `Fintype.decidableForallFintype` decides, and
@@ -555,6 +586,110 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   kept (the centre as a measure of non-commutativity, the empty family), each fixed by a theorem
   (`d4_center_ne_top`, `mem_sInf_pair`). No double teaching was found in any concept, and every
   problem passed on the reviewers' first attempt.
+
+## Learned refactoring to Mathlib's symbols (2026-10-22)
+
+The wrapper `Multiplicative` this section describes was replaced on 2026-10-23 by the student's
+`AddGroup` (**Learned refactoring to additive groups**); its findings on `Prod.instMul`, the
+numeral `0` of `ZMod n`, `@[default_instance high]` and the reviewers stand.
+
+
+- **A law of the wrapped instance is the core law applied to the unwrapped elements**:
+  `mul_assoc a b c := Int.add_assoc (toAdd a) (toAdd b) (toAdd c)` is accepted as it stands,
+  since `ofAdd` and `toAdd` are the identity under `def Multiplicative (α : Type u) := α`, and
+  the same term proves the same law for `Multiplicative (ZMod n)` from `ZMod.add_assoc`. The
+  reverse direction is as cheap: `inv_inv (ofAdd a)` proves `-(-a) = a` on `ZMod n` by `exact`,
+  which is how the dihedral table gets its residue arithmetic without a second proof.
+- **The wrapper is opaque to `omega`, `decide` is not**: `ofAdd 3 * ofAdd 4 = ofAdd 7` holds by
+  `rfl` and by `decide` (with `DecidableEq (Multiplicative α)` by `inferInstanceAs`), but
+  `omega` sees no integers until `ofAdd_add`, `ofAdd_neg`, read right to left, and `ofAdd_inj`
+  have turned the statement into one about `ℤ`; `rw [h]` on `x = ofAdd 4` leaves
+  `ofAdd 3 * ofAdd 4 = ofAdd 7` for an explicit `rfl`, since `rw`'s closing `rfl` is reducible
+  only. A `change` restates a wrapped goal in the form a lemma about values reads
+  (`zmod_cyclic`).
+- **The copy carries nothing across by itself**: `DecidableEq`, `Fintype` (`Fintype
+  (Multiplicative α)` by `inferInstanceAs`, with `Fintype.card_multiplicative` by `rfl`) and a
+  `Fintype` for a product of copies (`Fintype.ofEquiv` from `Fin 6`) are each supplied once;
+  numerals are deliberately not, so `(3 : Multiplicative ℤ)` is an error and the two ones cannot
+  be confused. An equivalence `Fin 6 ≃ ZMod 2 × ZMod 3` is accepted at the type
+  `Fin 6 ≃ Multiplicative (ZMod 2) × Multiplicative (ZMod 3)` by definitional unfolding.
+- **`Prod.instMul` of the fence wins the elaboration of `*` on `G × H`**, and the student's
+  `Group (G × H)` with a componentwise `mul` is definitionally the same instance, so `rw
+  [mul_assoc]`, `mul_assoc a b c` and `rfl` all accept it; nothing to do but know it.
+- **The numeral `0` of `ZMod n` has value `0 % n`**, not `0`, so the additive laws take
+  `ZMod.val_zero : (0 : ZMod n).val = 0 % n` as a given and `Nat.zero_mod` after it; the old
+  trick of building the neutral element as `⟨0, _⟩` is gone, since `1 = ofAdd 0` must be the
+  numeral.
+- **`@[default_instance high]` on `Pow G ℕ` is still needed**: a numeral exponent as in
+  `rot3 ^ 3` is read through the default instances alone, whatever the base type.
+- **`Bool`'s `1` is `false`** under the group instance, legal because the fence gives `Bool` no
+  `One`, and said in a sentence at `bool_xor_group`; `(1 : Bool) = false` is `rfl`.
+- **The extract needs a publisher newer than v0.6.0.** Its repair pulled an instance only of
+  the class Lean names, and Lean names `HMul`, `HPow`, `OfNat` and `Decidable` for a missing
+  `*`, `^`, `1` and `decide`, while the author declares `Mul`, `Pow`, `One` and `DecidableEq`:
+  ten problems failed, every one a spec or a pulled law using `*` or `1` on a type whose
+  derived instance had not been pulled. The fix (`closure._feeders_of`, `_rank`,
+  `_pull_for_binders` in polya-publisher, with a test) makes the repair accept the feeding
+  class and pull the binder's concrete instance (`Group Bool` for `[Group G] : Mul G`). Until
+  the owner releases it and the lakefile's `rev` moves, `lake exe polya extract` runs v0.6.0
+  and fails those ten; the `polya` shim over the sibling checkout passes, 108 problems.
+- **The reviewers' findings after the refactor**, one agent per changed concept: a description
+  that promises a check ("check that `ofAdd 3 * ofAdd 4 = ofAdd 7`") must have a theorem in the
+  stub, since the spec is invisible to the student, and the prose must carry the ascription
+  `(3 : ℤ)` without which numerals default to `ℕ`; an `↔` that holds "by definition" closes by
+  `Iff.rfl`, not `rfl`, and the prose says so; a theorem with no explicit element, `inv_one`,
+  applied through the wrapper needs its group named, `inv_one (G := Multiplicative (ZMod n))`,
+  a device said where it bites; a preamble that prints an instance body or the first of three
+  parallel answers makes a transcription, so the pattern is shown on an earlier type (`Add
+  Vec3`) instead; a reference that closes a case by `exact congrArg r (…)` is a term shape the
+  student does not find, where `rw` with the table's equation and the law is, and the context
+  list then names the equations; a prose claim about an earlier concept ("the product concept
+  named `ZMod 2 × ZMod 2` the Klein four-group") must be true of an earlier problem.
+- **The §2 refactor touched 35 of 79 problems** and added four (`group_notation`,
+  `multiplicative`, `zmod_add_laws`, `zmod_add_rearrange`); every file compiled on the first
+  attempt after the block replacements, the budgets needing six trims of a line or two.
+
+## Learned refactoring to additive groups (2026-10-23)
+
+- **A student `AddGroup ℤ` reaches the integers' own `+`.** With `add a b := a + b`, `zero := 0`,
+  `neg a := -a`, the generic `AddGroup.toAdd`, declared later than `Int.instAdd`, wins the
+  elaboration of `3 + x` inside the subject, and the two are equal at instance transparency, so
+  `rw [zero_add]` on `(0 : ℤ) + 3 = 3`, `add_left_cancel h` on `h : 3 + x = 3 + 4`, `omega` and
+  `decide` all work; so on `ZMod n` with its `OfNat` numerals, and `-(2 : ZMod 6)` by `decide`.
+  Under the fence alone `ℤ` has `SMul ℕ ℤ` (core's `Lean.Grind.NatModule.nsmul`) and `SMul ℤ ℤ`
+  (`instSMulOfMul`); inside the subject the student's `AddGroup.toSMul` and `AddGroup.toZSMul`
+  win the same way, with the same values (the fence probe records it).
+- **`to_additive` on the student's declarations**: it needs every multiplicative name in a
+  statement or proof to have a translation, so the class, its notation instances and each
+  structure are paired by hand first, and every theorem a marked proof uses must carry its own
+  mark; a theorem with no group in it (`injective_of_left_inverse`) is used as it stands. It
+  cannot translate a definition without a value (a class or structure: "cannot translate
+  `Group` because it has no value") nor a recursive `def` ("do not generate the same number of
+  equation lemmas"), which is why the twins are the student's. `open Classical in` goes above
+  the mark, `@[to_additive]` directly above the declaration; `@[to_additive X,
+  default_instance high]` does not carry the default mark to the copy, and the `SMul` instances
+  need none (`3 • (2 : ℤ) = 6` elaborates).
+- **The definitions of powers take the exponent first** (`Group.npow n g`, Mathlib's `npowRec`
+  order), so that the twin `AddGroup.nsmul n a` matches `SMul.smul`'s order and the pairing needs
+  no `reorder`; the `Pow` instance swaps the arguments.
+- **A mark needs its twin to exist**, so a theorem about a new definition cannot sit in the
+  definition's own problem when the twin comes after it: `pow_zero` and `pow_succ` moved from
+  `npow` into `pow_one`, `zpow_natCast` and `zpow_negSucc` from `zpow` into `zpow_neg`.
+- **The publisher's closure needed to know the marks.** Extracting with the pinned v0.6.1 failed
+  44 of 110 problems in two ways: a context held a marked theorem without the line pairing
+  `Group` with `AddGroup` ("`to_additive` cannot translate `Group`"), because the line names only
+  `Group`; and a problem citing a copy (`neg_add_rev`, `zero_nsmul`) found no source declaration
+  of that name. The change prepared for the owner, in `polya/closure.py`: a declaration under
+  `@[to_additive NAME]` is indexed under `NAME` too, and the name in a `[to_additive existing
+  NAME]` bracket counts as a mention of the attribute line, so that replaying it pulls the twin.
+  With it the subject extracts with 110 problems and 0 errors, and the publisher's suite passes.
+- A concrete example of an abstract notion with no additive meaning is replaced, not translated:
+  the centre of an additive group is the whole group, so `center (Multiplicative ℤ) = ⊤` became
+  `center (DihedralGroup 2) = ⊤`.
+- **The refactor touched 26 of 108 problems' statements** and every general theorem's mark;
+  removed `multiplicative`, `multiplicative_fintype` and `zmod_add_rearrange`, and added
+  `add_group`, `to_additive`, `nsmul`, `zsmul` and `add_subgroup`: 110 problems. Every section
+  compiled at its first build after the edits; the budgets needed nine trims.
 
 ## Checks over a bundle
 

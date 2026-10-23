@@ -55,6 +55,10 @@ UNKNOWN = """
     Subgroup.mem_zpowers_iff Subgroup.mem_zpowers Subgroup.zpowers_eq_closure Subgroup.mem_center_iff
     Subgroup.center_eq_top Subgroup.ofDiv Subgroup.pow_mem Subgroup.zpow_mem Subgroup.coe_mul
     Subgroup.coe_one Subgroup.coe_inv Subgroup.card_le_card_group IsCyclic.commGroup
+    AddGroup AddCommGroup AddSubgroup AddSubgroup.zmultiples AddSubgroup.add_mem IsAddCyclic
+    addOrderOf IsOfFinAddOrder add_assoc zero_add add_zero neg_add_cancel add_neg_cancel
+    add_left_cancel neg_neg neg_zero neg_add_rev add_comm add_left_comm add_right_comm
+    eq_neg_add_iff_add_eq zero_nsmul succ_nsmul add_nsmul zero_zsmul add_zsmul natCast_zsmul
 """.split()
 
 # the tools: every one of these must be known under the fence
@@ -75,7 +79,7 @@ KNOWN = """
     Nat.find Nat.find_spec Nat.find_min' Nat.find_eq_iff Nat.find_min
     Int.induction_on Int.add_assoc Int.zero_add Int.add_zero Int.add_left_neg Int.add_right_neg
     Int.negSucc_eq Int.emod Int.toNat Int.emod_nonneg Int.emod_lt_of_pos Int.emod_emod_of_dvd
-    Inv Pow SMul NeZero Nat.pos_of_neZero
+    Mul One Zero Inv Add Neg Pow SMul NeZero Nat.pos_of_neZero
     Nat.mod_lt Nat.mod_eq_of_lt Nat.mod_add_mod Nat.add_mod_mod Nat.add_mod Nat.mod_self
     Nat.sub_add_cancel Nat.mod_add_div Nat.pow_dvd_pow Nat.mod_mod Nat.mod_two_eq_zero_or_one
     Nat.gcd Nat.gcd_dvd_left Nat.dvd_gcd Nat.Coprime Nat.coprime_iff_gcd_eq_one
@@ -106,6 +110,21 @@ SYNTH = [
     "- Inv (Fin 3 × Bool)",
     "- Fintype (Fin 2 × Fin 3)",
     "+ One ℤ",
+    "+ Mul ℤ",
+    "- Mul Bool",
+    "- One Bool",
+    "- Mul Unit",
+    "- One Unit",
+    "+ Add ℤ",
+    "+ Neg ℤ",
+    "- Add Bool",
+    "- Zero Bool",
+    "- Neg Bool",
+    # core's `Lean.Grind.NatModule.nsmul` and Mathlib's `instSMulOfMul`: `•` on ℤ under the fence
+    # alone; the student's `AddGroup.toSMul` and `AddGroup.toZSMul`, declared later, win inside
+    # the subject, and agree with them on every value
+    "+ SMul ℕ ℤ",
+    "+ SMul ℤ ℤ",
     "+ Fintype (Fin 4)",
     "+ Fintype Bool",
     "+ DecidableEq (Equiv.Perm (Fin 3))",

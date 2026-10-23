@@ -19,20 +19,19 @@ quotient_eq_iff_mod  # Quotient.eq
 to_fin               # a definition with a spec; Fin.ofNat, named in the description
 card_quotient_le     # Fintype.card_le_of_surjective with Quotient.mk_surjective
 bool_xor_group       # Fintype.card_bool; decide is the lesson, and the order of a group is defined here
-int_add_group        # the three theorems hold by definition (rfl); exact? finds a roundabout term for each
 neutral_unique       # eq_one_of_left_neutral is a one-line corollary of the problem's own mul_eq_left/mul_eq_right, by design
-int_group_of_left_axioms  # intGroupLeft_mul holds by definition (rfl); exact? finds a roundabout term
-zmod_group           # the three theorems hold by definition (rfl), as the integers' do
+int_group_of_left_axioms  # intGroupLeft_add holds by definition (rfl); exact? finds a roundabout term
+zmod_group           # zmod_neg_neg and zmod_neg_add_rev are the additive copies applied to residues, by design
 s3_not_comm          # rot3_reflect3_ne is a decide on two permutations of three points, by design
-prod_group           # prod_mul_def holds by definition (rfl); the product in ZMod 2 × ZMod 3 is a decide
+prod_group           # prod_mul_def holds by definition (rfl); the sum in ZMod 2 × ZMod 3 is a decide
 dihedral_mul         # d4_table is a decide on the table, the warm-up on reading it
 dihedral_group       # d4_not_comm is a decide in D₄, the running example's non-commutativity
 prod_fintype         # card_zmod_two_three is a count of six by labelling; exact? finds a roundabout term
-klein_four           # zmod_four_one_inv is a decide in ZMod 4, the contrast with V₄
-npow                 # pow_zero and pow_succ hold by definition (rfl), as the integers' equations do; s3_pow_check is a decide in S₃
-int_pow              # int_three_pow_two is a decide in ℤ, the running example's power as a multiple
-zpow                 # zpow_natCast and zpow_negSucc hold by definition (rfl); int_two_zpow_neg_three is a decide in ℤ
-zpow_neg             # zpow_zero holds by definition (rfl); zpow_one is pow_one by unfolding; s3_zpow_check is a decide in S₃
+klein_four           # zmod_four_neg_one is a decide in ZMod 4, the contrast with V₄
+npow                 # s3_pow_check is a decide in S₃
+pow_one              # pow_zero and pow_succ hold by definition (rfl), the equations later proofs rewrite with
+zpow                 # s3_zpow_check is a decide in S₃
+zpow_neg             # zpow_natCast, zpow_negSucc and zpow_zero hold by definition (rfl); zpow_one is pow_one by unfolding
 int_multiples        # mem_intMultiples holds by definition, the equation the description asks for; the subgroup is the lesson
 zmod_six_evens       # mem_zmodSixEvens holds by definition; the subgroup by decide is the lesson
 subgroup_as_type     # set_fintype_card_le_univ; the warm-up on a subgroup as a type, routed through Fintype.card_le_of_injective as the description says
@@ -43,3 +42,9 @@ inf                  # mem_inf holds by definition; the instance and 2ℤ ⊓ 3�
 s_inf                # mem_sInf holds by definition and sInf_le is its one-line unfolding; the instance and le_sInf are the lesson
 closure              # mem_closure holds by definition; subset_closure and closure_le are the lesson
 zpowers              # mem_zpowers_iff holds by definition; the subgroup is the lesson
+group_notation       # the Mul/One/Inv instances: an instance's shape is not judged, `exact?` fills any; the `rfl` spec pins each to its Group field
+add_group            # the Add/Zero/Neg instances, as in group_notation: the `rfl` spec pins each to its AddGroup field
+to_additive          # int_add_add_neg_add_neg is the additive copy applied, which is the lesson
+self_inverse_comm    # bool_add_comm is the additive copy of the general fact applied to Bool, by design
+nsmul                # int_three_nsmul_two is a decide in ℤ, the multiple computed
+zsmul                # int_neg_three_zsmul_two is a decide in ℤ, the integer multiple computed

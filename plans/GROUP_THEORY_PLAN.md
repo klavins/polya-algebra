@@ -10,8 +10,19 @@ owes nothing to Mathlib's `ZMod`**, and that **`ℤ` itself is an example**, whi
 settle how the group operation is written (see **Decisions**, 4); then on the owner's call for
 **a Prerequisites section** that introduces, on mathematics the student already has, every
 Mathlib and Lean device the subject uses, so that **no problem introduces a Mathlib idea and a
-hard mathematical idea at once** (see **Design points**, the rule, and §1). Proposed, not
-decided: the open questions are under **Decisions**, each with a recommendation.
+hard mathematical idea at once** (see **Design points**, the rule, and §1); and on 2026-10-22
+on the owner's two points that **the symbols could be Mathlib's `*` and `1` through `Mul` and
+`One` instances, as `⁻¹` is through `Inv`**, which a probe answered (**Decisions**, 4, reopened),
+and that **the notation is introduced in a problem of its own** (**Decisions**, 9, and §2's
+**Fix**); and, the same day, on the owner's decision for **Mathlib's symbols**: `*`, `1` and
+`⁻¹` through `Mul`, `One` and `Inv` instances, the additive examples through the student's
+`Multiplicative`, and §2–§5 refactored to them at once (**Design points**, the symbols;
+**Decisions**, 4; each section's **As refactored**); and on 2026-10-23 on the owner's finding,
+after working the examples, that the wrapper is "super cumbersome": **the additive examples are
+the student's `AddGroup`, and every general theorem carries `@[to_additive]`**, with `Bool` under
+`xor` additive and the parity maps into `Equiv.Perm (Fin 2)` (**Spelling** under **The
+sections**; **Decisions**, 4; each section's second **As refactored**). Proposed, not decided:
+the open questions are under **Decisions**, each with a recommendation.
 
 Slug `grouptheory`, title *Group Theory*, modules under `PolyaAlgebra/GroupTheory/`, the first
 subject of this repository and the first algebra subject in the library. Two subjects follow it
@@ -119,11 +130,11 @@ list.
 | example | what it is in Lean | why it is here |
 |---|---|---|
 | the trivial group | `Unit` | the first instance; the subgroup `⊥`; the quotient `G ⧸ ⊤` |
-| the group of order two | `Bool` under `xor` | the second instance, closed by `decide`; the target of every "parity" homomorphism (rotation or reflection, even or odd); `ZMod 2 ≃* Bool` is the first isomorphism |
-| the integers | `ℤ` under addition, an instance of the student's class as it stands (Milne 1.3, `C∞`) | the infinite example: `𝟙` is `0` and `a⁻¹` is `-a`; an element of infinite order, so that `orderOf (1 : ℤ) = 0` means something; the subgroups `nℤ = zpowers n`; cosets of `2ℤ` are the evens and the odds; `ℤ ⧸ nℤ ≃* ZMod n` (1.44 a); the one group whose subgroups and quotients the student can list completely |
-| the integers mod `n` | the student's `ZMod n`, a structure holding a `val : ℕ` with `val < n`, the operation `(a + b) % n` (Milne 1.3, `Cₙ`; nothing of Mathlib's `ZMod`) | the commutative finite example; every cyclic group; subgroups `⟨d⟩` for `d ∣ n`; the reduction `ZMod 6 →* ZMod 2`; quotients `ZMod 6 ⧸ ⟨3⟩`; `ZMod 2 × ZMod 3 ≃* ZMod 6`; groups of prime order; `ZMod p × ZMod p` and `ZMod (p²)` at the goal |
-| the symmetric groups | `Equiv.Perm (Fin n)`, the student's instance (Milne 1.4, `Sₙ`); `S₃` with its rotation `r` and reflection `s` written out | the first non-commutative group; the smallest, `S₃`, with `r ∗ s ≠ s ∗ r` by `decide`; Cayley's theorem; the tautological action on `Fin n` |
-| the dihedral groups | the student's `DihedralGroup n`, an inductive with constructors `r i` and `sr i` over `ZMod n` and a four-line multiplication table (Milne 1.17, `Dₙ`; Mathlib's shape) | the geometric example, the symmetries of the `n`-gon: order `2n`; `⟨r⟩` normal of index two, `⟨s⟩` not normal (1.36 b); `D₄`'s centre `{𝟙, r²}`, its classes, its quotient by `⟨r²⟩` (1.49); a `p`-group with nontrivial centre; `D₃ ≃* S₃`; the action on the vertices with orbit–stabilizer `n · 2 = 2n` |
+| the group of order two | `Bool` under `xor`, an additive group with `true + true = false` and `0 = false` | the third instance, closed by `decide`; addition modulo two; `ZMod 2 ≃+ Bool` is the first isomorphism; the parity maps go to `Equiv.Perm (Fin 2)` instead, which is multiplicative |
+| the integers | `ℤ`, the student's `AddGroup ℤ` with the integers' own `+`, `0`, `-` (Milne 1.3, `C∞`) | the infinite example: an element of infinite order, so that `addOrderOf (1 : ℤ) = 0` means something; the subgroups `nℤ = zmultiples n`; cosets of `2ℤ` are the evens and the odds; `ℤ ⧸ nℤ ≃+ ZMod n` (1.44 a); the one group whose subgroups and quotients the student can list completely |
+| the integers mod `n` | the student's `ZMod n`, a structure holding a `val : ℕ` with `val < n`, with `+` and `-` as `(a + b) % n` and `(n - a) % n`, and `AddGroup (ZMod n)` from its laws (Milne 1.3, `Cₙ`; nothing of Mathlib's `ZMod` but its additive reading) | the commutative finite example; every cyclic group; subgroups `⟨d⟩` for `d ∣ n`; the reduction `ZMod 6 →* ZMod 2`; quotients `ZMod 6 ⧸ ⟨3⟩`; `ZMod 2 × ZMod 3 ≃* ZMod 6`; groups of prime order; `ZMod p × ZMod p` and `ZMod (p²)` at the goal |
+| the symmetric groups | `Equiv.Perm (Fin n)`, the student's instance (Milne 1.4, `Sₙ`); `S₃` with its rotation `r` and reflection `s` written out | the first non-commutative group; the smallest, `S₃`, with `r * s ≠ s * r` by `decide`; Cayley's theorem; the tautological action on `Fin n` |
+| the dihedral groups | the student's `DihedralGroup n`, an inductive with constructors `r i` and `sr i` over `ZMod n` and a four-line multiplication table (Milne 1.17, `Dₙ`; Mathlib's shape) | the geometric example, the symmetries of the `n`-gon: order `2n`; `⟨r⟩` normal of index two, `⟨s⟩` not normal (1.36 b); `D₄`'s centre `{1, r²}`, its classes, its quotient by `⟨r²⟩` (1.49); a `p`-group with nontrivial centre; `D₃ ≃* S₃`; the action on the vertices with orbit–stabilizer `n · 2 = 2n` |
 | the Klein four-group | `DihedralGroup 2`, which Milne calls `V₄` or `D₂`, isomorphic to `ZMod 2 × ZMod 2` | order 4 without an element of order 4 (1.30); not isomorphic to `ZMod 4`; every subgroup normal; `D₄ ⧸ ⟨r²⟩ ≃* V₄` |
 | the product | `G × H`, the student's instance (1.5) | the projections as homomorphisms; the internal direct product; `ZMod 2 × ZMod 3 ≃* ZMod 6` (Milne eq. 13) |
 
@@ -136,17 +147,17 @@ inside the section's budget, not added to it):
 
 | concept | example problem | shows |
 |---|---|---|
-| §2 `group_axioms` | `Unit`; `Bool` under `xor` by `decide`; `ℤ` under addition, `(3 : ℤ) ∗ 4 = 7` and `(3 : ℤ)⁻¹ = -3` by `rfl` | an instance is an operation that passes the axioms, whatever the operation is |
-| §2 `consequences` | in `Bool`, every element is its own inverse; in `ℤ`, `𝟙` is `0` | a consequence read off |
-| §2 `cancellation` | in `S₃`, `r ∗ s = r ∗ x → x = s` is not a computation but a law | cancellation needs no table |
+| §2 `group_axioms` | `Unit`; `AddGroup ℤ` with the integers' own operations; `Bool` under `xor` by `decide` | an instance is an operation that passes the axioms, whatever the operation is |
+| §2 `consequences` | in `Bool`, every element is its own negative; `x + 5 + -5 + -x = 0` in `ℤ` by an additive copy | a consequence read off, in either spelling |
+| §2 `cancellation` | in `S₃`, `r * s = r * x → x = s` is not a computation but a law | cancellation needs no table |
 | §3 all | the definitions themselves | — |
-| §4 `natural_powers` | `r ^ 3 = 𝟙` and `s ^ 2 = 𝟙` in `S₃`; `(1 : ℤ) ^ k = k` | powers computed; a power in `ℤ` is a multiple |
-| §4 `order_of_element` | `orderOf (2 : ZMod 6) = 3`; `orderOf (sr i) = 2` in `Dₙ`; `orderOf (1 : ℤ) = 0` | the three cases: a divisor, an involution, infinite |
+| §4 `natural_powers` | `r ^ 3 = 1` and `s ^ 2 = 1` in `S₃`; `k • 1 = k` in `ℤ` | powers computed; a power in an additive group is a multiple |
+| §4 `order_of_element` | `addOrderOf 2 = 3` in `ZMod 6`; `orderOf (sr i) = 2` in `Dₙ`; `addOrderOf 1 = 0` in the integers | the three cases: a divisor, an involution, infinite |
 | §5 `subgroups` | the rotations `{r i}` of `Dₙ`; `⟨2⟩ = {0, 2, 4}` in `ZMod 6`; `nℤ` in `ℤ` | the criterion applied |
-| §5 `centre` | `center S₃ = ⊥` by `decide`; `center D₄ = {𝟙, r 2}`; `center ℤ = ⊤` | three sizes of centre |
-| §5 `generated_subgroups` | `closure {r 1, sr 0} = ⊤` in `Dₙ`; `zpowers 1 = ⊤` in `ℤ` and in `ZMod n`; `zpowers (n : ℤ) = nℤ` | generators; `ℤ` is cyclic |
-| §6 `homomorphisms` | reduction `ZMod 6 →* ZMod 2`; reduction `ℤ →* ZMod n`, `k ↦ k % n`; orientation `Dₙ →* Bool` (`r i ↦ false`, `sr i ↦ true`); `Prod.fst` | the standard maps |
-| §6 `isomorphisms` | `ZMod 2 ≃* Bool`; `DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` by `decide`; `V₄` is not isomorphic to `ZMod 4` | sameness and difference of groups |
+| §5 `centre` | `center D₃ = ⊥` by `decide`; `center D₄ = {1, r 2}`; `center V₄ = ⊤` | three sizes of centre |
+| §5 `generated_subgroups` | `closure {r 1, sr 0} = ⊤` in `Dₙ`; `IsAddCyclic ℤ` and `IsAddCyclic (ZMod n)`, generated by `1`; `zmultiples n = nℤ` | generators; the integers are cyclic |
+| §6 `homomorphisms` | reduction `ZMod 6 →+ ZMod 2`; reduction `ℤ →+ ZMod n`, `k ↦ k % n`; orientation `Dₙ →* Equiv.Perm (Fin 2)` (`r i ↦ 1`, `sr i ↦` the swap); `Prod.fst` | the standard maps |
+| §6 `isomorphisms` | `ZMod 2 ≃+ Bool`; `DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` by `decide`; `V₄` is not isomorphic to `ZMod 4` (as additive groups, `ZMod 2 × ZMod 2` against `ZMod 4`) | sameness and difference of groups |
 | §6 `kernels_and_images` | the kernel of reduction is `⟨2⟩`, of `ℤ →* ZMod n` is `nℤ`, of orientation the rotations | kernels computed |
 | §6 `cayley` | `S₃` inside `Equiv.Perm S₃` as prose; the left-multiplication permutation of `ZMod 3` written out | the theorem seen once |
 | §7 `cosets` | the cosets of `2ℤ` in `ℤ`; the two cosets of the rotations in `D₃`; the three left cosets of `⟨s⟩` in `D₃`, and `r⟨s⟩ ≠ ⟨s⟩r` | cosets as residues and as rows of the table; left is not right |
@@ -155,7 +166,7 @@ inside the section's budget, not added to it):
 | §8 `prime_order` | `ZMod p`, and every group of order `p` is isomorphic to it (prose, until §10) | the only group of order `p` |
 | §9 `normal_subgroups` | the rotations in `Dₙ` (index two); `⟨s⟩` in `D₃`; every subgroup of `V₄` and of `ℤ` | normal and not |
 | §9 `quotient_groups` | `ℤ ⧸ nℤ` has `n` elements (Milne 1.44 a); `ZMod 6 ⧸ ⟨3⟩`; `D₄ ⧸ ⟨r 2⟩`, Milne 1.49 | quotients computed |
-| §10 `first_isomorphism_theorem` | `ℤ ⧸ nℤ ≃* ZMod n` from `k ↦ k % n`; `ZMod 6 ⧸ ⟨2⟩ ≃* ZMod 2`; `Dₙ ⧸ rotations ≃* Bool` | the theorem as a calculation |
+| §10 `first_isomorphism_theorem` | `ℤ ⧸ nℤ ≃+ ZMod n` from the reduction; `ZMod 6 ⧸ ⟨2⟩ ≃+ ZMod 2`; `Dₙ ⧸ rotations ≃* Equiv.Perm (Fin 2)` | the theorem as a calculation |
 | §10 `correspondence_theorem` | the subgroups of `D₄` above `⟨r 2⟩` against those of `V₄` (Milne 1.49's two lattices); the subgroups of `ℤ` above `6ℤ` against those of `ZMod 6` | the bijection drawn |
 | §10 `direct_products` | `ZMod 2 × ZMod 3 ≃* ZMod 6`, and `ZMod 2 × ZMod 2 ≄ ZMod 4` | coprime orders |
 | §11 `actions` | `Sₙ` on `Fin n`; `Dₙ` on the vertices `Fin n`; `ZMod n` on `Fin n` by rotation; `G` on itself | actions from the examples |
@@ -163,7 +174,7 @@ inside the section's budget, not added to it):
 | §11 `conjugation` | the five classes of `D₄` by `decide`; `S₃`'s three classes | classes computed |
 | §12 `orbit_stabilizer` | `n · 2 = 2n` for `Dₙ` on the vertices | the count checked |
 | §12 `block_counting` | `Bool` acting on `Fin n` by `i ↦ -i`: the fixed points of an involution have the parity of the set (the literature's example, Zagier's) | Lemma 5.1 at `p = 2` |
-| §12 `class_equation` | `8 = 1 + 1 + 2 + 2 + 2` for `D₄`; its centre `{𝟙, r 2}` | the theorem on the running `p`-group |
+| §12 `class_equation` | `8 = 1 + 1 + 2 + 2 + 2` for `D₄`; its centre `{1, r 2}` | the theorem on the running `p`-group |
 | §12 `prime_square` | `ZMod p × ZMod p` and `ZMod (p ^ 2)` are the two cases; `D₄` and `Q₈` of order `8 = 2³` are not commutative, so `p²` is sharp | the goal bounded on both sides |
 
 Where Milne's own example is not basic, the table replaces it: lines in `ℝ²` as cosets (1.24)
@@ -181,7 +192,8 @@ of its five laws as a one-line proof from `Nat.mod_add_mod`, `Nat.add_mod_mod`,
 `Fintype.ofEquiv`; `decide` settles equations in `Equiv.Perm (Fin n)` (`DecidableEq` is in
 `Mathlib.Data.Fintype.Card`) and quantified statements over `Fin 4` and over `Bool`; the
 symmetric group's instance has `rfl` proofs; associativity of the dihedral table closes by
-`cases` and `omega` for fixed `n` and by the `ZMod n` laws in general. There is no
+`cases` and `omega` for fixed `n` and by the `ZMod n` laws in general. On 2026-10-22 the
+mechanics were checked again for Mathlib's symbols and the wrapper (`scripts/wrapper_probe.lean`), and §2–§5 were refactored to them; on 2026-10-23 for the student's `AddGroup` and `@[to_additive]` (`scripts/addgroup_probe.lean`, `scripts/addgroup_order_probe.lean`), and §2–§5 were refactored again. There is no
 `Fintype (Equiv.Perm (Fin n))` and no `Fintype (α × β)` in the fence, so counts are done on
 `DihedralGroup n` and `ZMod n`, whose `Fintype` instances the student builds from `Fin (2 * n)`
 and `Fin n`, and `D₃` stands in for `S₃` wherever an order is counted.
@@ -200,14 +212,17 @@ and `Fin n`, and `D₃` stands in for `S₃` wherever an order is counted.
      `Nat.find`, `Nat.gcd` and `Nat.Coprime`. When §7 defines cosets, the quotient type is old;
      when §12 counts orbits, `Fintype.card` is old.
   2. **A device that cannot be separated from its mathematics is taught in a problem of its
-     own, just before the problem that needs it**, and the plan names each: a class with its own
-     notation (§2, the definition of `Group` itself, on which nothing else is new); recursion
+     own, just before the problem that needs it**, and the plan names each: a class (§2, the
+     definition of `Group` itself, on which nothing else is new), then the three notation
+     instances (§2, `group_notation`), then the additive class (§2, `add_group`), then the mark
+     `@[to_additive]` (§2, `to_additive`, on a theorem whose copy is used at once); the multiple
+     `n • a` (§4, `nsmul`, after the power it copies); recursion
      for powers (§4, Naturals' pattern) and `Int.induction_on` for `zpow_add` (§4); a `Membership`
      instance for the student's structure (§5; the coercion of a subgroup to a type turned out
      to be §1's `↥S`, since a coercion instance never reaches a later context); a named
      application for the student's homomorphisms (§6, for the same reason); a `HasQuotient` instance for `G ⧸ H` (§7);
      `Quotient.lift₂` for the quotient group (§9); `extends SMul` (§11); a type synonym with a
-     copied instance (§11, `ConjAct`); `Finset.induction_on` (§12). A definition problem may
+     copied instance (§11, `ConjAct`, said there with `inferInstanceAs`); `Finset.induction_on` (§12). A definition problem may
      carry the one Lean fact its shape needs, said in the description as the skill allows ("a
      Lean gotcha the mathematics cannot reveal"), and nothing more.
   3. **Every section is checked against the rule** before it is committed (**Building a
@@ -223,8 +238,8 @@ and `Fin n`, and `D₃` stands in for `S₃` wherever an order is counted.
   the arithmetic: `ℤ` with `Int.add_assoc` and its kin, `%` with `Nat.mod_lt`, `Nat.mod_add_mod`
   and `Nat.mod_eq_of_lt`, `Nat.gcd`, `Nat.Coprime` and its lemmas, `Nat.mod_add_div`,
   `Nat.pow_dvd_pow`, `omega` and `decide`.
-- **The student defines everything**: `Group`, `CommGroup`, the eight examples, powers,
-  `orderOf`, `Subgroup`, `Subgroup.closure`, `Subgroup.zpowers`, `IsCyclic`, homomorphisms and
+- **The student defines everything**: `Group` and `AddGroup`, `CommGroup` and `AddCommGroup`, the eight examples, powers and multiples,
+  `orderOf`, `Subgroup` and `AddSubgroup`, `Subgroup.closure`, `Subgroup.zpowers`, `IsCyclic`, homomorphisms and
   isomorphisms, kernels and images, cosets, the coset relation, `G ⧸ H`, `Subgroup.index`,
   `Nat.Prime`, `Subgroup.Normal`, the quotient group, `MulAction`, orbits, stabilizers,
   `ConjAct`, `IsPGroup`. Each is a problem with a `@spec`, before anything is proved about it, as
@@ -237,17 +252,20 @@ and `Fin n`, and `D₃` stands in for `S₃` wherever an order is counted.
   `Semigroup`, `Monoid` or `DivInvMonoid`: those are Mathlib's organisation of its library, not
   a way of teaching what a group is. The prose says once, in §2, that Mathlib reaches the same
   class by a tower of smaller ones, and never mentions the tower again.
-- **The group operation has its own symbol, `a ∗ b`, with neutral element `𝟙` and inverse
-  `a⁻¹`**, Milne's Definition 1.1 as he writes it (`∗`, `e`, `a′`) before he abbreviates. The
-  reason is the examples: a group is a set with *some* operation, and the student should see
-  `ℤ` under addition, `ZMod n` under addition mod `n`, `Sₙ` under composition and `Dₙ` under its
-  table as instances of one class, each with `a ∗ b` meaning what that group's operation is
-  (`(3 : ℤ) ∗ 4 = 7` by `rfl`). Mathlib's `*` and `1` cannot carry this: an instance of a class
-  built on `Mul ℤ` would make `3 * 4 = 7`, and `One ℤ` would make `(1 : ℤ)` the neutral element
-  `0`; Mathlib keeps a second, additive hierarchy and a wrapper `Multiplicative` to avoid it,
-  which is the API choice the owner has ruled out. The lemma names stay Mathlib's (`mul_assoc`,
-  `one_mul`, `inv_mul_cancel`) under the student's symbols, and the prose says once, in §2, that
-  Mathlib writes `a * b` and `1` and that the names are its. (**Decisions**, 4.)
+- **The symbols are Mathlib's: `a * b`, `1`, `a⁻¹`, and `a + b`, `0`, `-a` for an addition**
+  (the owner, 2026-10-22 for the first, reversing the 2026-10-21 choice of `∗` and `𝟙`;
+  2026-10-23 for the second, replacing the wrapper `Multiplicative`; **Decisions**, 4, holds the
+  designs and the probes). The symbols reach the student's classes through instances of the
+  notation classes, the targets of problems of their own (`group_notation`, `add_group`), so
+  that the student sees how a symbol reaches a type; Mathlib's own classes extend the same
+  notation classes. `ℤ` carries `*` and `1` with their arithmetic meaning, so it cannot be a
+  multiplicative group; it is an additive one, with its own `+`, and so are `ZMod n` and `Bool`
+  under `xor`, which is how a first course writes them. Every general definition and theorem
+  carries `@[to_additive NAME]`, so each is proved once and holds in both spellings; the student
+  meets the mark in §2 and writes the additive twin of each class and structure as a short
+  problem. The handoff is Mathlib's own design: Mathlib has `AddGroup`, `AddSubgroup`,
+  `addOrderOf`, `zmultiples` and `to_additive` under these names, and its integers and `ZMod n`
+  are additive groups. The lemma names are Mathlib's as before. (**Decisions**, 4 and 9.)
 - **Names follow Mathlib** all the same, so that the arrival at Mathlib's algebra changes the
   imports and not the vocabulary: the lemmas are `mul_assoc`, `one_mul`, `inv_mul_cancel`,
   `mul_left_cancel`, `mul_inv_rev`, `inv_inv`, `pow_succ`, `zpow_add`,
@@ -319,7 +337,7 @@ import Mathlib.Data.Int.Init            -- Int.induction_on
 ```
 
 Under the union of these (compiled 2026-10-21): `Group`, `Monoid`, `MonoidHom`, `IsCyclic`,
-`Nat.Prime`, `Multiplicative`, `ZMod`, `DihedralGroup`, and with them every name of Mathlib's
+`Nat.Prime`, `Multiplicative`, `AddGroup`, `AddSubgroup`, `ZMod`, `DihedralGroup`, and with them every name of Mathlib's
 group theory, are unknown; so are the symbols `∗` and `𝟙` (Mathlib uses them only as scoped
 notation in modules outside the fence) and the instances `Inv ℤ` and `Inv (Equiv.Perm X)`, so
 the student's class may extend `Inv` for `⁻¹` without a collision. Known and verified:
@@ -330,8 +348,14 @@ everything in the table's "free" rows; `Inv`, `SMul`, `Pow`, `Prod.instMul`, `Ne
 `Nat.coprime_iff_gcd_eq_one`, `Nat.gcd_dvd_left`, `Nat.dvd_gcd`, `Nat.mod_add_div`,
 `Nat.pow_dvd_pow`; `decide` on `Bool`, on `Fin 4`, on `ZMod 6` and on equations in
 `Equiv.Perm (Fin 3)`. There is no `Fintype (Equiv.Perm (Fin n))` and no `Fintype (α × β)`, so
-those are the student's where needed. `One ℤ` exists (`One.ofOfNat1`), which is one more reason
-the neutral element is not written `1`.
+those are the student's where needed. `One ℤ` exists (`One.ofOfNat1`), as `Mul ℤ` does, which is why
+the integers enter the subject as an additive group (their `+`, `0` and `-` are the student's `AddGroup ℤ`'s, and the fence's `SMul ℕ ℤ` and `SMul ℤ ℤ` lose to the student's `•`, declared later, with the same values). `scripts/notation_probe.lean` (2026-10-22) is the probe
+behind Decision 4's reopening: `Mul G` and `One G` instances derived from the student's `Group`,
+the instance `Group ℤ` under addition, and what `3 * 4`, `1`, `one_mul` and a second `⁻¹` then
+do; run it with `lake env lean scripts/notation_probe.lean` and read the expected outcome in the
+comment on each line. `scripts/wrapper_probe.lean` (the same day) is the second probe, the
+alternative design compiled: `Multiplicative ℤ` as the student writes it, `ZMod n` under `*`
+with its numerals, the product diamond, and which example types carry `Mul` or `One`.
 
 What the Group-free fence costs, and what replaces it:
 
@@ -343,7 +367,7 @@ What the Group-free fence costs, and what replaces it:
 | pigeonhole, `Fintype.exists_ne_map_eq_of_card_lt` | the contrapositive of `Fintype.card_le_of_injective` (§1, used in §4) |
 | `Nat.Prime` and Euclid's lemma | the student's `Nat.Prime`, Milne's definition, with Euclid's lemma from core's `Nat.Coprime` (§8) |
 | `ZMod n`, `DihedralGroup n`, `Group (G × H)`, `Group (Equiv.Perm X)` | the student's (§3), as the owner wants |
-| `Multiplicative ℤ`, `AddGroup ℤ` | not needed: `ℤ` under addition is an instance of the student's class directly, because the operation is `∗` and not `*` |
+| `AddGroup ℤ`, `to_additive`'s copies | the student's `AddGroup` and its twins; `Mathlib.Tactic.ToAdditive` is in the fence, so the mark works on the student's declarations |
 | `Fintype (Equiv.Perm (Fin n))` | not needed: orders are counted on `DihedralGroup n` and `ZMod n`, whose `Fintype` the student builds; `Sₙ`'s order `n!` is prose |
 | `ring`, `linarith`, `norm_num` | `omega`, `decide`, `Nat.mod_add_div`, `pow_add`, `pow_mul` |
 
@@ -357,6 +381,40 @@ adding an import, compile the probe again with it. The probe script and its tabl
 Sized as Profinite Spaces was: four or five concepts and sixteen to eighteen problems per
 section, every reference proof under fifteen lines, one section per session. Concept slugs are
 provisional. Each section gets an **As built** note when it exists.
+
+**Spelling, from 2026-10-23.** The group operation is `*`, the neutral element `1`, the inverse
+`a⁻¹`, through the `Mul`, `One` and `Inv` instances of §2 (`Group.toMul`, `Group.toOne`,
+`Group.toInv`). A group whose operation is an addition is the student's `AddGroup`, written
+`+`, `0`, `-a` through `Add`, `Zero` and `Neg` (`AddGroup.toAdd`, …): `ℤ`, `ZMod n` and `Bool`
+under `xor` (`true + true = false`, `0 = false`) are additive groups as they stand, so `3 + x`
+in `ℤ` is a sum in the group, `omega` and `decide` apply, and `{0, 2, 4}` is a subset of
+`ZMod 6`. `Unit`, `Sₙ`, `Dₙ` (table `r (i + j)`, `sr (j + -i)`), products and subgroups are
+multiplicative. **Every general definition and theorem carries `@[to_additive NAME]`**, which
+makes its additive copy under Mathlib's name (`mul_left_cancel` → `add_left_cancel`, `g ^ n` →
+`n • a`, `orderOf` → `addOrderOf`, `Subgroup` → `AddSubgroup`, `zpowers` → `zmultiples`,
+`IsCyclic` → `IsAddCyclic`); the name is always written out, for the publisher's closure, and
+each section file sets `linter.translateGenerateName false` so that a written name equal to the
+generated one is not a warning. `to_additive` cannot make a class or a structure, or a recursive
+definition whose equations it would have to regenerate: each such notion has an **additive twin
+the student writes as a short problem right after the original** (`add_group`, the `AddCommGroup`
+half of `comm_group`, `nsmul`, `zsmul`, `add_subgroup`), followed outside the block by lines
+`attribute [to_additive existing AddGroup] Group` pairing the two, one declaration per line. For
+§6–§12 this means: `MonoidHom` gets the twin `AddMonoidHom` (`A →+ B`) and `MulEquiv` the twin
+`AddEquiv` (`≃+`); `Subgroup.Normal` its `AddSubgroup.Normal`; the quotient group `G ⧸ N` its
+additive quotient `A ⧸ N` for an additive subgroup (`QuotientAddGroup`), so that `ℤ ⧸ nℤ` and
+`ZMod 6 ⧸ ⟨3⟩` are additive quotients; `MulAction` its `AddAction` only if `ZMod n` acting on
+`Fin n` stays (it can be dropped: `Dₙ` on the vertices shows the same). A map from a
+multiplicative group to an additive one is the one awkward case, and the parity maps avoid it
+by landing in `Equiv.Perm (Fin 2)`, the symmetric group on two points, multiplicative: the
+orientation `Dₙ →* Equiv.Perm (Fin 2)` (rotations to `1`, reflections to the swap) in §6, §9's
+universal property and §10's `Dₙ ⧸ rotations ≃* Equiv.Perm (Fin 2)`; §12's involution acting on
+`Fin n` is an action of `Equiv.Perm (Fin 2)` too. `ZMod 2 ≃+ Bool` joins two additive groups.
+The entries of §6–§12 below, written before that date, say `ℤ`, `ZMod n`, `∗` and `𝟙` for
+short, and `Bool` for the parity target: read `+`, `0`, `-` and the additive twins for `ℤ`,
+`ZMod n` and `Bool`, `*` for `∗`, `1` for `𝟙`, and `Equiv.Perm (Fin 2)` for the target of a
+parity map. A session building a section writes its Lean in this spelling and may rewrite its
+entry to match (`STYLE.md`, **Notation and names**). The spelling of 2026-10-22, the wrapper
+`Multiplicative`, is recorded under **Decisions**, 4.
 
 ### §1. Prerequisites
 
@@ -532,6 +590,48 @@ finiteness hypothesis on it is pointless, and the order of a group is defined in
 two remaining problems. (3) **The cancellation example is `ℤ`**, not `S₃`, whose instance is
 §3's; §3 should add `r ∗ s = r ∗ x → x = s` there if it has room.
 
+**As refactored (2026-10-22).** To Mathlib's symbols, by the owner's decision of that day
+(Decision 4): `group` keeps its class and loses its notation paragraph; `group_notation` is new,
+its targets the instances `Mul G`, `One G` and `Inv G` with a `rfl` spec pinning the three
+symbols to the fields; `unit_group` loses the `Inv` given; `bool_xor_group` says that the group's
+`1` on `Bool` is `false`; `multiplicative` is new, the student's `def Multiplicative (α : Type u)
+:= α` with `ofAdd`, `toAdd`, `toAdd_ofAdd`, `ofAdd_toAdd`, `ofAdd_inj` and a `DecidableEq`
+instance given by `inferInstanceAs`; `int_add_group` is `Group (Multiplicative ℤ)` from the five
+core laws applied to `toAdd`, with the six equations `ofAdd_add`, `ofAdd_zero`, `ofAdd_neg`,
+`toAdd_mul`, `toAdd_one`, `toAdd_inv` replacing `int_mul_eq_add`, `int_one_eq_zero` and
+`int_inv_eq_neg`; `int_solve` reads `ofAdd 3 * x = ofAdd 7 ↔ x = ofAdd 4`, through
+`eq_inv_mul_iff_mul_eq` and the equations read right to left; every other problem changed symbol
+only. 16 problems over 4 concepts; the one-sided axioms stay in Extra Credit with `intGroupLeft :
+Group (Multiplicative ℤ)`. The record of the earlier design is Decision 4 and
+`scripts/notation_probe.lean`. The student review of `group_axioms` after the refactor (one blind
+agent, `scripts/review/`, same day) solved all six problems, five at the first attempt, found no
+double teaching, and changed four things: `int_add_group` gained the theorem
+`int_three_mul_four` its description promised (a spec is invisible to the student) with the
+ascription `ofAdd (3 : ℤ)` in the prose; `multiplicative` says the equivalence closes by
+`Iff.rfl`; `bool_xor_group` argues `a * a = a → a = 1` by multiplying with `a⁻¹`, not by a
+cancellation not yet proved; `group_notation` shows the pattern on `Add Vec3` instead of
+printing the first answer. The extract of the refactored subject needed a publisher fix
+(`STYLE.md`, **Learned refactoring**): 108 problems, 0 errors through the patched checkout,
+pending the owner's release and the lakefile's repin.
+
+**As refactored (2026-10-23).** To additive groups, by the owner's decision of that day
+(Decision 4): `group_notation` names its instances `Group.toMul`, `Group.toOne` and
+`Group.toInv`; `multiplicative` is gone, and `add_group` is new, the class `AddGroup` with `add`,
+`zero`, `neg` and the five additive laws, the instances `AddGroup.toAdd`, `AddGroup.toZero` and
+`AddGroup.toNeg`, and four `attribute [to_additive existing …]` lines after the block pairing
+`Group` and its instances with them; `int_add_group` is `AddGroup ℤ` from the integers' own
+operations and the five core laws, with no equations to state; `bool_xor_group` moves after it
+and is `AddGroup Bool`, `true + true = false`, `0 = false`; `cancel_adjacent` says that every
+theorem from there on carries a mark; `to_additive` is new, the mark explained on
+`mul_mul_inv_mul_inv_cancel` and used at once through its copy on `x + 5 + -5 + -x = 0` in `ℤ`;
+every general theorem carries `@[to_additive NAME]` with Mathlib's additive name (`mul_inv_rev`
+named by hand `neg_add_rev`, Lean's own translation being `add_neg_rev`); `self_inverse_comm`
+proves `bool_neg_self` and `bool_add_comm` through `add_comm_of_neg_eq_self`; `int_solve` is `3 +
+x = 7 ↔ x = 4` through `eq_neg_add_iff_add_eq`; `bool_true_add` checks that adding `true` is
+`!`. 17 problems over 4 concepts. In Extra Credit `Group.ofLeftAxioms` carries its mark and
+`intGroupLeft : AddGroup ℤ` is built by `AddGroup.ofLeftAxioms`, `intGroupLeft_add` checking `3 +
+4 = 7`; the subgroup criterion carries marks, its copy `AddSubgroup.ofSub`.
+
 ### §3. Examples
 
 Milne 1.3–1.6, 1.16, 1.17. The finite groups the subject lives on, each a definition problem
@@ -658,6 +758,48 @@ extra credit. Slugs are unchanged. `Prod.mul_def` exists under the fence (for `*
 product's equation is `prod_mul_def`; `check_prose_names.py` now falls back to the reference
 when the stub cannot compile (an inductive's stub has no constructors).
 
+**As refactored (2026-10-22).** `ZMod n` is additive: `zmod_add_neg` supplies `Add (ZMod n)` and
+`Neg (ZMod n)` with `ZMod.val_add : (a + b).val = …` and `ZMod.val_neg`; `zmod_add_laws` is new,
+the six laws `ZMod.add_assoc`, `ZMod.zero_add`, `ZMod.add_zero`, `ZMod.neg_add_cancel`,
+`ZMod.add_neg_cancel`, `ZMod.add_comm`, with `ZMod.ext` and `ZMod.val_zero : (0 : ZMod n).val =
+0 % n` as givens; `zmod_group` is `Group (Multiplicative (ZMod n))` from those laws applied to
+`toAdd`, with `ZMod.ofAdd_add` and its five companions and `zmod_five_check`; `zmod_fintype`
+keeps `finEquivZMod`, `Fintype (ZMod n)` and `card_zmod`, and the new `multiplicative_fintype`
+(a split the review asked for) carries the generic `Fintype (Multiplicative α)` across by
+`inferInstanceAs`, with `Fintype.card_multiplicative`, `card_mul_zmod` and `zmod_six_has_inv`; `zmodTwoEquivBool_mul` became `zmodTwoEquivBool_add`, `e (a + b) = e a * e
+b`; `comm_instances` builds `CommGroup (Multiplicative ℤ)`, `CommGroup (Multiplicative (ZMod n))`
+and `CommGroup Bool`; `zmod_add_rearrange` is new, `ZMod.neg_neg`, `ZMod.neg_zero`,
+`ZMod.neg_add_rev`, `ZMod.add_left_comm` and `ZMod.add_right_comm` each as a group theorem
+applied to `ofAdd a` by `exact`; the product example is `Multiplicative (ZMod 2) × Multiplicative
+(ZMod 3)`; the dihedral table is Mathlib's, `r (i + j)`, `sr (j + -i)`, `sr (i + j)`, `r (j +
+-i)`, its associativity proved from the five residue facts, the instance with `one := r 0` and
+`inv (r i) = r (-i)`; `zmod_four_one_inv` is about `ofAdd 1`. 22 problems over 5 concepts. The
+student review of `integers_mod_n`, `commutative_groups` and `dihedral_groups` after the refactor
+(three blind agents, same day) solved every problem, all but two at the first attempt, found no
+double teaching, and changed: `zmod_add_laws` names its lemmas without their statements or a
+`simp only` fragment; `zmod_fintype` is split, `multiplicative_fintype` carrying the copy's
+`Fintype`; `zmod_two_equiv_bool` takes the numerals; `zmod_add_rearrange` explains
+`inv_one (G := …)` and drops a forward reference; `comm_instances` no longer prints an instance
+body; `comm_group` says why `*` is in scope inside the class; `comm_rearrange`'s `rw` example
+uses other letters; `dihedral_group` proves its laws by `rw` with the table's equations, which
+its description now names, as does `dihedral_mul_assoc` for `ZMod.add_assoc`; `klein_four`
+states on its own that `ZMod 2 × ZMod 2` is the Klein four-group, and says "unlike D₄".
+
+**As refactored (2026-10-23).** `zmod_group` is `AddGroup (ZMod n)` from the laws of
+`zmod_add_laws`, with `zmod_neg_neg` and `zmod_neg_add_rev` showing two copies of §2's theorems
+at work on residues; `multiplicative_fintype` and `zmod_add_rearrange` are gone (the copy needs
+no count of its own, and `neg_neg`, `neg_zero`, `neg_add_rev`, `add_left_comm`, `add_right_comm`
+are the copies of §2's and `comm_rearrange`'s theorems); `zmodTwoEquivBool_add` reads `e (a + b)
+= e a + e b`; `comm_group` defines `CommGroup` and its twin `AddCommGroup` with `add_comm`, the
+line `attribute [to_additive existing AddCommGroup] CommGroup` after it; `comm_instances` builds
+`CommGroup Unit`, `AddCommGroup ℤ`, `AddCommGroup (ZMod n)` and `AddCommGroup Bool`, with
+`mul_comm` given under its mark; `prod_group` and `prod_comm_group` name their instances
+`Prod.instGroup` and `Prod.instCommGroup` under marks, so that `ZMod 2 × ZMod 3` is an additive
+group with `(1, 2) + (1, 2) = (0, 1)`; `prod_fintype` counts `ZMod 2 × ZMod 3`; the dihedral
+proofs rewrite with the additive copies (`add_assoc`, `neg_add_rev`, `neg_neg`, `zero_add`, …)
+in place of the residue facts; `zmod_four_neg_one : -(1 : ZMod 4) ≠ 1`. 20 problems over 5
+concepts.
+
 ### §4. Powers and the Order of an Element
 
 Milne pp. 8–9. The Lean that is new here: a recursive definition of a power (Naturals' pattern)
@@ -766,6 +908,31 @@ the inverse as a power, checked on `2` in `ZMod 6`; the integer-exponent form wa
 section that needs it. (6) **Twenty-one problems, not eighteen**: the three the review added (`one_zpow`,
 `order_of_eq_two_iff`, `exists_pow_eq_of_finite`) are each a warm-up or a general fact that
 the one-idea rule asks for, and the budget yielded to the rule.
+
+**As refactored (2026-10-22).** Symbols throughout; `npow`'s preamble gives the
+`@[default_instance high]` mark its new reason (a numeral exponent is read through the default
+instances alone, whatever the base); `int_pow` is `ofAdd 3 ^ 2 = ofAdd 6` and `int_one_pow :
+ofAdd 1 ^ k = ofAdd k`, by `ofAdd_add` right to left and `ofAdd_inj` before `omega`;
+`int_two_zpow_neg_three` is `ofAdd 2 ^ (-3 : ℤ) = ofAdd (-6)`; `int_one_not_isOfFinOrder`,
+`orderOf_int_one` are about `ofAdd 1`; `orderOf_zmod_six_two : orderOf (ofAdd 2) = 3` and
+`zmod_six_two_inv` are about `ofAdd 2` in `Multiplicative (ZMod 6)`; `orderOf_sr`'s preamble
+says `1` is `r 0`. 21 problems over 4 concepts.
+
+**As refactored (2026-10-23).** `to_additive` cannot copy a definition by recursion (the copy's
+equations do not match the original's), so the multiples are the student's twins: `npow` keeps
+`Group.npow`, now exponent first (`Group.npow n g`, Mathlib's `npowRec` order, so that the twin
+takes its arguments in `SMul`'s order), and its instance `Group.toPow`, with `s3_pow_check`;
+`nsmul` is new, `AddGroup.nsmul` and `AddGroup.toSMul : SMul ℕ A`, `3 • (2 : ℤ) = 6`, and the
+lines pairing them; `pow_zero` and `pow_succ` move into `pow_one`, since their marks need the
+twin; `int_pow` is `int_nsmul_one : k • (1 : ℤ) = k`; `zpow` keeps `Group.zpow`, exponent first,
+and `Group.toZPow`, with `s3_zpow_check` moved in from `zpow_neg`; `zsmul` is new,
+`AddGroup.zsmul` and `AddGroup.toZSMul : SMul ℤ A`, `(-3 : ℤ) • (2 : ℤ) = -6`; `zpow_natCast` and
+`zpow_negSucc` move into `zpow_neg`; every theorem carries its mark, with Mathlib's names written
+out (`zero_nsmul`, `succ_nsmul`, `add_nsmul`, `mul_nsmul'`, `neg_zsmul`, `add_zsmul`,
+`IsOfFinAddOrder`, `addOrderOf`, `addOrderOf_nsmul_eq_zero`, `addOrderOf_eq_one_iff` by hand,
+Lean's own being `…_eq_zero_iff`, and `neg_eq_addOrderOf_sub_one_nsmul` by hand); the examples
+are `int_one_not_isOfFinAddOrder`, `addOrderOf_int_one`, `addOrderOf_zmod_six_two :
+addOrderOf (2 : ZMod 6) = 3` and `zmod_six_two_neg`. 23 problems over 4 concepts.
 
 ### §5. Subgroups
 
@@ -887,6 +1054,47 @@ promise unkept, `d4_center_ne_top` (the equivalence in its non-commutative direc
 `d4_not_comm`), the three order facts of `⊓`, and `mem_sInf_pair`, the family problem's instance;
 `isCyclic_zmod` is in tactic style; and "state" became "prove, which holds by definition"
 throughout. The section stays at 21 problems.
+
+**As refactored (2026-10-22).** Symbols throughout; `rotations` has `one_mem' := ⟨0, rfl⟩`,
+`r (i + j)` and `r (-i)`; `intMultiples n : Subgroup (Multiplicative ℤ)` with carrier `{x | n ∣
+toAdd x}` and `mem_intMultiples : x ∈ intMultiples n ↔ n ∣ toAdd x`; `zmodSixEvens : Subgroup
+(Multiplicative (ZMod 6))` with carrier `{ofAdd 0, ofAdd 2, ofAdd 4}`; `zmod_six_two_zpow_mem`
+about `ofAdd 2`; `center_int : center (Multiplicative ℤ) = ⊤`; `intMultiples_two_inf_three`
+unchanged in statement, `omega` taking `toAdd x` as its unknown; `int_zpow_eq_mul : ofAdd n ^ k
+= ofAdd (n * k)`, `mem_zpowers_int : x ∈ zpowers (ofAdd n) ↔ n ∣ toAdd x`,
+`zpowers_eq_intMultiples`, `isCyclic_int : IsCyclic (Multiplicative ℤ)` generated by `ofAdd 1`;
+`ZMod.val_one_pow : (toAdd (ofAdd 1 ^ k)).val = k % n`, `isCyclic_zmod : IsCyclic (Multiplicative
+(ZMod n))` through a `change`, `zpowers_two_zmod_six : zpowers (ofAdd 2) = zmodSixEvens`. 21
+problems over 4 concepts; the goal stays on `generated_subgroups`. The student review of
+`generated_subgroups` after the refactor (one blind agent, same day) solved all six problems at
+the first attempt and found no double teaching and no context gap; its finding was that
+`int_cyclic` and `zmod_cyclic` listed the reference's rewrites in order, so both preambles now
+give the idea and leave the names to the context list, `zmod_cyclic` no longer hands over its
+witness and says what goes wrong without the `change`, `is_cyclic` shows `apply Exists.intro g`,
+and the concept's "generated by `1`" says "the number `1`". Left for the owner: the reviewer's
+proposal of a non-example, `not_isCyclic_s3` from `IsCyclic.mul_comm` and `rot3_reflect3_ne`;
+and `closure` and `zpowers`, untouched by the refactor, still hand over proofs and witnesses in
+the reviewer's reading, as `zpowers`, `zpowers_eq_closure` and `is_cyclic` still sit under the
+17-line floor, which they did before it.
+
+**As refactored (2026-10-23).** `subgroup` names its instance `Subgroup.instMembership`;
+`add_subgroup` is new, the twin `AddSubgroup` with `carrier`, `zero_mem'`, `add_mem'`,
+`neg_mem'` and `AddSubgroup.instMembership`, paired by two lines after the block; the instances
+of the section are named (`Subgroup.instGroupCarrier`, `instTop`, `instBot`, `instLE`,
+`instMin`, `instInfSet`) and, with every definition and theorem, carry marks;
+`intMultiples n : AddSubgroup ℤ` with carrier `{x | n ∣ x}`; `zmodSixEvens : AddSubgroup (ZMod
+6)` with carrier `{0, 2, 4}`; `zmod_six_two_zsmul_mem : k • 2 ∈ zmodSixEvens` through
+`AddSubgroup.zsmul_mem`; `center_int` became `center_klein : center (DihedralGroup 2) = ⊤`, since
+an additive group's centre is the whole group and teaches nothing; `intMultiples_two_inf_three`
+goes through `AddSubgroup.ext` and `AddSubgroup.mem_inf`; `Subgroup.zpowers` is marked
+`AddSubgroup.zmultiples`, `IsCyclic` is marked `IsAddCyclic`; `int_cyclic` is
+`int_zsmul_eq_mul : k • n = k * n`, `mem_zmultiples_int`, `zmultiples_eq_intMultiples` and
+`isAddCyclic_int`; `zmod_cyclic` is `ZMod.val_nsmul_one : (k • 1).val = k % n`,
+`isAddCyclic_zmod` (no `change` needed now) and `zmultiples_two_zmod_six`. 22 problems over 4
+concepts; the goal stays on `generated_subgroups`. The whole subject extracts with 110 problems
+and 0 errors through a publisher whose closure knows the marks (`STYLE.md`, **Learned
+refactoring to additive groups**); the pinned v0.6.1 fails 44 of them until that change is
+released and repinned.
 
 ### §6. Homomorphisms
 
@@ -1279,8 +1487,9 @@ at once? After the draft: the passes of `BEST_PRACTICES.md` Step 4 in order, reu
 
 ## Decisions
 
-Dated. Items 1, 2, 6 and 8 are the owner's; 3–5 are open and carry a recommendation; the rest
-are settled by the house rules and recorded so that a session does not reopen them.
+Dated. Items 1, 2, 6, 8 and 9 are the owner's; 3–5 are open and carry a recommendation, and 4
+was reopened on 2026-10-22 and awaits the owner; the rest are settled by the house rules and
+recorded so that a session does not reopen them.
 
 - **1. The student defines `Group`** (the owner, 2026-10-21): "The student should redefine as
   much as possible, including Group and Homomorphism. See GeneralTopology in ../polya-topology
@@ -1328,6 +1537,122 @@ are settled by the house rules and recorded so that a session does not reopen th
   for the library's reasons. `𝟙` is typed `\b1`; `e` would collide with the variable name every
   `Equiv` wants. **Taken as recommended, 2026-10-21**, and recorded in `STYLE.md`; the shape was
   compiled again that day with all four examples and `decide` on each (see **Before §1**, 8).
+
+  **Reopened 2026-10-22** by the owner: "Early on in the planning phase you said that because
+  we were not using Mathlib's group that we therefore could not use the classes One and Mul.
+  And you defined infix for \ast instead. But then you went ahead and used Inv. I see no reason
+  why you can't use One and Mul as well. Just as you did with Inv, you don't need to have the
+  Group class inherit from them." The reason is not the class's shape but `ℤ`, and a probe
+  (`scripts/notation_probe.lean`, under the fence) settles what happens: with
+  `instance [Group G] : Mul G := ⟨Group.mul⟩`, `instance [Group G] : One G := ⟨Group.one⟩` and
+  the `ℤ` instance under addition, `(3 : ℤ) * 4` is still `12` and `(1 : ℤ)` still `1`, because
+  Lean prefers the integers' own instances (a concrete key beats a generic one, as §4 found for
+  `NatPow ℤ`), while `(One.one : ℤ)` is `0`; the group's `one_mul` applied to `3 : ℤ` prints
+  `1 * 3 = 3` and means `0 + 3 = 3`; `example : (1 : ℤ) * 3 = 3 := one_mul 3` fails, and so does
+  `rw [one_mul]` on that goal ("did not find `1 * ?a` in `1 * 3 = 3`"). `Inv` has no such
+  collision because the fence gives `ℤ` no `Inv` (`#synth Inv ℤ` fails), and a second
+  `postfix:max "⁻¹"` beside Mathlib's makes `a⁻¹` an "Ambiguous term".
+
+  The same day the owner asked to explore the wrapper ("So the only thing preventing us from
+  using Mul and One is the fact that we need to use the integers as an example? It seems worth
+  exploring the Int wrapper then"), weighing the cost across the subject against the gains for
+  the other examples and the handoff to the later subjects on Mathlib's `Group`. A second probe
+  (`scripts/wrapper_probe.lean`) found two more facts. **`ℤ` is not the only obstacle: `ZMod n`
+  has the same one, by the student's own numerals.** Under `*`, the student's `ZMod n` with its
+  `OfNat` instance has `(3 : ZMod 5) * 4 = 2` and `(1 : ZMod 5) * 1 = 2`, and `one_mul
+  (1 : ZMod 5)` prints `1 * 1 = 1` with two different ones, the numeral being the residue `1`
+  and the group's `1` the residue `0`; `Dₙ`'s table would read `r (i * j)`. So under `*` every
+  additive example (`ℤ`, `ZMod n`, and `Bool` under `xor`, whose `1` would be `false`) is
+  wrapped or reads wrongly, which is why Mathlib has `AddGroup` and `Multiplicative`. **The
+  wrapper works.** The student's `def Multiplicative (α : Type u) := α` with `ofAdd`, `toAdd`
+  and `DecidableEq` by `inferInstanceAs`, and `instance : Group (Multiplicative ℤ)` from the
+  five core laws, gives `ofAdd 3 * ofAdd 4 = ofAdd 7` by `rfl` and by `decide`,
+  `(1 : Multiplicative ℤ) = ofAdd 0`, and no numeral `(3 : Multiplicative ℤ)`, so the two ones
+  cannot be confused; `omega` is blind through the wrapper until a `show toAdd x = 4` or a
+  rewrite with `ofAdd_mul : ofAdd a * ofAdd b = ofAdd (a + b)`, as `int_mul_eq_add` serves today,
+  and `rw [h]` leaves `ofAdd 3 * ofAdd 4 = ofAdd 7` for an explicit `rfl`. The product diamond
+  is benign: on `G × H` the fence's `Prod.instMul` wins the elaboration of `*`, and
+  `rw [mul_assoc]`, `mul_assoc a b c` and `rfl` all accept it against the group's instance when
+  the product's `mul` is componentwise. Under the fence `Unit`, `Bool`, `Equiv.Perm`, a subtype
+  and the student's structures carry no `Mul` or `One`; `Fin n` carries both, which the
+  student's `ZMod n` avoids by being a structure.
+
+  The two designs, by what the content reads:
+  - *The symbols stay* (`∗`, `𝟙`, `⁻¹`): `(3 : ℤ) ∗ 4 = 7`, `(3 : ZMod 5) ∗ 4 = 2`,
+    `int_solve : (3 : ℤ) ∗ x = 7 ↔ x = 4`, `r (i ∗ j)` in `Dₙ`. No cost now beyond §2's **Fix**
+    (half a session). No instance diamonds, since `∗` names `Group.mul` alone. The student types
+    `\ast` and `\b1` (lean4monaco's abbreviations are in the editor). The handoff to Mathlib is
+    one lesson for the theory (the symbols) and three relearnings for the examples: Mathlib has
+    no `Group ℤ` (it has `AddGroup ℤ` and `Multiplicative ℤ`); Mathlib's `ZMod n` has `+` and a
+    ring's `*` where the student's has only `∗` meaning `+`; Mathlib's `DihedralGroup` table
+    reads `r (i + j)`.
+  - *Mathlib's symbols* (`*`, `1`, `⁻¹` through `Mul`, `One`, `Inv` instances, the owner's
+    shape): the three instances are the notation problem; `ZMod n` becomes additive, with the
+    student's `Add`, `Zero` and `Neg` instances and `(3 : ZMod 5) + 4 = 2`, as Mathlib's; the
+    student writes `Multiplicative`, and the groups are `Multiplicative ℤ` and
+    `Multiplicative (ZMod n)`, with `ofAdd 3 * ofAdd 4 = ofAdd 7`,
+    `int_solve : ofAdd 3 * x = ofAdd 7 ↔ x = ofAdd 4`, `intMultiples n : Subgroup
+    (Multiplicative ℤ)` with carrier `{x | n ∣ toAdd x}`, `zpowers (ofAdd 2) = {ofAdd 0, ofAdd 2,
+    ofAdd 4}`, and `r (i + j)` in `Dₙ`, Mathlib's table; `Bool` under `xor` stays bare with
+    `1 = false`, said in a sentence, or yields to `Multiplicative (ZMod 2)` in §3; the product
+    example reads `Multiplicative (ZMod 2) × Multiplicative (ZMod 3)`. Cost: of the 79 built
+    problems after §1, 35 are reshaped (11 that use `ℤ` as a group: `int_add_group`,
+    `solve_equation`, `comm_instances`, `int_pow`, `zpow`, `is_of_fin_order`, `order_of_cases`,
+    `int_multiples`, `center_eq_top`, `int_cyclic`, `int_group_of_left_axioms`; 21 more on
+    `ZMod n`, the whole `zmod` concept and the products and dihedral groups of §3 among them; 3
+    on `Bool`), all 79 change symbol, §2 gains the wrapper problem (a type synonym and why
+    instances do not cross it, the device §11 planned for `ConjAct`) and §3 a problem for
+    `ZMod n`'s additive laws, and the changed concepts are reviewed again: two to three sessions.
+    Of the planned §6–§12, about twenty example problems wear `ofAdd` (the reductions
+    `Multiplicative ℤ →* Multiplicative (ZMod n)` and `ZMod 6 →* ZMod 2`, the kernels, the
+    cosets of `nℤ`, `ℤ ⧸ nℤ ≃* ZMod n`, `ZMod p`, `⟨2⟩ ⊔ ⟨3⟩`); the other hundred or so, the
+    theory, read character for character as Mathlib's statements, and so do the instances for
+    `Equiv.Perm`, `DihedralGroup`, `G × H`, a subgroup as a type, `G ⧸ N` and `MulAction`.
+
+  **Recommendation, 2026-10-22: Mathlib's symbols, decided now, if the owner accepts `ofAdd` on
+  the two additive examples as the price.** The gain is the handoff the owner asks for: the
+  theory of twelve sections reads as Mathlib's, `Multiplicative ℤ` is Mathlib's own type for
+  this very situation, and `ZMod n` with `+` is Mathlib's reading of it; the cost is two to
+  three sessions now, and it grows with every section built on `∗`. The symbols stay if the
+  first-course reading of `ℤ` and `ZMod n` as bare instances matters more than
+  Mathlib-identical statements; that design is sound, and its handoff is one lesson plus three
+  relearnings. Awaiting the owner. The owner then asked to see the wrapper problems:
+  `plans/notation_drafts.lean` (2026-10-22, deleted once they were built into §2 and §3 the
+  same day) held them as compiled problem blocks in the house format, `group_notation` (the
+  three instances), `multiplicative` (the copy, `ofAdd`, `toAdd`,
+  `ofAdd_inj`, with `DecidableEq` carried across as a given), `int_add_group`
+  (`Group (Multiplicative ℤ)` from the five core laws, `ofAdd_add`, `ofAdd_zero`, `ofAdd_neg`)
+  and `zmod_group` (`Group (Multiplicative (ZMod n))` from five additive laws of the student's
+  `ZMod n`, which gains `Add` and `Neg` instances), each within the page budget, with `int_solve`
+  and `decide` over `Multiplicative (ZMod 6)` as downstream samples. A generic alternative, a
+  student `AddGroup` class with one instance `Group (Multiplicative α)`, Mathlib's own shape, was
+  compiled too: its generic `ofAdd_add` leaves `AddGroup.add` in a goal, which `omega` does not
+  read, so it needs `+` notation on `AddGroup` (a benign diamond with `Int.instAdd`) or per-type
+  restatements anyway, and the drafts take the per-type instances.
+
+  **Taken 2026-10-22: Mathlib's symbols**, by the owner ("Ok, refactor the existing content and
+  make sure the new plan is consistent with this pattern for future steps"), after seeing the
+  drafts. §2–§5 and Extra Credit were refactored the same day, as each section's **As
+  refactored** records, and **Spelling** under **The sections** is the rule for §6–§12.
+
+  **Reopened and taken 2026-10-23: additive groups.** The owner, having worked the examples:
+  "the Multiplicative definition is super cumbersome. It is generally annoying for the student to
+  do coercions, especially coercing something that looks like multiplication to addition", and
+  asked to explore the student's `AddGroup` for the plus-like examples with `Group` for the
+  general theorems. The probes (`scripts/addgroup_probe.lean`, `scripts/addgroup_order_probe.lean`)
+  found that a student `AddGroup ℤ` built from the integers' own operations lets every additive
+  law reach `3 + x` as written (`rw [zero_add]` on `(0 : ℤ) + 3 = 3`, `add_left_cancel h` on
+  `h : 3 + x = 3 + 4`), on `ZMod n`'s numerals too; that `@[to_additive]` works on the student's
+  declarations once each class and structure has a hand-written twin, linked afterwards by
+  `attribute [to_additive existing …]`; and that it cannot make the twin itself. The analysis
+  for the owner: the examples lose every `ofAdd`, while the definitions double, the copy of each
+  theorem being free under the mark and each class or structure costing one short problem. The
+  owner's answers to four questions: `•` is accepted as the textbook's `na`; the mark is taught
+  in a problem of its own, the student having met `@[simp]`; `Bool` under `xor` is plus-like
+  (addition modulo two), so additive, and the parity maps land in `Equiv.Perm (Fin 2)`; and the
+  student writes `AddGroup` and every twin. Then: "Ok, refactor the existing sections with these
+  decisions." §2–§5 and Extra Credit were refactored the same day (each section's second **As
+  refactored**), and **Spelling** under **The sections** is the rule for §6–§12.
 - **5. Where primes live** (open, 2026-10-21). §8 needs `Nat.Prime`, Euclid's lemma and "a
   divisor of `p ^ n` other than `1` is divisible by `p`"; §12 uses the last.
   - *A concept `primes` in §8*, four problems, the student's: Milne's definition of a prime,
@@ -1366,6 +1691,16 @@ are settled by the house rules and recorded so that a session does not reopen th
   earlier drafts had scattered through §2–§12 moved into §1, so that each later section's
   entry can name the one or two Lean devices it still introduces and say that nothing else in
   it is new Lean.
+- **9. The notation is a problem of its own** (the owner, 2026-10-22): "there should be an
+  explicit problem introducing the notation instances as problems or at least as @givens so the
+  student sees how it works." §2 gets `group_notation`, whose target is the `Inv G` instance and
+  whose prose introduces the two notation commands beside it; a notation command cannot be a
+  `@given` (the publisher admits only declarations, instances, examples and directives as block
+  members), so the commands stay outside the block and the problem shows them. §2's **Fix** is
+  the subplan; §4's `Pow G ℕ` and `Pow G ℤ` instances were already targets of their own
+  problems, so no other section changes. Under Mathlib's symbols (Decision 4, the second
+  design) the problem's targets are the three instances `Mul G`, `One G` and `Inv G`, and it is
+  the first step of the rework that decision describes. Built 2026-10-22 as `group_notation`, with the three instances as its targets.
 - **The goal** (2026-10-21): *every group of order `p ^ 2` is commutative*, Milne 4.18. The
   alternatives considered were Cauchy's theorem (a section more and a cyclic group of order `p`
   acting on tuples) and Lagrange's theorem (eight sections, the rest a second subject); the
@@ -1396,7 +1731,15 @@ are settled by the house rules and recorded so that a session does not reopen th
 ## Next step
 
 §6, Homomorphisms, in a fresh session: "Do the next section in Group Theory, which is §6
-Homomorphisms". Read §6's entry (its device note changed after §5: no `CoeFun` instance; a
+Homomorphisms", once the publisher change the additive refactor needs is released and repinned
+(`STYLE.md`, **Learned refactoring to additive groups**; until then `lake exe polya extract`
+fails 44 problems). Read **Spelling** under **The sections** first (from 2026-10-23: additive
+groups for `ℤ`, `ZMod n` and `Bool`, a written `@[to_additive NAME]` on every general declaration,
+a twin problem for each class and structure, `MonoidHom` with its twin `AddMonoidHom`, and the
+orientation into `Equiv.Perm (Fin 2)`) and §2–§5's second **As refactored** notes, which name
+what changed on 2026-10-23 and supersede the names in the paragraph below where they differ
+(`intMultiples n : AddSubgroup ℤ`, `zmodSixEvens : AddSubgroup (ZMod 6)`, `zmultiples`,
+`IsAddCyclic`, `center_klein`); then read §6's entry (its device note changed after §5: no `CoeFun` instance; a
 homomorphism applies through a named function, and the session chooses the spelling first),
 §5's **As built** (the names as they are in Lean: `Subgroup` with `carrier`, `one_mem'`,
 `mul_mem'`, `inv_mem'`, `x ∈ H`, `H.one_mem`, `H.mul_mem ha hb`, `H.inv_mem ha`, `Subgroup.ext`,
@@ -1414,11 +1757,12 @@ homomorphism applies through a named function, and the session chooses the spell
 building §5** (a coercion instance never reaches a later context; a coercion equation coerces
 both factors; `by decide` on a field with implicit binders; `decide` cannot see inside a `def`
 subgroup), and §1–§5 in full before writing. The §6 examples by the running-examples table: the
-reduction `ZMod 6 →* ZMod 2`, the reduction `ℤ →* ZMod n` (the cheaper route is `k ↦ 1 ^ k` by
-`zpow_add`, with `ZMod.val_one_pow` already built for natural exponents), the orientation
-`Dₙ →* Bool`, `Prod.fst`; `ZMod 2 ≃* Bool` from `zmodTwoEquivBool` and `zmodTwoEquivBool_mul`;
-`DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` by `decide`; `V₄` not isomorphic to `ZMod 4`; the kernels
-`⟨2⟩ = zmodSixEvens`, `nℤ = intMultiples n`, the rotations. The goal moves to §6's last concept;
+reductions `ZMod 6 →+ ZMod 2` and `ℤ →+ ZMod n` (the cheaper route for the second is
+`k ↦ k • 1` by `add_zsmul`, with `ZMod.val_nsmul_one` already built for natural multipliers),
+the orientation `Dₙ →* Equiv.Perm (Fin 2)`, `Prod.fst`; `ZMod 2 ≃+ Bool` from `zmodTwoEquivBool`
+and `zmodTwoEquivBool_add`; `DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` by `decide`; `V₄` not
+isomorphic to `ZMod 4`; the kernels `⟨2⟩ = zmodSixEvens`, `nℤ = intMultiples n`, the rotations.
+The goal moves to §6's last concept;
 `ExtraCredit.lean` stays the root's last import and now imports `Subgroups`. After §6, run the
 student review with `scripts/review/` as §1–§5 did (the §5 review's findings are under §5's
 **As built**). Decision 3 is taken (`MonoidHom`); the owner may still overrule 3 and 5 before §6

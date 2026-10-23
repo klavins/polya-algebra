@@ -16,6 +16,8 @@ universe u
 
 namespace GroupTheory
 
+set_option linter.translateGenerateName false
+
 /-!
 @concept one_sided_axioms
 @title The One-Sided Axioms
@@ -62,11 +64,12 @@ theorem op_e_of_left_axioms {G : Type u} (op : G → G → G) (e : G) (inv : G �
 @concept one_sided_axioms
 
 @preamble
-With the two missing laws proved, the three left laws determine a group: a construction that takes the three laws and returns the instance, under Mathlib's name for it. It is an `abbrev`, a definition Lean unfolds wherever it appears, so that the group it returns is seen to have the operation it was given. A definition that returns an instance of a class is built like an instance, with `where` and a line per field: the arguments supply the three pieces of data and three of the laws, and the previous problem's two theorems, which the context holds, supply the other two.
+With the two missing laws proved, the three left laws determine a group: a construction that takes the three laws and returns the instance, under Mathlib's name for it. It is an `abbrev`, a definition Lean unfolds wherever it appears, so that the group it returns is seen to have the operation it was given. A definition that returns an instance of a class is built like an instance, with `where` and a line per field: the arguments supply the three pieces of data and three of the laws, and the previous problem's two theorems, which the context holds, supply the other two. Under its mark the construction comes with its copy, `AddGroup.ofLeftAxioms`, which builds an additive group the same way.
 @description
-Define `Group.ofLeftAxioms`, which builds the instance `Group G` from `op`, `e`, `inv` and the three left laws.
+Define `Group.ofLeftAxioms`, under its mark, which builds the instance `Group G` from `op`, `e`, `inv` and the three left laws.
 -/
 
+@[to_additive AddGroup.ofLeftAxioms]
 abbrev Group.ofLeftAxioms {G : Type u} (op : G → G → G) (e : G) (inv : G → G)
     (assoc : ∀ a b c : G, op (op a b) c = op a (op b c))
     (e_op : ∀ a : G, op e a = a) (inv_op : ∀ a : G, op (inv a) a = e) : Group G where
@@ -96,15 +99,16 @@ example {G : Type u} (op : G → G → G) (e : G) (inv : G → G)
 @concept one_sided_axioms
 
 @preamble
-What the construction buys is visible on the integers. The instance of the first concept checked five laws of addition; three suffice, `Int.add_assoc`, `Int.zero_add` and `Int.add_left_neg : -a + a = 0`, and the group they determine is the same group, with the same operation. A `def` holding a `Group ℤ` is a value, not an instance Lean finds by itself, so its operation is reached through the field, as `intGroupLeft.mul 3 4`, which is `3 + 4` once the definition unfolds.
+What the construction buys is visible on the integers. The instance `AddGroup ℤ` of the second section checked five laws of addition; three suffice, `Int.add_assoc`, `Int.zero_add` and `Int.add_left_neg : -a + a = 0`, and the copy of the construction, `AddGroup.ofLeftAxioms`, builds from them the same group. A `def` holding an `AddGroup ℤ` is a value, not an instance Lean finds by itself, so its operation is reached through the field, as `intGroupLeft.add 3 4`, which is `3 + 4` once the definition unfolds.
 @description
-Define `intGroupLeft : Group ℤ` by `Group.ofLeftAxioms`, from addition, `0`, negation and the three laws, and check that its operation on `3` and `4` gives `7`.
+Define `intGroupLeft : AddGroup ℤ` by `AddGroup.ofLeftAxioms`, from the integers' addition, zero and negation and the three laws, and check that its addition on `3` and `4` gives `7`.
 -/
 
-def intGroupLeft : Group ℤ :=
-  Group.ofLeftAxioms (· + ·) 0 (- ·) Int.add_assoc Int.zero_add Int.add_left_neg
+def intGroupLeft : AddGroup ℤ :=
+  AddGroup.ofLeftAxioms (fun a b => a + b) 0 (fun a => -a) Int.add_assoc Int.zero_add
+    Int.add_left_neg
 
-theorem intGroupLeft_mul : intGroupLeft.mul 3 4 = 7 := rfl
+theorem intGroupLeft_add : intGroupLeft.add 3 4 = 7 := rfl
 
 /-! @end -/
 
@@ -113,7 +117,7 @@ theorem intGroupLeft_mul : intGroupLeft.mul 3 4 = 7 := rfl
 @title The Subgroup Criterion
 @kind theorem
 
-A subset is a subgroup as soon as it is nonempty and contains `a ∗ b⁻¹` with any `a` and `b` it contains: one closure condition in place of three. Nothing later depends on it, but it is the test most books state, and proving it is an exercise in getting the neutral element and the inverses out of a single condition.
+A subset is a subgroup as soon as it is nonempty and contains `a * b⁻¹` with any `a` and `b` it contains: one closure condition in place of three. Nothing later depends on it, but it is the test most books state, and proving it is an exercise in getting the neutral element and the inverses out of a single condition.
 -/
 
 /-!
@@ -122,24 +126,27 @@ A subset is a subgroup as soon as it is nonempty and contains `a ∗ b⁻¹` wit
 @concept subgroup_criterion
 
 @preamble
-A nonempty subset `s` of `G` that contains `a ∗ b⁻¹` whenever it contains `a` and `b` is a subgroup. The one condition only ever produces elements of the form `a ∗ b⁻¹`, so the test is to recognize each of `𝟙`, `a⁻¹` and `a ∗ b` as such a product of two elements already in `s`, through a law of the second section read as an equation between the two; the nonemptiness supplies the first element to start from, and each step uses the one before it. Mathlib's `Subgroup.ofDiv` is the construction; the two theorems before it carry the first two steps, so that each proof stays short, and the third step uses the second. The context holds `mul_inv_cancel`, `one_mul` and `inv_inv`.
+A nonempty subset `s` of `G` that contains `a * b⁻¹` whenever it contains `a` and `b` is a subgroup. The one condition only ever produces elements of the form `a * b⁻¹`, so the test is to recognize each of `1`, `a⁻¹` and `a * b` as such a product of two elements already in `s`, through a law of the second section read as an equation between the two; the nonemptiness supplies the first element to start from, and each step uses the one before it. Mathlib's `Subgroup.ofDiv` is the construction, and under the marks its copy is `AddSubgroup.ofSub`; the two theorems before it carry the first two steps, so that each proof stays short, and the third step uses the second. The context holds `mul_inv_cancel`, `one_mul` and `inv_inv`.
 @description
-Show from the two hypotheses that `𝟙 ∈ s`, and that `a⁻¹ ∈ s` for every `a ∈ s`; then define `Subgroup.ofDiv s hne hs`, the subgroup with carrier `s`.
+Show from the two hypotheses that `1 ∈ s`, and that `a⁻¹ ∈ s` for every `a ∈ s`; then define `Subgroup.ofDiv s hne hs`, the subgroup with carrier `s`.
 -/
 
+@[to_additive zero_mem_of_sub]
 theorem one_mem_of_div {G : Type u} [Group G] {s : Set G} (hne : ∃ x, x ∈ s)
-    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) : 𝟙 ∈ s := by
+    (hs : ∀ a b, a ∈ s → b ∈ s → a * b⁻¹ ∈ s) : 1 ∈ s := by
   obtain ⟨x, hx⟩ := hne
   rw [← mul_inv_cancel x]
   exact hs x x hx hx
 
+@[to_additive neg_mem_of_sub]
 theorem inv_mem_of_div {G : Type u} [Group G] {s : Set G} (hne : ∃ x, x ∈ s)
-    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) {a : G} (ha : a ∈ s) : a⁻¹ ∈ s := by
+    (hs : ∀ a b, a ∈ s → b ∈ s → a * b⁻¹ ∈ s) {a : G} (ha : a ∈ s) : a⁻¹ ∈ s := by
   rw [← one_mul a⁻¹]
-  exact hs 𝟙 a (one_mem_of_div hne hs) ha
+  exact hs 1 a (one_mem_of_div hne hs) ha
 
+@[to_additive AddSubgroup.ofSub]
 def Subgroup.ofDiv {G : Type u} [Group G] (s : Set G) (hne : ∃ x, x ∈ s)
-    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) : Subgroup G where
+    (hs : ∀ a b, a ∈ s → b ∈ s → a * b⁻¹ ∈ s) : Subgroup G where
   carrier := s
   one_mem' := one_mem_of_div hne hs
   mul_mem' := by
@@ -152,7 +159,7 @@ def Subgroup.ofDiv {G : Type u} [Group G] (s : Set G) (hne : ∃ x, x ∈ s)
 
 /-- @spec -/
 example {G : Type u} [Group G] (s : Set G) (hne : ∃ x, x ∈ s)
-    (hs : ∀ a b, a ∈ s → b ∈ s → a ∗ b⁻¹ ∈ s) : (Subgroup.ofDiv s hne hs).carrier = s := rfl
+    (hs : ∀ a b, a ∈ s → b ∈ s → a * b⁻¹ ∈ s) : (Subgroup.ofDiv s hne hs).carrier = s := rfl
 
 /-! @end -/
 
