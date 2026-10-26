@@ -3,8 +3,10 @@
 # problems prove by hand what Mathlib already holds (the plan says it is the one section whose
 # problems may be one Mathlib name long); each lists the Mathlib name the warm-up stands in for.
 image_union          # Set.image_union
+image_mono           # Set.image_mono; the warm-up on Mathlib's ⊆ and its strict-implicit point
 restrict_mem_image   # Set.mem_image_of_mem; the warm-up on a set as a type
 image_eq_range       # Set.image_eq_range
+flip3                # rot3_flip3 is a decide on two permutations of three points, the first non-commuting pair
 not_equiv            # a definition with a spec; the warm-up on Equiv, where and decide
 composites           # Function.Injective.comp, Function.Surjective.comp
 one_sided_inverses   # Function.LeftInverse.injective, Function.RightInverse.surjective
@@ -16,14 +18,15 @@ find_least           # Nat.find_spec and Nat.find_min', the lemmas the descripti
 coprime              # decide and Nat.Coprime.dvd_of_dvd_mul_left, the lemma the description names
 ker_equivalence      # (Setoid.ker f).iseqv
 quotient_eq_iff_mod  # Quotient.eq
-to_fin               # a definition with a spec; Fin.ofNat, named in the description
-card_quotient_le     # Fintype.card_le_of_surjective with Quotient.mk_surjective
+to_fin               # a definition with a spec; core's Fin.ofNat, no longer named in the prose
+quotient_mk_surjective  # Quotient.mk_surjective; the warm-up on Quotient.inductionOn
+card_quotient_le     # Fintype.card_le_of_surjective with quotient_mk_surjective, the context fact the description names
 bool_xor_group       # Fintype.card_bool; decide is the lesson, and the order of a group is defined here
 neutral_unique       # eq_one_of_left_neutral is a one-line corollary of the problem's own mul_eq_left/mul_eq_right, by design
-int_group_of_left_axioms  # intGroupLeft_add holds by definition (rfl); exact? finds a roundabout term
+int_group_of_left_axioms  # intGroupLeft_add and intGroupLeft_eq hold by definition (rfl), intGroupLeft_add_zero is the field add_zero the construction supplied; the checks are the lesson
 zmod_group           # zmod_neg_neg and zmod_neg_add_rev are the additive copies applied to residues, by design
-s3_not_comm          # rot3_reflect3_ne is a decide on two permutations of three points, by design
-prod_group           # prod_mul_def holds by definition (rfl); the sum in ZMod 2 × ZMod 3 is a decide
+s3_not_comm          # rot3_reflect3_ne and reflect3_mul_rot3 are decides on permutations of three points, by design; rot3_reflect3_rot3 applies the problem's own general theorem
+prod_group           # prod_mul_def holds by definition (rfl), Mathlib's Prod.mul_def; -a + a = 0 in ZMod 2 × ZMod 3 is the additive copy applied through the student's instance, by design
 dihedral_mul         # d4_table is a decide on the table, the warm-up on reading it
 dihedral_group       # d4_not_comm is a decide in D₄, the running example's non-commutativity
 prod_fintype         # card_zmod_two_three is a count of six by labelling; exact? finds a roundabout term
@@ -31,7 +34,7 @@ klein_four           # zmod_four_neg_one is a decide in ZMod 4, the contrast wit
 npow                 # s3_pow_check is a decide in S₃
 pow_one              # pow_zero and pow_succ hold by definition (rfl), the equations later proofs rewrite with
 zpow                 # s3_zpow_check is a decide in S₃
-zpow_neg             # zpow_natCast, zpow_negSucc and zpow_zero hold by definition (rfl); zpow_one is pow_one by unfolding
+zpow_zero_one        # zpow_natCast, zpow_negSucc and zpow_zero hold by definition (rfl); zpow_one is pow_one by unfolding
 int_multiples        # mem_intMultiples holds by definition, the equation the description asks for; the subgroup is the lesson
 zmod_six_evens       # mem_zmodSixEvens holds by definition; the subgroup by decide is the lesson
 subgroup_as_type     # set_fintype_card_le_univ; the warm-up on a subgroup as a type, routed through Fintype.card_le_of_injective as the description says
@@ -44,7 +47,15 @@ closure              # mem_closure holds by definition; subset_closure and closu
 zpowers              # mem_zpowers_iff holds by definition; the subgroup is the lesson
 group_notation       # the Mul/One/Inv instances: an instance's shape is not judged, `exact?` fills any; the `rfl` spec pins each to its Group field
 add_group            # the Add/Zero/Neg instances, as in group_notation: the `rfl` spec pins each to its AddGroup field
-to_additive          # int_add_add_neg_add_neg is the additive copy applied, which is the lesson
+to_additive          # int_add_add_neg_add_neg and add_add_neg_add_neg_self are the additive copy applied, which is the lesson
 self_inverse_comm    # bool_add_comm is the additive copy of the general fact applied to Bool, by design
+solve_equation       # int_solve is the additive copy eq_neg_add_iff_add_eq applied to ℤ, which is the lesson
+mul_left_bijective   # int_add_three_bijective is the additive copy AddGroup.addLeft_bijective applied to ℤ, by design
 nsmul                # int_three_nsmul_two is a decide in ℤ, the multiple computed
 zsmul                # int_neg_three_zsmul_two is a decide in ℤ, the integer multiple computed
+zmod                 # ZMod n is Fin n by design, so its value equations, its count and a numeral are core's Fin facts; the abbrev is the lesson
+zmod_add_laws        # ZMod.add_zero is core's Fin.add_zero, since ZMod n is Fin n; the passage to values, worked on zero_add, is the lesson
+to_fin_or_zero       # toFinOrZero_check is the definition evaluated at two numbers; the dependent `if` is the lesson
+inv_eq_pow           # zmod_six_neg_eq_nsmul is the additive copy neg_eq_addOrderOf_sub_one_nsmul applied to ZMod 6, which the check exists to demand (decide cannot evaluate addOrderOf)
+eq_of_coe_eq         # Subtype.ext (SetCoe.ext) by hand, the warm-up opening a structure with `cases … | mk` before subgroup_ext; the description excludes it
+center_eq_top        # int_center is the additive copy AddSubgroup.center_eq_top applied to ℤ, which the check exists to demand

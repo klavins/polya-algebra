@@ -23,7 +23,7 @@ set_option linter.translateGenerateName false
 @title The Integers Modulo n
 @kind definition
 
-The integers modulo `n` are the remainders `0, …, n - 1`, added by adding and reducing. They are the commutative finite groups every course computes in: one for each `n`, among them a group of each prime order. This concept builds the type `ZMod n` from a remainder and its bound, adds its residues, makes it an additive group, counts it, and matches `ZMod 2` with the group of order two.
+The integers modulo `n` are the remainders `0, …, n - 1`, added by adding and reducing. They are the commutative finite groups every course computes in: one for each `n`, among them a group of each prime order. They are built from the remainders, their addition is shown to satisfy the group laws, and the integers modulo 2 are matched with the group of order two.
 -/
 
 /-!
@@ -32,62 +32,35 @@ The integers modulo `n` are the remainders `0, …, n - 1`, added by adding and 
 @concept integers_mod_n
 
 @preamble
-The first section showed that the classes of congruence modulo `n` correspond to the remainders `0, …, n - 1`. Arithmetic modulo `n` is arithmetic on these remainders, and we take the remainders themselves as the elements, as `Fin n` does: an element of `ZMod n` is a natural number `val` together with a proof `val_lt` that it is below `n`, built as `⟨2, by decide⟩` or `⟨a % n, Nat.mod_lt a h⟩`. Lean's `Fin n` already adds this way, and Mathlib has a `ZMod n` of another shape; `ZMod n` is defined afresh here, so that its operation is the one written in this concept, under Mathlib's name for the integers modulo `n`.
-
-A numeral in `ZMod n` is the remainder of the number it names, so `(7 : ZMod 5)` is `2`. The Natural Numbers gave `MyNat` its numerals through instances of `OfNat`; one instance `OfNat (ZMod n) k` for every `k` gives `ZMod n` all of them, and the hypothesis `[NeZero n]`, met at `toFin` in the first section, keeps `n` positive so that `k % n` is a remainder below it. Closing the structure with `deriving DecidableEq` lets `decide` compare two of its elements.
-@description
-Define the structure `ZMod n` with the fields `val : ℕ` and `val_lt : val < n`, closed by `deriving DecidableEq`, and supply the instance `OfNat (ZMod n) k` that reads a numeral as its remainder modulo `n`.
--/
-
-structure ZMod (n : ℕ) where
+The first section showed that the classes of congruence modulo `n` correspond to the remainders `0, …, n - 1`, and met Lean's `Fin n`, whose elements are those remainders. Lean already adds and negates them modulo `n`; trimmed, its definitions are
+```lean
+structure Fin (n : ℕ) where
   val : ℕ
-  val_lt : val < n
-  deriving DecidableEq
-
-instance (n : ℕ) [NeZero n] (k : ℕ) : OfNat (ZMod n) k :=
-  ⟨⟨k % n, Nat.mod_lt k (Nat.pos_of_neZero n)⟩⟩
-
-/-- @spec -/
-example (n : ℕ) (a : ZMod n) : a.val < n := a.val_lt
-
-/-- @spec -/
-example (n k : ℕ) (h : k < n) : ZMod n := ⟨k, h⟩
-
-/-- @spec -/
-example : (7 : ZMod 5).val = 2 ∧ (3 : ZMod 6) ≠ 4 := by decide
-
-/-! @end -/
-
-/-!
-@problem zmod_add_neg
-@title Addition and Negation Modulo n
-@concept integers_mod_n
-
-@preamble
-Remainders are added by adding and reducing: the sum of `a` and `b` in `ZMod n` has the value `(a.val + b.val) % n`, which `Nat.mod_lt` keeps below `n`. The negative of `a` is the remainder that returns the sum to `0`, which is `n - a.val`, except that `n - 0 = n` is not a remainder; reducing once more, `(n - a.val) % n`, covers that case too, since `n % n = 0`. Each operation returns a remainder together with its proof of being one, with `Nat.mod_lt` and `Nat.pos_of_neZero n` as `toFin` used them in the first section. The symbols `+` and `-a` belong to the classes `Add` and `Neg`, as `*` belongs to `Mul`, and two instances hand them the operations.
-
-The two equations that read the values back, `(a + b).val = (a.val + b.val) % n` and `(-a).val = (n - a.val) % n`, hold by definition, and later proofs rewrite with them: a goal that mentions `(a + b).val` is not touched by the lemmas about `%` until it is unfolded to the arithmetic it stands for.
+  isLt : val < n
+-- a + b is ⟨(a.val + b.val) % n, _⟩, and -a is ⟨(n - a.val) % n, _⟩
+-- a numeral k is ⟨k % n, _⟩, which needs n ≠ 0
+```
+so `fin_four_add_neg` of the first section was already arithmetic modulo `4`. The integers modulo `n` are `Fin n` under Mathlib's name for them, `ZMod n`; Mathlib's `ZMod 0` is `ℤ`, and here `n` is always positive. An `abbrev` is a definition that Lean treats as its body when it looks for instances, so `ZMod n` has the numerals, `+`, `-`, decidable equality and count of `Fin n`. The equations that read the values back hold by definition.
 @description
-Define `ZMod.add` and `ZMod.neg`, supply the instances `Add (ZMod n)` and `Neg (ZMod n)`, and prove the two equations `ZMod.val_add` and `ZMod.val_neg` that unfold them, each of which holds by definition.
+Define `ZMod n` as `Fin n` by an `abbrev`; prove `ZMod.val_add`, `ZMod.val_neg` and `ZMod.val_zero`; and show that `ZMod n` has `n` elements and that `(7 : ZMod 5) = 2`. Mathlib provides `Fintype.card_fin`.
 -/
 
-def ZMod.add {n : ℕ} [NeZero n] (a b : ZMod n) : ZMod n :=
-  ⟨(a.val + b.val) % n, Nat.mod_lt _ (Nat.pos_of_neZero n)⟩
-
-def ZMod.neg {n : ℕ} [NeZero n] (a : ZMod n) : ZMod n :=
-  ⟨(n - a.val) % n, Nat.mod_lt _ (Nat.pos_of_neZero n)⟩
-
-instance {n : ℕ} [NeZero n] : Add (ZMod n) := ⟨ZMod.add⟩
-
-instance {n : ℕ} [NeZero n] : Neg (ZMod n) := ⟨ZMod.neg⟩
+abbrev ZMod (n : ℕ) := Fin n
 
 /-- @spec -/
-example : (3 : ZMod 5) + 4 = 2 ∧ -(2 : ZMod 5) = 3 := by decide
+example (n : ℕ) : ZMod n = Fin n := rfl
 
-theorem ZMod.val_add {n : ℕ} [NeZero n] (a b : ZMod n) :
-    (a + b).val = (a.val + b.val) % n := rfl
+theorem ZMod.val_add {n : ℕ} (a b : ZMod n) : (a + b).val = (a.val + b.val) % n := rfl
 
-theorem ZMod.val_neg {n : ℕ} [NeZero n] (a : ZMod n) : (-a).val = (n - a.val) % n := rfl
+theorem ZMod.val_neg {n : ℕ} (a : ZMod n) : (-a).val = (n - a.val) % n := rfl
+
+theorem ZMod.val_zero {n : ℕ} [NeZero n] : (0 : ZMod n).val = 0 % n := rfl
+
+theorem card_zmod (n : ℕ) [NeZero n] : Fintype.card (ZMod n) = n :=
+  Fintype.card_fin n
+
+theorem zmod_five_seven : (7 : ZMod 5) = 2 := by
+  decide
 
 /-! @end -/
 
@@ -97,47 +70,50 @@ theorem ZMod.val_neg {n : ℕ} [NeZero n] (a : ZMod n) : (-a).val = (n - a.val) 
 @concept integers_mod_n
 
 @preamble
-Addition modulo `n` is associative and commutative, `0` is neutral, and `-a` cancels `a` on either side: the six laws an additive group has, each an equation of remainders. Two elements of `ZMod n` are equal when their values are, by `ZMod.ext : a.val = b.val → a = b`, given in the context; the two equations of the previous problem turn the value of a sum or a negative into arithmetic of remainders, and `ZMod.val_zero`, also given, says that the numeral `0` has the value `0 % n`, which `Nat.zero_mod` reduces. The first section's facts about `%` settle the arithmetic: `Nat.mod_add_mod` and `Nat.add_mod_mod` let a summand be reduced before or after the addition, `Nat.mod_eq_of_lt` for a number below `n`, and `Nat.mod_self`. Core Lean also has `Nat.add_assoc`, `Nat.add_comm`, `Nat.zero_add`, `Nat.add_zero`, `Nat.le_of_lt`, `Nat.sub_add_cancel` and `Nat.add_sub_of_le`.
+Addition modulo `n` is associative and commutative, `0` is neutral, and `-a` cancels `a` on either side. Two residues are equal when their values are; this is `Fin.ext`. So a law is proved by passing to values and computing with remainders. The two laws whose arithmetic is fiddly, `ZMod.add_assoc` and `ZMod.neg_add_cancel`, are given with their proofs. Here is the proof that `0` is neutral on the left, one rewrite per line, with the goal each leaves:
+```lean
+theorem ZMod.zero_add [NeZero n] (a : ZMod n) : 0 + a = a := by
+  apply Fin.ext  -- (0 + a).val = a.val
+  rw [ZMod.val_add]  -- (0.val + a.val) % n = a.val
+  rw [ZMod.val_zero]  -- (0 % n + a.val) % n = a.val
+  rw [Nat.zero_mod, Nat.zero_add]  -- a.val % n = a.val
+  rw [Nat.mod_eq_of_lt a.isLt]  -- closed
+```
+`Nat.mod_eq_of_lt` drops the `%` from a number below `n`. The laws of `ℕ` the proofs need are core Lean's, under the names of The Natural Numbers.
 @description
-Prove the six laws `ZMod.add_assoc`, `ZMod.zero_add`, `ZMod.add_zero`, `ZMod.neg_add_cancel : -a + a = 0`, `ZMod.add_neg_cancel : a + -a = 0` and `ZMod.add_comm`, under Mathlib's names.
+Prove `ZMod.add_zero`, `ZMod.add_comm` and `ZMod.add_neg_cancel : a + -a = 0`. The context holds `ZMod.zero_add`, `ZMod.neg_add_cancel` and the equations of the previous problem.
 -/
 
 /-- @given -/
-theorem ZMod.ext {n : ℕ} {a b : ZMod n} (h : a.val = b.val) : a = b := by
-  cases a
-  cases b
-  subst h
-  rfl
-
-/-- @given -/
-theorem ZMod.val_zero {n : ℕ} [NeZero n] : (0 : ZMod n).val = 0 % n := rfl
-
-theorem ZMod.add_assoc {n : ℕ} [NeZero n] (a b c : ZMod n) : a + b + c = a + (b + c) := by
-  apply ZMod.ext
+theorem ZMod.add_assoc {n : ℕ} (a b c : ZMod n) : a + b + c = a + (b + c) := by
+  apply Fin.ext
   simp only [ZMod.val_add]
   rw [Nat.mod_add_mod, Nat.add_mod_mod, Nat.add_assoc]
 
+/-- @given -/
+theorem ZMod.neg_add_cancel {n : ℕ} [NeZero n] (a : ZMod n) : -a + a = 0 := by
+  apply Fin.ext
+  rw [ZMod.val_add, ZMod.val_neg, ZMod.val_zero, Nat.mod_add_mod,
+    Nat.sub_add_cancel (Nat.le_of_lt a.isLt), Nat.mod_self, Nat.zero_mod]
+
+/-- @given -/
 theorem ZMod.zero_add {n : ℕ} [NeZero n] (a : ZMod n) : 0 + a = a := by
-  apply ZMod.ext
-  rw [ZMod.val_add, ZMod.val_zero, Nat.zero_mod, Nat.zero_add, Nat.mod_eq_of_lt a.val_lt]
+  apply Fin.ext
+  rw [ZMod.val_add]
+  rw [ZMod.val_zero]
+  rw [Nat.zero_mod, Nat.zero_add]
+  rw [Nat.mod_eq_of_lt a.isLt]
 
 theorem ZMod.add_zero {n : ℕ} [NeZero n] (a : ZMod n) : a + 0 = a := by
-  apply ZMod.ext
-  rw [ZMod.val_add, ZMod.val_zero, Nat.zero_mod, Nat.add_zero, Nat.mod_eq_of_lt a.val_lt]
+  apply Fin.ext
+  rw [ZMod.val_add, ZMod.val_zero, Nat.zero_mod, Nat.add_zero, Nat.mod_eq_of_lt a.isLt]
 
-theorem ZMod.neg_add_cancel {n : ℕ} [NeZero n] (a : ZMod n) : -a + a = 0 := by
-  apply ZMod.ext
-  rw [ZMod.val_add, ZMod.val_neg, ZMod.val_zero, Nat.mod_add_mod,
-    Nat.sub_add_cancel (Nat.le_of_lt a.val_lt), Nat.mod_self, Nat.zero_mod]
+theorem ZMod.add_comm {n : ℕ} (a b : ZMod n) : a + b = b + a := by
+  apply Fin.ext
+  rw [ZMod.val_add, ZMod.val_add, Nat.add_comm]
 
 theorem ZMod.add_neg_cancel {n : ℕ} [NeZero n] (a : ZMod n) : a + -a = 0 := by
-  apply ZMod.ext
-  rw [ZMod.val_add, ZMod.val_neg, ZMod.val_zero, Nat.add_mod_mod,
-    Nat.add_sub_of_le (Nat.le_of_lt a.val_lt), Nat.mod_self, Nat.zero_mod]
-
-theorem ZMod.add_comm {n : ℕ} [NeZero n] (a b : ZMod n) : a + b = b + a := by
-  apply ZMod.ext
-  rw [ZMod.val_add, ZMod.val_add, Nat.add_comm]
+  rw [ZMod.add_comm, ZMod.neg_add_cancel]
 
 /-! @end -/
 
@@ -147,9 +123,9 @@ theorem ZMod.add_comm {n : ℕ} [NeZero n] (a b : ZMod n) : a + b = b + a := by
 @concept integers_mod_n
 
 @preamble
-`ZMod n` under `+` is an additive group for every positive `n`: the instance takes the addition, the numeral `0` and the negation of the previous problems as its data, and the laws of the previous problem as its five laws, so that `add_assoc := ZMod.add_assoc` is accepted as it stands. As for the integers, the instance's `+` is the residues' own, so every theorem about additive groups applies to residues as they are written, with no new proof: `-(-a) = a` is `neg_neg a`, and `-(a + b) = -b + -a` is `neg_add_rev a b`, the additive copies of two theorems of the previous section, which the context holds. In `ZMod 5`, `3 + 4 = 2` and `-2 = 3`, which `decide` settles.
+`ZMod n` under `+` is an additive group for every positive `n`: the instance takes the addition, the numeral `0` and the negation of `Fin n` as its data, and the laws of the previous problem as its five laws. As for the integers, the instance's `+` is the residues' own, so every theorem about additive groups applies to residues as they are written, with no new proof. The previous section proved that inversion undoes itself, `inv_inv`, and that it reverses a product, `mul_inv_rev`; the context holds their additive versions, `neg_neg` and `neg_add_rev`.
 @description
-Supply the instance `AddGroup (ZMod n)` for positive `n`, and show that `-(-a) = a` and `-(a + b) = -b + -a` for all residues `a` and `b`.
+Supply the instance `AddGroup (ZMod n)` for positive `n`, and show, from those additive versions, that `-(-a) = a` and `-(a + b) = -b + -a` for all residues `a` and `b`.
 -/
 
 instance (n : ℕ) [NeZero n] : AddGroup (ZMod n) where
@@ -175,40 +151,16 @@ theorem zmod_neg_add_rev {n : ℕ} [NeZero n] (a b : ZMod n) : -(a + b) = -b + -
 /-! @end -/
 
 /-!
-@problem zmod_fintype
-@title Counting the Integers Modulo n
-@concept integers_mod_n
-
-@preamble
-`ZMod n` has `n` elements, one for each remainder. To count it in Lean is to give it a `Fintype` instance, and the first section's way of counting, by labelling, gives one. The elements of `ZMod n` are labelled by `Fin n` through the equivalence that keeps the value and carries the bound across, under the name each side gives its proof, `isLt` in `Fin n` and `val_lt` in `ZMod n`; each inverse law says that an element rebuilt from its own fields is itself, which holds by `rfl`. `Fintype.ofEquiv α (e : α ≃ β) : Fintype β` makes the labelled type finite from its labels, and `Fintype.card_congr` of the same equivalence counts it.
-@description
-Define `finEquivZMod n : Fin n ≃ ZMod n`, supply the instance `Fintype (ZMod n)` from it, and show that `ZMod n` has `n` elements. Mathlib provides `Fintype.ofEquiv`, `Fintype.card_congr` and `Fintype.card_fin`.
--/
-
-def finEquivZMod (n : ℕ) : Fin n ≃ ZMod n where
-  toFun i := ⟨i.val, i.isLt⟩
-  invFun a := ⟨a.val, a.val_lt⟩
-  left_inv _ := rfl
-  right_inv _ := rfl
-
-/-- @spec -/
-example (n : ℕ) (i : Fin n) (a : ZMod n) :
-    (finEquivZMod n i).val = i.val ∧ ((finEquivZMod n).symm a).val = a.val := ⟨rfl, rfl⟩
-
-instance (n : ℕ) : Fintype (ZMod n) := Fintype.ofEquiv (Fin n) (finEquivZMod n)
-
-theorem card_zmod (n : ℕ) : Fintype.card (ZMod n) = n := by
-  rw [← Fintype.card_congr (finEquivZMod n), Fintype.card_fin]
-
-/-! @end -/
-
-/-!
 @problem zmod_two_equiv_bool
 @title The Integers Modulo 2 and the Booleans
 @concept integers_mod_n
 
 @preamble
-`ZMod 2` has the two elements `0` and `1`, with `1 + 1 = 0`, and so has the group of order two of the previous section, `Bool` under `xor`, with `true + true = false`. The two are the same group under different names: the renaming `0 ↦ false`, `1 ↦ true` is a bijection that carries the one table to the other, `e (a + b) = e a + e b` for all `a` and `b`. The equivalence is written as `boolEquivFinTwo` was in the first section, with `if c then x else y`, which branches on a decidable condition `c`, in each direction: a test of `a.val` on one side, and the numerals `1` and `0` on the other. Each of its laws, like the equation of the tables, is a statement about the finitely many elements of `ZMod 2` and `Bool`, which `decide` settles through the instance of the previous problem.
+`ZMod 2` has two elements, `0` and `1`, with `1 + 1 = 0`. The group of order two of the previous section, `Bool` under `xor`, also has two, with `true + true = false`. The two are the same group under different names: the renaming `0 ↦ false`, `1 ↦ true` is a bijection `e` that carries the one table to the other,
+```lean
+e (a + b) = e a + e b
+```
+for all `a` and `b`. The equivalence is built as `boolEquivFinTwo` was in the first section, by its four fields. The laws of the equivalence, like the equation of the tables, are statements about the finitely many elements of `ZMod 2` and `Bool`.
 @description
 Define `zmodTwoEquivBool : ZMod 2 ≃ Bool`, sending `0` to `false` and `1` to `true`, and show that it carries the addition of `ZMod 2` to the addition of `Bool`.
 -/
@@ -233,7 +185,7 @@ theorem zmodTwoEquivBool_add :
 @title The Symmetric Groups
 @kind definition
 
-The permutations of a set form a group under composition, the symmetric group of the set; on `n` points it is `Sₙ`. It is the first group in which the order of the factors matters, and the one every finite group lives inside. This concept makes `Equiv.Perm X` an instance of the class and shows, on three points, that a rotation and a reflection do not commute.
+The permutations of a set form a group under composition, the symmetric group of the set; on `n` points it is `Sₙ`. It is the first group of the subject in which the order of the factors matters. On three points it is already not commutative.
 -/
 
 /-!
@@ -242,11 +194,14 @@ The permutations of a set form a group under composition, the symmetric group of
 @concept symmetric_groups
 
 @preamble
-A permutation of `X` is a bijection from `X` to itself, an element of `Equiv.Perm X`, and permutations compose: `g` and then `f` is `g.trans f`. We take `f * g` to be `g.trans f`, the permutation that applies `g` first, so that `(f * g) x = f (g x)`, as for functions; the identity `Equiv.refl X` is neutral, and the inverse of `f` is `f.symm`. Associativity and the two laws of the identity hold by `rfl`: both sides apply the same functions in the same order, and the proof fields of an equivalence do not matter to its equality.
+The first section met the permutations of a type `X`, the bijections from `X` to itself that form `Equiv.Perm X`, and composed them: `g` and then `f` is `g.trans f`. We take `f * g` to be `g.trans f`, the permutation that applies `g` first, so that `(f * g) x = f (g x)`, as for functions; the identity `Equiv.refl X` is neutral, and the inverse of `f` is `f.symm`. Associativity and the two laws of the identity hold by definition.
 
-The two inverse laws say that `f` followed by `f.symm`, and `f.symm` followed by `f`, are the identity, which is true at every point: `f.symm (f x) = x` and `f (f.symm x) = x`, the laws `f.symm_apply_apply` and `f.apply_symm_apply` of the first section. Two equivalences that agree at every point are equal, `Equiv.ext : (∀ x, e x = e' x) → e = e'`; after `apply Equiv.ext` the goal at a point `x` reads `(f.trans f.symm) x = (Equiv.refl X) x`, which unfolds to `f.symm (f x) = x`, and `exact` sees through the unfolding.
+Under this convention `f⁻¹ * f` is `f` followed by `f.symm`, and `f * f⁻¹` is `f.symm` followed by `f`. Two equivalences that agree at every point are equal:
+```lean
+theorem Equiv.ext {e e' : α ≃ β} (h : ∀ x, e x = e' x) : e = e'
+```
 @description
-Supply the instance `Group (Equiv.Perm X)` with `f * g = g.trans f` (not `f.trans g`, which applies `f` first), so that `(f * g) x = f (g x)`. Mathlib provides `Equiv.ext`.
+Supply the instance `Group (Equiv.Perm X)` with the convention above: `f * g = g.trans f`, not `f.trans g`.
 -/
 
 instance (X : Type u) : Group (Equiv.Perm X) where
@@ -256,8 +211,14 @@ instance (X : Type u) : Group (Equiv.Perm X) where
   mul_assoc _ _ _ := rfl
   one_mul _ := rfl
   mul_one _ := rfl
-  inv_mul_cancel f := Equiv.ext f.symm_apply_apply
-  mul_inv_cancel f := Equiv.ext f.apply_symm_apply
+  inv_mul_cancel f := by
+    apply Equiv.ext
+    intro x
+    exact f.symm_apply_apply x
+  mul_inv_cancel f := by
+    apply Equiv.ext
+    intro x
+    exact f.apply_symm_apply x
 
 /-- @spec -/
 example (X : Type u) (f g : Equiv.Perm X) (x : X) :
@@ -272,9 +233,15 @@ example (X : Type u) (f g : Equiv.Perm X) (x : X) :
 @concept symmetric_groups
 
 @preamble
-The symmetric group on three points, `Equiv.Perm (Fin 3)`, is the group of symmetries of a triangle with vertices `0`, `1` and `2`. The rotation `rot3` of the first section, `i ↦ i + 1`, turns it; the reflection through the vertex `0` fixes `0` and exchanges `1` and `2`, which is `i ↦ -i`, since `-1 = 2` and `-2 = 1` in `Fin 3`. A reflection is its own inverse, so the same function serves in both directions, and applied twice it is the identity, `reflect3 * reflect3 = 1`. `decide` settles the laws and the equation, as it settled the cube of `rot3`, which in the group's symbols is `rot3 * rot3 * rot3 = 1`: `rot3` of the first section is an element of this group as it stands.
+The symmetric group on three points, `Equiv.Perm (Fin 3)`, is the group of symmetries of a triangle with vertices `0`, `1` and `2`. The rotation `rot3` of the first section, `i ↦ i + 1`, turns it, and is an element of this group as it stands. The reflection through the vertex `0` fixes `0` and exchanges `1` and `2`, which is `i ↦ -i`, since `-1 = 2` and `-2 = 1` in `Fin 3`. A reflection undoes itself, so applied twice it is the identity and it is its own inverse; a third of a turn is undone by two more thirds.
 @description
-Define `reflect3 : Equiv.Perm (Fin 3)`, the permutation sending `i` to `-i`, and show that `reflect3 * reflect3 = 1` and `rot3 * rot3 * rot3 = 1`.
+Define `reflect3 : Equiv.Perm (Fin 3)`, the permutation sending `i` to `-i`, and show that
+```lean
+reflect3 * reflect3 = 1
+reflect3⁻¹ = reflect3
+rot3⁻¹ = rot3 * rot3
+```
+The context holds `inv_eq_of_mul_eq_one_right` of the previous section, which says that `a * b = 1` gives `a⁻¹ = b`.
 -/
 
 def reflect3 : Equiv.Perm (Fin 3) where
@@ -289,7 +256,10 @@ example : reflect3 0 = 0 ∧ reflect3 1 = 2 ∧ reflect3 2 = 1 := by decide
 theorem reflect3_mul_self : reflect3 * reflect3 = 1 := by
   decide
 
-theorem rot3_cube_mul : rot3 * rot3 * rot3 = 1 := by
+theorem reflect3_inv : reflect3⁻¹ = reflect3 :=
+  inv_eq_of_mul_eq_one_right reflect3_mul_self
+
+theorem rot3_inv : rot3⁻¹ = rot3 * rot3 := by
   decide
 
 /-! @end -/
@@ -300,11 +270,18 @@ theorem rot3_cube_mul : rot3 * rot3 * rot3 = 1 := by
 @concept symmetric_groups
 
 @preamble
-In every group met so far, `a * b = b * a`. Not here: reflecting and then rotating is not rotating and then reflecting. At the vertex `0`, `(rot3 * reflect3) 0 = rot3 (reflect3 0) = 1`, while `(reflect3 * rot3) 0 = reflect3 1 = 2`; the two products differ at a point, so they differ, and `decide` compares the two permutations at all three points.
+The first section found two permutations of three points that do not commute, `rot3` and `flip3`. `rot3` and `reflect3` do not commute either: reflecting and then rotating is not rotating and then reflecting. Follow the vertex `0` under each.
 
-What the order does is a rule: reflecting after a rotation is rotating the other way after the reflection, `reflect3 * rot3 = rot3⁻¹ * reflect3`, again a check at three points. The laws of the previous section hold all the same, since they were proved from the axioms, so an equal factor cancels in S₃ as it does in the integers. There `decide` is no help: the goal has a free variable `x`, and to run through its values `decide` would need a list of all permutations of three points, which the part of Mathlib this subject imports does not provide.
+In place of commutativity there is a rule: reflecting after a rotation is rotating the other way after the reflection,
+```lean
+reflect3 * rot3 = rot3⁻¹ * reflect3
+```
+In any group, an element `s` with `s * r = r⁻¹ * s` can pass `r` only by inverting it.
 @description
-Show that `rot3 * reflect3 ≠ reflect3 * rot3`, that `reflect3 * rot3 = rot3⁻¹ * reflect3`, and that `rot3 * x = rot3 * reflect3` forces `x = reflect3`. The context holds `mul_left_cancel` of the previous section, and not the `↔` form beside it.
+Show that `rot3 * reflect3 ≠ reflect3 * rot3` and that the rule above holds. Prove that in any group `s * r = r⁻¹ * s` gives `r * s * r = s`, under the name `mul_mul_eq_of_mul_eq_inv_mul`, and deduce
+```lean
+rot3 * reflect3 * rot3 = reflect3
+```
 -/
 
 theorem rot3_reflect3_ne : rot3 * reflect3 ≠ reflect3 * rot3 := by
@@ -313,8 +290,13 @@ theorem rot3_reflect3_ne : rot3 * reflect3 ≠ reflect3 * rot3 := by
 theorem reflect3_mul_rot3 : reflect3 * rot3 = rot3⁻¹ * reflect3 := by
   decide
 
-theorem s3_cancel (x : Equiv.Perm (Fin 3)) (h : rot3 * x = rot3 * reflect3) : x = reflect3 :=
-  mul_left_cancel h
+@[to_additive add_add_eq_of_add_eq_neg_add]
+theorem mul_mul_eq_of_mul_eq_inv_mul {G : Type u} [Group G] {r s : G} (h : s * r = r⁻¹ * s) :
+    r * s * r = s := by
+  rw [mul_assoc, h, mul_inv_cancel_left]
+
+theorem rot3_reflect3_rot3 : rot3 * reflect3 * rot3 = reflect3 :=
+  mul_mul_eq_of_mul_eq_inv_mul reflect3_mul_rot3
 
 /-! @end -/
 
@@ -323,7 +305,7 @@ theorem s3_cancel (x : Equiv.Perm (Fin 3)) (h : rot3 * x = rot3 * reflect3) : x 
 @title Commutative Groups
 @kind definition
 
-A group is commutative when `a * b = b * a` for all its elements. The integers, the integers modulo `n`, and the groups of order one and two are commutative; the symmetric group on three points is not. In a commutative group the factors of a product may be freely rearranged, which the table of the dihedral groups relies on, and the subject's goal is that every group of order `p²` is commutative.
+A group is commutative when any two of its elements commute. The integers, the integers modulo `n`, and the groups of order one and two are commutative; the symmetric group on three points is not. In a commutative group the factors of a product may be freely rearranged.
 -/
 
 /-!
@@ -332,9 +314,13 @@ A group is commutative when `a * b = b * a` for all its elements. The integers, 
 @concept commutative_groups
 
 @preamble
-A group is *commutative*, or abelian, when `a * b = b * a` for all `a` and `b`. Lean expresses "a group with one more law" as a class that extends the first: the head `class CommGroup (G : Type u) extends Group G where` is followed by the new field alone, `mul_comm`, which says that `a * b = b * a` for all `a` and `b`; the symbol is available inside the class because `extends Group G` puts a `Group G` in scope. An instance of `CommGroup G` then carries an instance of `Group G` inside it, as the field `toGroup`, which Lean finds whenever a law of groups is used on `G`; and an instance is built from an existing `Group G` by supplying the one new field. The additive copy is `AddCommGroup A`, extending `AddGroup A` by `add_comm`, and the line `attribute [to_additive existing AddCommGroup] CommGroup` after the problem records the correspondence. The names are Mathlib's.
+A group is *commutative*, or abelian, when `a * b = b * a` for all `a` and `b`. Lean expresses "a group with one more law" as a class that extends the first. The head
+```lean
+class CommGroup (G : Type u) extends Group G where
+```
+is followed by the new field alone, `mul_comm`. The symbol `*` may be used in the new field, since `extends Group G` supplies the group. An instance of `CommGroup G` then carries an instance of `Group G` inside it, as the field `toGroup`, which Lean finds whenever a law of groups is used on `G`. The additive version is `AddCommGroup A`, extending `AddGroup A` by `add_comm`, and Lean is told that the two correspond.
 @description
-Define the class `CommGroup G`, extending `Group G` by the law `mul_comm`, and its additive copy `AddCommGroup A`, extending `AddGroup A` by the law `add_comm`, each written with the elements as explicit arguments as in the preamble.
+Define the class `CommGroup G`, extending `Group G` by the law `mul_comm`, and its additive version `AddCommGroup A`, extending `AddGroup A` by the law `add_comm`, each written with the elements as explicit arguments, `∀ a b : G, a * b = b * a`.
 -/
 
 class CommGroup (G : Type u) extends Group G where
@@ -369,7 +355,7 @@ attribute [to_additive existing AddCommGroup] CommGroup
 @concept commutative_groups
 
 @preamble
-Addition commutes, on `ℤ` by `Int.add_comm`, on `ZMod n` by `ZMod.add_comm` of this section's first concept, and on `Bool` by `decide`, so the three are commutative additive groups. Each instance is an existing `AddGroup` instance, of the previous section or of this one, with the field `add_comm` added, which `where` with that one field builds, Lean supplying `toAddGroup` by itself. The restatement `mul_comm : a * b = b * a` of the new field, given in the starting code with its additive copy `add_comm`, is the form later proofs rewrite with. The trivial group is commutative too, by `decide` through the instance `Group Unit` of the previous section, which the context holds.
+Addition is commutative on each of the additive groups met so far: on `ℤ` by core Lean's `Int.add_comm`, on `ZMod n` by `ZMod.add_comm` of this section, and on `Bool` by `bool_add_comm` of the previous section, which the context holds. The trivial group is commutative too. Each instance needs only the new field: written with `where` and that field alone, it takes the group instance already given. The context holds `mul_comm`, the new field restated as a theorem, and its additive version `add_comm`.
 @description
 Supply the instances `CommGroup Unit`, `AddCommGroup ℤ`, `AddCommGroup (ZMod n)` and `AddCommGroup Bool`.
 -/
@@ -389,7 +375,7 @@ instance (n : ℕ) [NeZero n] : AddCommGroup (ZMod n) where
   add_comm := ZMod.add_comm
 
 instance : AddCommGroup Bool where
-  add_comm := by decide
+  add_comm := bool_add_comm
 
 /-- @spec -/
 example (a b : ℤ) : a + b = b + a := add_comm a b
@@ -411,14 +397,29 @@ example (a b : Unit) : a * b = b * a := mul_comm a b
 @concept commutative_groups
 
 @preamble
-In a commutative group the factors of a product can be put in any order, and two rearrangements are used so often that Mathlib names them: `mul_left_comm : a * (b * c) = b * (a * c)` exchanges the first two factors of a product grouped to the right, and `mul_right_comm : a * b * c = a * c * b` exchanges the last two of one grouped to the left. Each is a consequence of associativity and a single commutation, and each is a rewrite rule, used on a product whose factors are in the wrong order, and each comes with its additive copy, `add_left_comm` and `add_right_comm`. `rw [mul_comm]` exchanges the first product it finds, the outer one; `rw [mul_comm x y]` names the product to exchange. The context holds `mul_assoc` and `mul_comm`.
+In a commutative group the factors of a product can be put in any order, and two rearrangements are used so often that they have names. The first exchanges the first two factors of a product grouped to the right, and the second the last two of one grouped to the left:
+```lean
+mul_left_comm : a * (b * c) = b * (a * c)
+mul_right_comm : a * b * c = a * c * b
+```
+Each is associativity and a single commutation. Here is the first, as a `calc` chain with the law of each step beside it:
+```lean
+theorem mul_left_comm (a b c : G) : a * (b * c) = b * (a * c) := by
+  calc a * (b * c) = a * b * c := by rw [mul_assoc]
+    _ = b * a * c := by rw [mul_comm a b]
+    _ = b * (a * c) := by rw [mul_assoc]
+```
+`rw [mul_comm]` exchanges the first product it finds, the outer one; `rw [mul_comm a b]` names the product to exchange. The additive versions are `add_left_comm` and `add_right_comm`.
 @description
-Show that in a commutative group `a * (b * c) = b * (a * c)` and `a * b * c = a * c * b`, under Mathlib's names `mul_left_comm` and `mul_right_comm`.
+Show that in a commutative group `a * b * c = a * c * b`, under the name `mul_right_comm`. The context holds `mul_assoc`, `mul_comm` and `mul_left_comm`.
 -/
 
+/-- @given -/
 @[to_additive add_left_comm]
 theorem mul_left_comm {G : Type u} [CommGroup G] (a b c : G) : a * (b * c) = b * (a * c) := by
-  rw [← mul_assoc, mul_comm a b, mul_assoc]
+  calc a * (b * c) = a * b * c := by rw [mul_assoc]
+    _ = b * a * c := by rw [mul_comm a b]
+    _ = b * (a * c) := by rw [mul_assoc]
 
 @[to_additive add_right_comm]
 theorem mul_right_comm {G : Type u} [CommGroup G] (a b c : G) : a * b * c = a * c * b := by
@@ -426,12 +427,32 @@ theorem mul_right_comm {G : Type u} [CommGroup G] (a b c : G) : a * b * c = a * 
 
 /-! @end -/
 
+/--
+@problem mul_mul_mul_comm
+@title Exchanging the Middle Factors
+@concept commutative_groups
+
+@preamble
+A product of two products, `a * b` and `c * d`, has four factors, and in a commutative group the middle two may be exchanged. Read additively, it is the familiar rule for adding two sums term by term:
+```lean
+a * b * (c * d) = a * c * (b * d)
+(a + b) + (c + d) = (a + c) + (b + d)
+```
+It is a rearrangement of the kind of the previous problem, with one factor more. We name it `mul_mul_mul_comm`, and its additive version `add_add_add_comm`.
+@description
+Show that in a commutative group the middle factors of a product of two products may be exchanged. The context holds `mul_assoc`, `mul_comm` and `mul_left_comm`.
+-/
+@[to_additive add_add_add_comm]
+theorem mul_mul_mul_comm {G : Type u} [CommGroup G] (a b c d : G) :
+    a * b * (c * d) = a * c * (b * d) := by
+  rw [mul_assoc, mul_left_comm b c d, ← mul_assoc]
+
 /-!
 @concept product_groups
 @title Product Groups
 @kind definition
 
-Two groups `G` and `H` make a third, their product `G × H`: the pairs `(g, h)`, multiplied componentwise. It is how groups are assembled from smaller ones, and how a group is recognized as assembled: `ZMod 2 × ZMod 3` has six elements and commutes, as `ZMod 6` does, and the subject's goal needs the product, since the groups of order `p²` turn out to be `ZMod (p²)` and `ZMod p × ZMod p`.
+Two groups `G` and `H` make a third, their product `G × H`: the pairs `(g, h)`, multiplied componentwise. It is how groups are assembled from smaller ones: the integers modulo 2 and modulo 3 make a commutative group of six elements.
 -/
 
 /-!
@@ -440,9 +461,17 @@ Two groups `G` and `H` make a third, their product `G × H`: the pairs `(g, h)`,
 @concept product_groups
 
 @preamble
-The product of two groups `G` and `H` is the set of pairs `(g, h)` with the operation `(g, h) * (g', h') = (g * g', h * h')`, each component multiplied in its own group; the neutral element is `(1, 1)` and the inverse of `(g, h)` is `(g⁻¹, h⁻¹)`. The elements of `G × H` are Lean's pairs, with `a.1` and `a.2` the components of `a`, so the operation is `(a.1 * b.1, a.2 * b.2)`. Each law is an equation between two pairs, true when it is true in each component, where it is the same law in `G` or in `H`; a rewrite with a law fixes the law's elements at the first product it meets, so the two components take two rewrites. The equation `a * b = (a.1 * b.1, a.2 * b.2)` holds by definition, and later proofs rewrite with it. The instance carries its mark, so the product of two additive groups is an additive group, added componentwise: in `ZMod 2 × ZMod 3`, `(1, 2) + (1, 2) = (0, 1)`, which `decide` computes.
+The product of two groups `G` and `H` is the set of pairs `(g, h)` with each component multiplied in its own group:
+```lean
+(g, h) * (g', h') = (g * g', h * h')
+```
+The neutral element is `(1, 1)` and the inverse of `(g, h)` is `(g⁻¹, h⁻¹)`. The elements of `G × H` are Lean's pairs, with `a.1` and `a.2` the components of `a`. Each law is an equation between two pairs whose components are the same law in `G` and in `H`. A goal may show a component as the first component of a pair of products; that is the product itself, and `rw` finds it there. The instance carries `@[to_additive]`, so the product of two additive groups is an additive group, added componentwise.
 @description
-Supply the instance `Group (G × H)`, state `prod_mul_def`, that `a * b = (a.1 * b.1, a.2 * b.2)`, and check that `(1, 2) + (1, 2) = (0, 1)` in `ZMod 2 × ZMod 3`.
+Supply the instance `Group (G × H)`, and prove `prod_mul_def`, the equation
+```lean
+a * b = (a.1 * b.1, a.2 * b.2)
+```
+Then show that `-a + a = 0` for every `a` in `ZMod 2 × ZMod 3`.
 -/
 
 @[to_additive Prod.instAddGroup]
@@ -470,8 +499,8 @@ example {G : Type u} {H : Type v} [Group G] [Group H] (a c : G) (b d : H) :
 theorem prod_mul_def {G : Type u} {H : Type v} [Group G] [Group H] (a b : G × H) :
     a * b = (a.1 * b.1, a.2 * b.2) := rfl
 
-theorem zmod_two_three_add : ((1 : ZMod 2), (2 : ZMod 3)) + (1, 2) = (0, 1) := by
-  decide
+theorem zmod_two_three_neg_add_cancel (a : ZMod 2 × ZMod 3) : -a + a = 0 :=
+  neg_add_cancel a
 
 /-! @end -/
 
@@ -481,13 +510,13 @@ theorem zmod_two_three_add : ((1 : ZMod 2), (2 : ZMod 3)) + (1, 2) = (0, 1) := b
 @concept product_groups
 
 @preamble
-A product of finite groups is finite, with as many elements as there are pairs: `ZMod 2 × ZMod 3` has `2 * 3 = 6`. The count is by labelling, as in the first section: `finProdFinEquiv` labels the pairs of `Fin 2 × Fin 3` by `Fin 6`, and `finEquivZMod` of this section's first concept labels each factor, so that `Fin 6 ≃ ZMod 2 × ZMod 3` is a composite of the three. Two equivalences combine componentwise, `e.prodCongr e' : α × β ≃ γ × δ` for `e : α ≃ γ` and `e' : β ≃ δ`, and `e.symm` and `e.trans` are as in the first section. The product `Fin 2 × Fin 3` carries no `Fintype` instance in the part of Mathlib this subject imports, and neither does `ZMod 2 × ZMod 3` until one is built, by `Fintype.ofEquiv` from `Fin 6` as the instance of `ZMod n` was built from `Fin n`; with it, `decide` runs through the six pairs.
+`ZMod 2 × ZMod 3` is finite, with as many elements as there are pairs, `2 * 3 = 6`. A `Fintype` instance for a product is not available in this subject, so we build this one from a labelling by `Fin 6`, as the first section counted pairs with `finProdFinEquiv`. Lean cannot work out from `6` alone that the factors have sizes `2` and `3`, so the sizes are given to `finProdFinEquiv` by name, as `Nat.find` was given its `p`. `Fintype.ofEquiv α e` counts `β` from a counted type `α` and an equivalence `e : α ≃ β`, with `α` given explicitly.
 @description
-Define `finSixEquivZModTwoThree : Fin 6 ≃ ZMod 2 × ZMod 3`, supply the instance `Fintype (ZMod 2 × ZMod 3)`, and show that it has six elements. The context holds `finEquivZMod`; Mathlib provides `Equiv.prodCongr`, `finProdFinEquiv`, `Fintype.ofEquiv`, `Fintype.card_congr` and `Fintype.card_fin`.
+Define the equivalence `finSixEquivZModTwoThree` from `Fin 6` to `ZMod 2 × ZMod 3`, supply the instance `Fintype (ZMod 2 × ZMod 3)`, and show that it has six elements. Mathlib provides `finProdFinEquiv`, `Fintype.ofEquiv`, `Fintype.card_congr` and `Fintype.card_fin`.
 -/
 
 def finSixEquivZModTwoThree : Fin 6 ≃ ZMod 2 × ZMod 3 :=
-  finProdFinEquiv.symm.trans ((finEquivZMod 2).prodCongr (finEquivZMod 3))
+  (finProdFinEquiv (m := 2) (n := 3)).symm
 
 /-- @spec -/
 example : Function.Bijective finSixEquivZModTwoThree := finSixEquivZModTwoThree.bijective
@@ -506,9 +535,9 @@ theorem card_zmod_two_three : Fintype.card (ZMod 2 × ZMod 3) = 6 := by
 @concept product_groups
 
 @preamble
-When `G` and `H` are commutative, so is `G × H`: the two components of `a * b` and of `b * a` are products in `G` and in `H`, which commute. The instance is built from the group instance of the product by supplying the one field `mul_comm`, and the law is an equation between two pairs once both products are unfolded by `prod_mul_def`. The instance carries its mark, so the product of two commutative additive groups is one: `ZMod 2 × ZMod 3` is a commutative group of order six, as `ZMod 6` is, and `decide` confirms its commutativity pair by pair, through the `Fintype` instance of the previous problem.
+When `G` and `H` are commutative, so is `G × H`: the two components of `a * b` and of `b * a` are products in `G` and in `H`, which commute. The instance is built from the group instance of the product by supplying the one field `mul_comm`, as the commutative examples were. The instance carries `@[to_additive]`, so the product of two commutative additive groups is a commutative additive group.
 @description
-Supply the instance `CommGroup (G × H)` for commutative `G` and `H`, and check that `ZMod 2 × ZMod 3` is commutative by running through its pairs. The context holds `prod_mul_def` and `mul_comm`; `mul_comm` is applied to the elements of each component, since a bare `rw [mul_comm]` turns the first product it finds, and a second bare one turns it back.
+Supply the instance `CommGroup (G × H)` for commutative `G` and `H`, and show that `a + b = b + a` for all `a` and `b` in `ZMod 2 × ZMod 3`. The context holds `prod_mul_def` and `mul_comm`.
 -/
 
 @[to_additive Prod.instAddCommGroup]
@@ -521,17 +550,34 @@ instance Prod.instCommGroup {G : Type u} {H : Type v} [CommGroup G] [CommGroup H
 example {G : Type u} {H : Type v} [CommGroup G] [CommGroup H] (a b : G × H) : a * b = b * a :=
   mul_comm a b
 
-theorem zmod_two_three_comm : ∀ a b : ZMod 2 × ZMod 3, a + b = b + a := by
-  decide
+theorem zmod_two_three_add_comm (a b : ZMod 2 × ZMod 3) : a + b = b + a :=
+  add_comm a b
 
 /-! @end -/
+
+/--
+@problem comm_of_prod_comm
+@title A Factor of a Commutative Product is Commutative
+@concept product_groups
+
+@preamble
+The product of two commutative groups is commutative, and the converse holds as well: if `G × H` is commutative, so is each factor. An element of `G` sits in `G × H` as the first component of a pair, and the first component of a product of pairs is the product of the first components. So an equation between products in `G × H` gives an equation between products in `G`, as Set Theory took equations of pairs apart. The additive version is `add_comm_of_prod_add_comm`.
+@description
+Show that if the product `G × H` is commutative, then so is `G`. The context holds `prod_mul_def`.
+-/
+@[to_additive add_comm_of_prod_add_comm]
+theorem comm_of_prod_comm {G : Type u} {H : Type v} [Group G] [Group H]
+    (h : ∀ a b : G × H, a * b = b * a) (x y : G) : x * y = y * x := by
+  have hxy := h (x, 1) (y, 1)
+  rw [prod_mul_def, prod_mul_def] at hxy
+  exact congrArg Prod.fst hxy
 
 /-!
 @concept dihedral_groups
 @title The Dihedral Groups
 @kind definition
 
-The dihedral group Dₙ is the group of symmetries of a regular `n`-gon: `n` rotations and `n` reflections, `2n` elements in all, multiplied by composing symmetries. It is the subject's standard non-commutative example, small enough to compute in and rich enough to have subgroups of every kind; D₂ is the Klein four-group. This concept builds it over `ZMod n` from a four-line table and counts it.
+The dihedral group Dₙ is the group of symmetries of a regular `n`-gon: `n` rotations and `n` reflections, `2n` elements in all, multiplied by composing symmetries. It is the subject's standard noncommutative example, small enough to compute in; D₂ is the Klein four-group. It is built from a four-line table and counted.
 -/
 
 /-!
@@ -540,7 +586,14 @@ The dihedral group Dₙ is the group of symmetries of a regular `n`-gon: `n` rot
 @concept dihedral_groups
 
 @preamble
-The symmetries of a regular `n`-gon are the `n` rotations, through `i` steps of a full turn divided by `n`, and the `n` reflections, each the rotation through `i` steps followed by a fixed reflection `s`. So the elements are of two kinds, `r i` and `sr i`, each labelled by a residue `i : ZMod n`, so an inductive type with two constructors carrying an `i`. Composing symmetries gives the table, where in `mul a b` the symmetry `b` acts first, as for permutations. Two rotations add their steps, `mul (r i) (r j) = r (i + j)`; a reflection after a rotation is a reflection, `mul (sr i) (r j) = sr (i + j)`; a rotation after a reflection is a reflection with the rotation reversed, `mul (r i) (sr j) = sr (j + -i)`; and two reflections make a rotation, `mul (sr i) (sr j) = r (j + -i)`. The `+` and `-` on the right are `ZMod n`'s, so the table needs `[NeZero n]`; Mathlib writes `j - i`. In D₄, the square, reflecting, turning a quarter and reflecting again turns a quarter the other way: `sr 0` times `r 1` times `sr 0` is `r 3`, which `decide` computes.
+The symmetries of a regular `n`-gon are the `n` rotations `r i`, through `i` steps of a full turn divided by `n`, and the `n` reflections `sr i`, each the rotation through `i` steps followed by a fixed reflection `s`, with `i : ZMod n`. Composing symmetries gives the table, where in `mul a b` the symmetry `b` acts first, as for permutations:
+```lean
+mul (r i) (r j) = r (i + j)
+mul (sr i) (r j) = sr (i + j)
+mul (r i) (sr j) = sr (j + -i)
+mul (sr i) (sr j) = r (j + -i)
+```
+A rotation after a reflection is a reflection with the rotation reversed, since a mirror reverses the sense of turning. Write `j + -i`, not `j - i`: the laws of residues are proved for `+` and `-`, not for subtraction. The table carries `[NeZero n]`, as those laws do. `deriving DecidableEq` has Lean decide equality of symmetries, for `decide`.
 @description
 Define the inductive type `DihedralGroup n` with the constructors `r` and `sr`, each taking an `i : ZMod n`, closed by `deriving DecidableEq`; define `DihedralGroup.mul` by the four-line table; and check in `DihedralGroup 4` that `sr 0` times `r 1` times `sr 0` is `r 3`.
 -/
@@ -577,9 +630,11 @@ theorem d4_table :
 @concept dihedral_groups
 
 @preamble
-The table defines a group only if it is associative, which is a check on eight cases, one for each choice of kinds for `a`, `b` and `c`, opened by `cases` on each of them (`cases a <;> cases b <;> cases c` opens all eight at once, with the residues left unnamed, which the rewrite rules below do not need). In each case both sides are one constructor applied to two sums in `ZMod n`, equal because addition modulo `n` is associative and commutative: `add_assoc`, `neg_add_rev`, `neg_neg`, `add_left_comm` and `add_right_comm`, the additive copies of theorems of the previous section and of the previous concept, applied to residues, are the rewrite rules, and which of them a case needs is read off its two sums. A goal shows `mul` applied to constructors, which `rw` does not see through; the four equations of the table, given in the context as `DihedralGroup.r_mul_r` and its three companions, unfold it, and `simp only` with the four unfolds every product at once, as `simp only [ZMod.val_add]` unfolded sums. For a fixed `n`, `decide` would check all `(2n)³` cases instead; this is the general proof.
+The table defines a group only if it is associative. Both sides of the law are always one constructor applied to a sum in `ZMod n`, and the two sums agree by the laws of a commutative additive group.
+
+`rw` does not compute `mul` on constructors. The four equations of the table, given in the context as `DihedralGroup.r_mul_r` and its three companions, rewrite each product to its value.
 @description
-Show that `DihedralGroup.mul` is associative. The context holds the four equations of the table and those five theorems.
+Show that `DihedralGroup.mul` is associative. The context holds the four equations of the table and the additive versions of laws of the previous section and of this one: `add_assoc`, `neg_add_rev`, `neg_neg`, `add_left_comm` and `add_right_comm`.
 -/
 
 /-- @given -/
@@ -619,9 +674,13 @@ theorem dihedral_mul_assoc {n : ℕ} [NeZero n] (a b c : DihedralGroup n) :
 @concept dihedral_groups
 
 @preamble
-With the table as its operation, the trivial rotation `r 0` as its neutral element, and the inverse `(r i)⁻¹ = r (-i)`, `(sr i)⁻¹ = sr i`, since a rotation is undone by the opposite rotation and a reflection by itself, `DihedralGroup n` is a group, Dₙ. Associativity is the previous problem. Each of the other four laws is a check on the two kinds of element, opened by `cases`: a rewrite with the table's equation for the case turns the goal into `r x = r y` or `sr x = sr y`, and a law of the additive group `ZMod n` closes it, `zero_add`, `add_zero`, `neg_add_cancel` or `add_neg_cancel`, with `neg_zero`, `-0 = 0`, where the trivial rotation's step is negated. A function field is defined by cases, `inv | r i => … | sr i => …`. D₄, the symmetries of the square, is not commutative: `r 1 * sr 0 ≠ sr 0 * r 1`, by `decide`.
+`DihedralGroup n` is a group, Dₙ, with the table as its operation and the trivial rotation `r 0` as its neutral element. A rotation is undone by the opposite rotation and a reflection by itself, so the inverse is `(r i)⁻¹ = r (-i)` and `(sr i)⁻¹ = sr i`. Associativity is the previous problem. A function field is defined by cases:
+```lean
+inv | r i => …
+    | sr i => …
+```
 @description
-Supply the instance `Group (DihedralGroup n)`, and show that in `DihedralGroup 4`, `r 1 * sr 0 ≠ sr 0 * r 1`. The context holds `dihedral_mul_assoc`, the four equations of the table, the laws of additive groups and `neg_zero`.
+Supply the instance `Group (DihedralGroup n)`, and show that in `DihedralGroup 4`, `r 1 * sr 0 ≠ sr 0 * r 1`. The context holds `dihedral_mul_assoc`, the four equations of the table, the laws of additive groups and `neg_zero : -0 = 0`.
 -/
 
 open DihedralGroup in
@@ -666,31 +725,31 @@ theorem d4_not_comm : (r 1 : DihedralGroup 4) * sr 0 ≠ sr 0 * r 1 := by
 @concept dihedral_groups
 
 @preamble
-Dₙ has `2n` elements, `n` of each kind, and the count is by labelling, as in the first section: an element is a kind, `0` for a rotation and `1` for a reflection, together with a residue, so `DihedralGroup n` is in bijection with `Fin 2 × Fin n`, the residue `i` passing to `⟨i.val, i.val_lt⟩` and back. The inverse function is defined by matching on the pair, `| (0, k) => …` and `| (1, k) => …`, and Lean sees that `Fin 2` leaves no third case; one law is checked by cases on the element, the other by the same match on the pair, each case holding by `rfl`. `card_of_equiv_prod` of the first section then counts `DihedralGroup n` as `2 * n`, once the type has a `Fintype` instance, which `Fintype.ofEquiv` makes from a bijection out of `Fin (2 * n)`: the one built here runs the other way, continued by `finProdFinEquiv`, and `.symm` turns it round. With the instance, `decide` runs through D₄.
+Dₙ has `2n` elements, `n` of each kind, and the count is by labelling, as in the first section. An element is a kind, `0` for a rotation and `1` for a reflection, together with a residue, so `DihedralGroup n` is in bijection with `Fin 2 × ZMod n`. A function out of `Fin 2 × ZMod n` may be defined by matching on the pair, `| (0, k) => …` and `| (1, k) => …`, and no third case is needed, since `Fin 2` has only `0` and `1`. The type needs a `Fintype` instance before it can be counted.
 @description
-Define `DihedralGroup.equivProd n : DihedralGroup n ≃ Fin 2 × Fin n`, supply the instance `Fintype (DihedralGroup n)`, and show that `DihedralGroup n` has `2 * n` elements. The context holds `card_of_equiv_prod` of the first section; Mathlib provides `Fintype.ofEquiv` and `finProdFinEquiv`.
+Define the equivalence `DihedralGroup.equivProd n` from `DihedralGroup n` to `Fin 2 × ZMod n`, supply the instance `Fintype (DihedralGroup n)`, and show that `DihedralGroup n` has `2 * n` elements. The context holds `card_of_equiv_prod` of the first section, which counts a type in bijection with `Fin m × Fin n` as `m * n`.
 -/
 
-def DihedralGroup.equivProd (n : ℕ) : DihedralGroup n ≃ Fin 2 × Fin n where
+def DihedralGroup.equivProd (n : ℕ) : DihedralGroup n ≃ Fin 2 × ZMod n where
   toFun
-    | r i => (0, ⟨i.val, i.val_lt⟩)
-    | sr i => (1, ⟨i.val, i.val_lt⟩)
+    | r i => (0, i)
+    | sr i => (1, i)
   invFun
-    | (0, k) => r ⟨k.val, k.isLt⟩
-    | (1, k) => sr ⟨k.val, k.isLt⟩
+    | (0, i) => r i
+    | (1, i) => sr i
   left_inv a := by
     cases a with
     | r i => rfl
     | sr i => rfl
   right_inv p := by
     match p with
-    | (0, k) => rfl
-    | (1, k) => rfl
+    | (0, i) => rfl
+    | (1, i) => rfl
 
 /-- @spec -/
 example (n : ℕ) (i : ZMod n) :
-    DihedralGroup.equivProd n (DihedralGroup.r i) = (0, ⟨i.val, i.val_lt⟩) ∧
-    DihedralGroup.equivProd n (DihedralGroup.sr i) = (1, ⟨i.val, i.val_lt⟩) := ⟨rfl, rfl⟩
+    DihedralGroup.equivProd n (DihedralGroup.r i) = (0, i) ∧
+    DihedralGroup.equivProd n (DihedralGroup.sr i) = (1, i) := ⟨rfl, rfl⟩
 
 instance (n : ℕ) : Fintype (DihedralGroup n) :=
   Fintype.ofEquiv (Fin (2 * n)) ((DihedralGroup.equivProd n).trans finProdFinEquiv).symm
@@ -706,9 +765,9 @@ theorem card_dihedral (n : ℕ) : Fintype.card (DihedralGroup n) = 2 * n :=
 @concept dihedral_groups
 
 @preamble
-D₂, the symmetries of a segment, has four elements, `r 0`, `r 1`, `sr 0` and `sr 1`, and is the *Klein four-group* V₄. Each of its elements is its own inverse, a fact about four elements that `decide` checks through the instance of the previous problem; and a group in which every element is its own inverse is commutative, by the theorem of the previous section, so V₄ is a commutative group, unlike D₄. The product of two groups of order two, `ZMod 2 × ZMod 2`, is the Klein four-group as well: the two are the same group under different names, as `ZMod 2` and `Bool` were. `ZMod 4` also has four elements, but its residue `1` is not its own negative, since `1 + 1 = 2`: the two groups of order four differ.
+D₂, the symmetries of a segment, has four elements, `r 0`, `r 1`, `sr 0` and `sr 1`, and is the *Klein four-group* V₄. Each of its elements is its own inverse, and so V₄ is commutative, unlike D₄. `ZMod 4` also has four elements, but its residue `1` is not its own negative, since `1 + 1 = 2`. So no renaming carries the one table to the other: the two groups of order four differ.
 @description
-Show that every element of `DihedralGroup 2` is its own inverse, supply the instance `CommGroup (DihedralGroup 2)`, and check that in `ZMod 4` the residue `1` is not its own negative. The context holds `mul_comm_of_inv_eq_self` of the previous section.
+Show that every element of `DihedralGroup 2` is its own inverse, supply the instance `CommGroup (DihedralGroup 2)`, and check that in `ZMod 4` the residue `1` is not its own negative. The context holds `mul_comm_of_inv_eq_self` of the previous section, which says that a group in which every element is its own inverse is commutative.
 -/
 
 theorem klein_inv_self : ∀ x : DihedralGroup 2, x⁻¹ = x := by

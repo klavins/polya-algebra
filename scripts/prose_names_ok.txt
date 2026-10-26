@@ -6,19 +6,19 @@ fin_four_add_neg: notEquiv, rot3
 int_cases: natCast
 composites: succ
 ker_equivalence: trans
-bool_equiv_fin_two: toFun, invFun, left_inv, right_inv
+bool_equiv_fin_two: toFun, invFun, left_inv, right_inv, match
+eq_zero_of_add_one: zero
 mod_setoid: r, iseqv
 group: mul, one, inv, mul_assoc, one_mul, mul_one, inv_mul_cancel, mul_inv_cancel
 add_group: mul, one, inv, zero, add_assoc, zero_add, add_zero, neg_add_cancel, add_neg_cancel, Group
 to_additive: mul, add, one, zero, inv, neg
-zmod: val_lt, MyNat, toFin
-zmod_add_neg: toFin
+zmod: fin_four_add_neg
 zmod_two_equiv_bool: boolEquivFinTwo
-reflect3: rot3
+reflect3: rot3, flip3
+s3_not_comm: flip3
 comm_group: toGroup, mul_comm, add_comm
 comm_instances: toGroup, toAddGroup
 dihedral_mul: sr
-zmod_fintype: isLt, val_lt
 pow_one: zero
 zpow_add: zero
 order_of: Classical
@@ -26,7 +26,7 @@ one_zpow: zero
 order_of_eq_one_iff: Dₙ
 subgroup: carrier
 int_multiples: nℤ
-subgroup_ext: ZMod.ext, subst
+eq_of_coe_eq: mk, subst
 top_bot: bot
 subgroup_le: le
 is_cyclic: IsOfFinOrder

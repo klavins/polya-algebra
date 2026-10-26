@@ -100,8 +100,8 @@ generated shape check is nearly vacuous, and so does every `where`-bodied `def` 
 Eight groups carry Group Theory, each defined in its second or third section from the
 student's `Group` class, `ℕ` with `%`, `ℤ`, `Equiv` and `Bool`, and each returned to in later
 sections: the trivial group `Unit`; `Bool` under `xor`; `ℤ` under addition; the student's
-`ZMod n`, a structure holding `val : ℕ` with `val < n` and the operation `(a + b) % n`, owing
-nothing to Mathlib's `ZMod` but the name; the symmetric groups `Equiv.Perm (Fin n)`; the
+`ZMod n`, `abbrev ZMod (n : ℕ) := Fin n` (Mathlib's own definition for positive `n`; since
+2026-10-23, replacing a structure of the student's), with the operation `(a + b) % n`; the symmetric groups `Equiv.Perm (Fin n)`; the
 dihedral groups, an inductive over `ZMod n` with constructors `r` and `sr` and a four-line
 table, Mathlib's shape; the Klein four-group as `DihedralGroup 2`; and the product `G × H`.
 The rule for every concept after the examples: **its last problem, or its first after the
@@ -236,6 +236,28 @@ at first appearance, it may list Mathlib names or tactics the student has not me
 cannot reveal; and, at a concrete type's first use, the instance Mathlib provides. In the
 Prerequisites section, which introduces Mathlib's own library, the lists are longer, never
 steps.
+
+**Identities: a worked example for the first of a kind, a chain for the subtle ones, nothing
+for the rest** (the owner, 2026-10-23, after Algebra.lean of the LeanPIMS26 course, narrowed the
+same day after the blind review of Group Theory). A student meets an identity such as
+`a⁻¹ * (a * b) = b` as too obvious to prove and has no idea how to begin, so **the first identity
+of a new kind** is proved in front of them: a `@given` whose proof is a `calc` chain, one law per
+step, shown in the preamble as well (and so in the starting code), then the same steps as one
+`rw`, then the pattern in a sentence (regroup, cancel, tidy up); the exercise is its mirror image
+(`first_identity`). **A genuinely subtle identity**, one whose route is not the pattern, gives the
+chain of expressions in the preamble, `b = b * 1 = b * (a * c) = b * a * c = 1 * c = c`, and
+leaves the law behind each step to the student (`neutral_unique`, `inverse_unique`,
+`mul_inv_rev`): the expressions are given, the reasons are the exercise. This is the one place the
+rule against giving the steps yields. **The mirror image of a worked identity, the second identity
+of a kind, and the routine ones get no chain** (`cancel_adjacent`, `mul_left_cancel` after
+`neutral_unique`, `mul_right_cancel`): the preamble says the idea and stops. Outside a worked
+example no preamble names the tactics of the proof, a case split or a witness, or lists the laws
+in the order of the steps ("regroup so that `b` meets `b⁻¹`, and then `a` meets `a⁻¹`" is such
+a list); the mathematics stays. The worked firsts of later sections are the first identity of residues (`ZMod.zero_add`,
+one rewrite per line with the goal each leaves in a comment) and the first induction on powers
+(`one_pow`, a `calc` step). A worked example whose prose outgrows the page splits the problem
+rather than the example (`zmod_neg_laws`, `one_pow`, `zpow_zero_one`, `pow_mod_order_of`). Later
+sections do the same for their first identity of a new kind (cosets, homomorphisms).
 
 **A context fact the student did not prove in an exercise is introduced where it is used.**
 A problem's context holds every declaration its reference depends on. When the reference uses a
@@ -690,6 +712,67 @@ numeral `0` of `ZMod n`, `@[default_instance high]` and the reviewers stand.
   removed `multiplicative`, `multiplicative_fintype` and `zmod_add_rearrange`, and added
   `add_group`, `to_additive`, `nsmul`, `zsmul` and `add_subgroup`: 110 problems. Every section
   compiled at its first build after the edits; the budgets needed nine trims.
+
+## Learned simplifying ZMod (2026-10-23)
+
+- **`ZMod n` is `Fin n`** by an `abbrev`, the owner's choice after finding the structure "a lot of
+  book-keeping for very little payoff": numerals, `+`, `-`, `DecidableEq`, `Fintype` and the
+  count (`Fintype.card_fin`) come with `Fin`, and §1 already taught its arithmetic. Lean's
+  `Fin` negation and numerals are by definition the remainders the structure had,
+  `(-a).val = (n - a.val) % n` and `(0 : Fin n).val = 0 % n` by `rfl`, so every proof carried
+  over with `Fin.ext` for `ZMod.ext` and `isLt` for `val_lt`. Only `ZMod.val_zero` needs
+  `[NeZero n]`.
+- **The fiddly remainder laws are given** (`ZMod.add_assoc`, `ZMod.neg_add_cancel`), the owner's
+  choice; `ZMod.zero_add` is the worked example and the student proves `add_zero`, `add_comm`
+  and `add_neg_cancel`, the last from commutativity and the given law with no arithmetic. The
+  fence has no `Fin.add_comm`, `Fin.add_assoc` or `Fin.neg_add_cancel`, but core has
+  `Fin.add_zero` and `Fin.zero_add`, which the shortcut check finds; and `omega` cannot reason
+  about `% n` for a variable `n`, so the laws keep their `Nat.mod_add_mod` proofs.
+- **`Fin 6 ≃ ZMod 2 × ZMod 3` is `finProdFinEquiv` turned round**, but Lean does not unify `Fin 6`
+  with `Fin (?m * ?n)`: the factors are named, `(finProdFinEquiv (m := 2) (n := 3)).symm`. The
+  dihedral labelling passes residues across as they are, `r i ↦ (0, i)`.
+- Seven problems became four: `zmod` (the `abbrev`, the value equations, the count and a
+  numeral), `zmod_add_laws`, `zmod_group`, `zmod_two_equiv_bool`; `zmod_add_neg`,
+  `zmod_neg_laws` and `zmod_fintype` are gone. 112 problems.
+
+**The blind review of 2026-10-23** (one simulated student per concept, from the bundle, through
+`scripts/review/`), applied section by section:
+
+- **Prose that handed over the proof** was the commonest finding, in 14 of 25 reports: chains
+  given for the second identity of a kind, preambles naming tactics, witnesses and case splits.
+  The owner's rule since: a chain only for the first identity of a kind and for a subtle one
+  ("Identities" above).
+- **A context is the reference's closure**, so an instance the reference never touched was absent
+  for the student: `AddGroup (ZMod n)` in the products, `AddGroup ℤ` in the extra credit. Fixed
+  in the content, by references and checks that go through the student's instances, never
+  through Mathlib's `Prod.instAdd` that happens to agree.
+- **An additive copy is enforced only off a finite type**: `decide` proves a statement about
+  `Bool` or `ZMod 6` without the copy, so the checks that demand one are on ℤ
+  (`int_add_three_bijective`, `int_center`, `int_zsmul_one`) or need a general `n`.
+- Double teaching removed by warm-ups (`quotient_mk_surjective`, `to_fin_mod`,
+  `exists_injective_fin`, `to_fin_or_zero`, `order_of_sr`, `eq_of_coe_eq`); `pigeonhole` moved
+  to §1. 127 problems.
+
+## Learned reviewing the prose (2026-10-26)
+
+A full review of every concept, preamble and description, section by section, each section
+then re-read by a fresh reviewer. What it settled:
+
+- **Student prose says "additive version"**, never "copy", "mark" or "spelling": the line
+  `@[to_additive n]` is named as a line the first time the student meets it (`first_identity`)
+  and explained in `to_additive`. "Copy" and "mark" stay this file's words.
+- **No prose leans on what the student cannot see.** The `attribute [to_additive existing …]`
+  lines sit outside every problem; the prose says only that Lean is told the two correspond.
+- **A long expression goes on its own line**: an equation, iff or signature of more than about
+  20 characters is a fenced `lean` block, never backticks in a sentence; a lemma's statement
+  is shown as `theorem name … : …`, checked against `#check`.
+- **No concept description carries Lean**, Prerequisites included; no description of
+  Mathlib's version of what the student proves ("Mathlib's `pow_add`" becomes "`pow_add`").
+- **The common giveaway is the lemma for each goal**: a context list in proof order, or a
+  preamble that pairs each field with the fact that closes it. Name the facts; never the
+  pairing, the witness or the case split.
+- **The subject description states the current goal**, not the plan's eventual one, and
+  lists only what is built.
 
 ## Checks over a bundle
 

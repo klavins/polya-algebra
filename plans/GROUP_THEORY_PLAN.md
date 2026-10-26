@@ -132,7 +132,7 @@ list.
 | the trivial group | `Unit` | the first instance; the subgroup `⊥`; the quotient `G ⧸ ⊤` |
 | the group of order two | `Bool` under `xor`, an additive group with `true + true = false` and `0 = false` | the third instance, closed by `decide`; addition modulo two; `ZMod 2 ≃+ Bool` is the first isomorphism; the parity maps go to `Equiv.Perm (Fin 2)` instead, which is multiplicative |
 | the integers | `ℤ`, the student's `AddGroup ℤ` with the integers' own `+`, `0`, `-` (Milne 1.3, `C∞`) | the infinite example: an element of infinite order, so that `addOrderOf (1 : ℤ) = 0` means something; the subgroups `nℤ = zmultiples n`; cosets of `2ℤ` are the evens and the odds; `ℤ ⧸ nℤ ≃+ ZMod n` (1.44 a); the one group whose subgroups and quotients the student can list completely |
-| the integers mod `n` | the student's `ZMod n`, a structure holding a `val : ℕ` with `val < n`, with `+` and `-` as `(a + b) % n` and `(n - a) % n`, and `AddGroup (ZMod n)` from its laws (Milne 1.3, `Cₙ`; nothing of Mathlib's `ZMod` but its additive reading) | the commutative finite example; every cyclic group; subgroups `⟨d⟩` for `d ∣ n`; the reduction `ZMod 6 →* ZMod 2`; quotients `ZMod 6 ⧸ ⟨3⟩`; `ZMod 2 × ZMod 3 ≃* ZMod 6`; groups of prime order; `ZMod p × ZMod p` and `ZMod (p²)` at the goal |
+| the integers mod `n` | `ZMod n`, `abbrev ZMod (n : ℕ) := Fin n` (Mathlib's own definition for positive `n`; a structure of the student's until 2026-10-23), with `+` and `-` as `(a + b) % n` and `(n - a) % n`, and `AddGroup (ZMod n)` from its laws (Milne 1.3, `Cₙ`; nothing of Mathlib's `ZMod` but its additive reading) | the commutative finite example; every cyclic group; subgroups `⟨d⟩` for `d ∣ n`; the reduction `ZMod 6 →* ZMod 2`; quotients `ZMod 6 ⧸ ⟨3⟩`; `ZMod 2 × ZMod 3 ≃* ZMod 6`; groups of prime order; `ZMod p × ZMod p` and `ZMod (p²)` at the goal |
 | the symmetric groups | `Equiv.Perm (Fin n)`, the student's instance (Milne 1.4, `Sₙ`); `S₃` with its rotation `r` and reflection `s` written out | the first non-commutative group; the smallest, `S₃`, with `r * s ≠ s * r` by `decide`; Cayley's theorem; the tautological action on `Fin n` |
 | the dihedral groups | the student's `DihedralGroup n`, an inductive with constructors `r i` and `sr i` over `ZMod n` and a four-line multiplication table (Milne 1.17, `Dₙ`; Mathlib's shape) | the geometric example, the symmetries of the `n`-gon: order `2n`; `⟨r⟩` normal of index two, `⟨s⟩` not normal (1.36 b); `D₄`'s centre `{1, r²}`, its classes, its quotient by `⟨r²⟩` (1.49); a `p`-group with nontrivial centre; `D₃ ≃* S₃`; the action on the vertices with orbit–stabilizer `n · 2 = 2n` |
 | the Klein four-group | `DihedralGroup 2`, which Milne calls `V₄` or `D₂`, isomorphic to `ZMod 2 × ZMod 2` | order 4 without an element of order 4 (1.30); not isomorphic to `ZMod 4`; every subgroup normal; `D₄ ⧸ ⟨r²⟩ ≃* V₄` |
@@ -266,6 +266,11 @@ and `Fin n`, and `D₃` stands in for `S₃` wherever an order is counted.
   problem. The handoff is Mathlib's own design: Mathlib has `AddGroup`, `AddSubgroup`,
   `addOrderOf`, `zmultiples` and `to_additive` under these names, and its integers and `ZMod n`
   are additive groups. The lemma names are Mathlib's as before. (**Decisions**, 4 and 9.)
+- **Identities are shown before they are asked** (2026-10-23): the first identity of a new kind
+  is worked in front of the student as a `calc` chain with the law of each step, the exercise
+  is its mirror image, and a subtle identity's preamble gives the chain of expressions with the
+  laws left to the student (`STYLE.md`, **Identities**). §4's laws of exponents and §7's coset
+  identities follow it.
 - **Names follow Mathlib** all the same, so that the arrival at Mathlib's algebra changes the
   imports and not the vocabulary: the lemmas are `mul_assoc`, `one_mul`, `inv_mul_cancel`,
   `mul_left_cancel`, `mul_inv_rev`, `inv_inv`, `pow_succ`, `zpow_add`,
@@ -631,6 +636,39 @@ x = 7 ↔ x = 4` through `eq_neg_add_iff_add_eq`; `bool_true_add` checks that ad
 `!`. 17 problems over 4 concepts. In Extra Credit `Group.ofLeftAxioms` carries its mark and
 `intGroupLeft : AddGroup ℤ` is built by `AddGroup.ofLeftAxioms`, `intGroupLeft_add` checking `3 +
 4 = 7`; the subgroup criterion carries marks, its copy `AddSubgroup.ofSub`.
+
+**Revised (2026-10-23), identities.** On the owner's point that a student sees the first group
+identities as obvious and has no idea how to prove them (the model being Algebra.lean of the
+LeanPIMS26 course), `first_identity` is new and comes first in `consequences`: why an identity
+needs proving, `inv_mul_cancel_left` worked as a given `calc` chain with the law of each step,
+the same as one `rw`, and the mirror `mul_inv_cancel_left` as the exercise; `cancel_adjacent`
+keeps the two right-hand forms; `neutral_unique`, `inverse_unique`, `mul_inv_rev` and
+`mul_left_cancel` give the chain of expressions, the laws left to the student (`STYLE.md`,
+**Identities**). 18 problems over 4 concepts.
+
+The same day the rule was carried through §3–§5 and Extra Credit: in §3, `zmod_add_laws` works
+`ZMod.zero_add` as a given, one rewrite per line with the goal each leaves, the student proving
+`add_zero`, `add_comm` and `add_assoc`, and the new `zmod_neg_laws` takes the two cancellation
+laws with the chain of values `((n - a.val) % n + a.val) % n = … = 0 % n`; `comm_rearrange` and
+`dihedral_mul_assoc` give chains (21 problems over 5 concepts). In §4, `pow_one` keeps the
+definition's equations and `g ^ 1 = g`; the new `one_pow` works `1 ^ n = 1` as an induction with
+a `calc` step and asks for `pow_succ'` (its reference a `calc` too); the new `zpow_zero_one`
+separates the `change` device from the sign law, which `zpow_neg` keeps with a chain per case;
+the new `pow_mod_order_of` takes `pow_mod_orderOf` and its chain out of
+`order_of_dvd_iff_pow_eq_one`; `pow_add`, `zpow_add_one`, `zpow_add`, `finite_order_of_finite`
+and `inv_eq_pow` give their chains (26 problems over 4 concepts). In §5, `center` gives the
+chains of its two closure proofs; in Extra Credit, `left_axioms_laws` gives the whole chain in
+the notation `*`, `1`, `⁻¹`, the left laws only. 115 problems.
+
+**Revised (2026-10-23), `ZMod n`.** On the owner's finding that the structure was "a lot of
+book-keeping for very little payoff", `ZMod n` is `abbrev ZMod (n : ℕ) := Fin n`, Mathlib's own
+definition for positive `n`, and the remainder laws whose arithmetic is fiddly
+(`ZMod.add_assoc`, `ZMod.neg_add_cancel`) are given. `zmod` defines the `abbrev`, shows Lean's
+`Fin` addition, negation and numerals, and proves the value equations, the count and a numeral;
+`zmod_add_laws` works `ZMod.zero_add` and asks for `add_zero`, `add_comm` and `add_neg_cancel`;
+`zmod_group` and `zmod_two_equiv_bool` stand; `zmod_add_neg`, `zmod_neg_laws` and `zmod_fintype`
+are gone. `prod_fintype`'s labelling is `finProdFinEquiv` turned round, and the dihedral
+labelling passes residues as they are. §3 has 18 problems over 5 concepts; the subject 112.
 
 ### §3. Examples
 

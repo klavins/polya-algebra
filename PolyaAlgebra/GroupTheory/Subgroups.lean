@@ -23,7 +23,7 @@ set_option linter.translateGenerateName false
 @title Subgroups
 @kind definition
 
-A subgroup is a subset of a group that is a group under the same operation: it contains the neutral element, and the product and the inverse of any of its elements. Centres, kernels and the subgroup an element generates are all subgroups, and Lagrange's theorem counts them. This concept writes the definition in both spellings, builds three examples, and makes a subgroup a type and a group.
+A subgroup is a subset of a group that is a group under the same operation: it contains the neutral element, and the product and the inverse of any of its elements. Centres and the subgroup an element generates are the first examples.
 -/
 
 /-!
@@ -32,14 +32,21 @@ A subgroup is a subset of a group that is a group under the same operation: it c
 @concept subgroups
 
 @preamble
-A *subgroup* of `G` is a subset that is a group under the operation of `G`: it contains `1`, the product of any two of its elements, and the inverse of each. The laws hold in the subset because they hold in `G`, so these three conditions are the whole definition.
+A *subgroup* of `G` is a subset that is a group under the operation of `G`: it contains `1`, the product of any two of its elements, and the inverse of each. The laws hold there because they hold in `G`.
 
-In Lean a subgroup is a structure holding a set, `carrier`, and the three conditions as fields: `one_mem' : 1 ∈ carrier`, `mul_mem' : ∀ {a b : G}, a ∈ carrier → b ∈ carrier → a * b ∈ carrier` and `inv_mem' : ∀ {a : G}, a ∈ carrier → a⁻¹ ∈ carrier`, with the elements implicit, read off the proofs in `H.mul_mem' ha hb`. Writing `x ∈ H` for `x ∈ H.carrier` takes an instance of Lean's class
+We make a subgroup a structure holding a set and the three conditions as fields:
+```lean
+carrier : Set G
+one_mem' : 1 ∈ carrier
+mul_mem' : ∀ {a b : G}, a ∈ carrier → b ∈ carrier → a * b ∈ carrier
+inv_mem' : ∀ {a : G}, a ∈ carrier → a⁻¹ ∈ carrier
+```
+The elements are implicit: in `H.mul_mem' ha hb` Lean reads them off `ha` and `hb`. Writing `x ∈ H` for `x ∈ H.carrier` takes an instance of Lean's class
 ```lean
 class Membership (α : Type u) (γ : Type v) where
   mem : γ → α → Prop
 ```
-as Set Theory gave its sets one (Lean's own marks `α` an `outParam`, which changes nothing here); the collection comes first in `mem`, so the instance's function takes `H` before `x`. Mathlib builds `Subgroup` in two layers; this one is the textbook's.
+as Set Theory gave its sets one; the collection comes first in `mem`, so the instance's function takes `H` before `x`.
 @description
 Define the structure `Subgroup G` with the four fields as the preamble states them, and supply the instance `Subgroup.instMembership : Membership G (Subgroup G)`.
 -/
@@ -80,7 +87,7 @@ example {G : Type u} [Group G] (H : Subgroup G) (x : G) : x ∈ H ↔ x ∈ H.ca
 @concept subgroups
 
 @preamble
-A subgroup of an additive group is a subset that contains `0`, the sum of any two of its elements and the negative of each: Mathlib's `AddSubgroup`, with the fields `carrier`, `zero_mem'`, `add_mem'` and `neg_mem'`. It is the previous definition in the additive spelling, as `AddGroup` was `Group`, and the lines `attribute [to_additive existing AddSubgroup] Subgroup` and the like after this problem pair the two, so that every theorem about subgroups under its mark has its copy about additive subgroups, its name translated as for groups. The multiples of an integer and the even residues modulo `6`, two of the next problems' examples, are additive subgroups.
+A subgroup of an additive group is a subset that contains `0`, the sum of any two of its elements and the negative of each. We write `AddSubgroup A`, with the fields `carrier`, `zero_mem'`, `add_mem'` and `neg_mem'`. It is the previous definition written additively, as `AddGroup` was `Group`. Lean is told that `AddSubgroup` is the additive version of `Subgroup`, so each theorem about subgroups below comes with its additive version, its name translated as for groups.
 @description
 Define the structure `AddSubgroup A` with the four fields named above, written as those of `Subgroup` are, and supply the instance `AddSubgroup.instMembership : Membership A (AddSubgroup A)`.
 -/
@@ -125,7 +132,11 @@ attribute [to_additive existing AddSubgroup.instMembership] Subgroup.instMembers
 @concept subgroups
 
 @preamble
-The rotations of the `n`-gon are a subgroup of Dₙ: the trivial rotation `r 0` is `1`, two rotations compose to a rotation, `r i * r j = r (i + j)`, and the inverse of a rotation is a rotation, `(r i)⁻¹ = r (-i)`, each by the definition of the instance. The reflections are not a subgroup, since two reflections compose to a rotation. As a set the rotations are the range of the constructor `r`, `Set.range r`, whose membership `∃ i, r i = x` the first section took apart with `intro ⟨i, hi⟩`; a subgroup is built with `where`, the carrier first and then the three proofs, each a statement about members of the carrier. A reflection is not a rotation because the two constructors of an inductive type never agree: `cases h` on `h : r j = sr i` closes any goal, as it did on `sr i = 1` in the previous section. The three conditions of a subgroup `H`, restated through `∈ H` as `H.one_mem`, `H.mul_mem ha hb` and `H.inv_mem ha`, are given in the context for the problems to come, with their copies `AddSubgroup.zero_mem`, `AddSubgroup.add_mem` and `AddSubgroup.neg_mem`.
+The rotations of the `n`-gon are a subgroup of Dₙ: the trivial rotation `r 0` is `1`, two rotations compose to a rotation, `r i * r j = r (i + j)`, and the inverse of a rotation is a rotation, `(r i)⁻¹ = r (-i)`. A reflection is not a rotation, since two constructors of an inductive type never agree, as in the previous section.
+
+As a set the rotations are the range of the constructor `r`, `Set.range r`, as the first section met ranges. A subgroup is built with `where`, the carrier first and then the three proofs, each a statement about members of the carrier. In a tactic proof of such a field, `intro` names the implicit elements too, while a `fun` names only the hypotheses.
+
+The context holds the three conditions of a subgroup `H` restated through `∈ H`, as `H.one_mem`, `H.mul_mem ha hb` and `H.inv_mem ha`, with their additive versions `AddSubgroup.zero_mem`, `AddSubgroup.add_mem` and `AddSubgroup.neg_mem`.
 @description
 Define `DihedralGroup.rotations n`, the subgroup of `DihedralGroup n` with carrier `Set.range DihedralGroup.r`, and show that `r i` belongs to it and `sr i` does not.
 -/
@@ -180,9 +191,15 @@ theorem sr_not_mem_rotations {n : ℕ} [NeZero n] (i : ZMod n) : sr i ∉ rotati
 @concept subgroups
 
 @preamble
-The multiples of a fixed integer `n` are an additive subgroup of the integers, written `nℤ`: `0` is a multiple of `n`, so is a sum of two multiples, and so is the negative of one. A multiple of `n` is an `x` with `n ∣ x`, divisibility on `ℤ` as the first section met it on `ℕ`, and core Lean has the three facts as `Int.dvd_zero n : n ∣ 0`, `Int.dvd_add : n ∣ a → n ∣ b → n ∣ a + b` and `Int.dvd_neg : n ∣ -a ↔ n ∣ a`. The carrier is `{x | n ∣ x}`, and the goals `0 ∈ carrier`, `a + b ∈ carrier` and `-a ∈ carrier` are the statements `n ∣ 0`, `n ∣ a + b` and `n ∣ -a` up to unfolding, which `exact` sees through. The equation `x ∈ intMultiples n ↔ n ∣ x`, which holds by definition, is what later proofs rewrite with; `2ℤ` is the subgroup of even integers, and `1ℤ` is everything.
+The multiples of a fixed integer `n` are an additive subgroup of the integers, written `nℤ`: `0` is a multiple of `n`, so is a sum of two multiples, and so is the negative of one. A multiple of `n` is an `x` with `n ∣ x`, divisibility on `ℤ` as the first section met it on `ℕ`. Core Lean has the three facts:
+```lean
+theorem Int.dvd_zero (n : ℤ) : n ∣ 0
+theorem Int.dvd_add {a b c : ℤ} : a ∣ b → a ∣ c → a ∣ b + c
+theorem Int.dvd_neg {a b : ℤ} : a ∣ -b ↔ a ∣ b
+```
+`2ℤ` is the subgroup of even integers, and `1ℤ` is everything.
 @description
-Define `intMultiples n`, the additive subgroup `nℤ` of `ℤ` with carrier `{x | n ∣ x}`, and prove `mem_intMultiples`, that `x ∈ intMultiples n ↔ n ∣ x`, which holds by definition.
+Define `intMultiples n`, the additive subgroup `nℤ` of `ℤ` with carrier `{x | n ∣ x}`, and prove `mem_intMultiples`, that membership in it is divisibility by `n`; it holds by definition.
 -/
 
 def intMultiples (n : ℤ) : AddSubgroup ℤ where
@@ -209,9 +226,13 @@ theorem mem_intMultiples {n x : ℤ} : x ∈ intMultiples n ↔ n ∣ x :=
 @concept subgroups
 
 @preamble
-In `ZMod 6` the residues `0`, `2` and `4` form an additive subgroup: the sum of two of them is one of them, as `2 + 4 = 0` and `4 + 4 = 2`, and the negative of `2` is `4`. The carrier is the set `{0, 2, 4}`, written by listing its elements, and `x ∈ {0, 2, 4}` unfolds to `x = 0 ∨ x = 2 ∨ x = 4`. Each closure condition is a statement about finitely many residues, which `decide` settles through the instances of the examples section, on the field as it stands and before any `intro`, since `decide` cannot run with a free `a` in the goal, as the symmetric groups concept noted; a hypothesis `a ∈ {…}` is decided like any other proposition about `a`. The equation `x ∈ zmodSixEvens ↔ x = 0 ∨ x = 2 ∨ x = 4`, which holds by definition, is how a later proof takes such a membership apart. The odd residues `1`, `3`, `5` are not a subgroup: `1 + 1 = 2`.
+In `ZMod 6` the residues `0`, `2` and `4` form an additive subgroup: the sum of two of them is one of them, as `2 + 4 = 0` and `4 + 4 = 2`, and the negative of `2` is `4`. The carrier is the set `{0, 2, 4}`, written by listing its elements, and a membership in it means, by definition,
+```lean
+x = 0 ∨ x = 2 ∨ x = 4
+```
+Each closure condition is a statement about finitely many residues.
 @description
-Define `zmodSixEvens`, the additive subgroup of `ZMod 6` with carrier `{0, 2, 4}`, and prove `mem_zmodSixEvens`, that `x ∈ zmodSixEvens ↔ x = 0 ∨ x = 2 ∨ x = 4`, which holds by definition.
+Define `zmodSixEvens`, the additive subgroup of `ZMod 6` with carrier `{0, 2, 4}`, and prove `mem_zmodSixEvens`, that membership in it is that disjunction; it holds by definition.
 -/
 
 def zmodSixEvens : AddSubgroup (ZMod 6) where
@@ -234,11 +255,14 @@ theorem mem_zmodSixEvens (x : ZMod 6) : x ∈ zmodSixEvens ↔ x = 0 ∨ x = 2 �
 @concept subgroups
 
 @preamble
-A subgroup is to be a group in its own right, so its elements must form a type, and its carrier is a set, which stands where a type is expected as in the first section: `H.carrier` as a type, which Lean prints `↥H.carrier`, has as its elements the pairs `⟨x, hx⟩` of an `x : G` and a proof `hx : x ∈ H.carrier`, and for `a : H.carrier`, `(a : G)` is its element, printed `↑a`, with `a.2` the proof that it lies in the carrier, which is to say in `H`. Mathlib writes this type `↥H`; in this subject it is always written `H.carrier`.
+A subgroup is to be a group in its own right, so its elements must form a type. Its carrier is a set, which stands where a type is expected, as in the first section. We write this type `H.carrier`, and Lean prints it `↥H.carrier`. Its elements are the pairs `⟨x, hx⟩` of an `x : G` and a proof `hx : x ∈ H.carrier`. For `a : H.carrier`, the element `(a : G)`, printed `↑a`, is `a.1` of the first section, and `a.2` is the proof that it lies in the carrier.
 
-One consequence is a count: the function `a ↦ (a : G)` from `H.carrier` to `G` is injective, Mathlib's `Subtype.val_injective`, so `H` has no more elements than `G`, by `Fintype.card_le_of_injective` as in the previous section. Counting `H.carrier` needs membership in it to be decidable, which `open Classical in` supplies, as it did for a quotient.
+One consequence is a count: the function `a ↦ (a : G)` from `H.carrier` to `G` is injective, Mathlib's `Subtype.val_injective`, so `H` has no more elements than `G`. Counting `H.carrier` needs membership in it to be decidable, which `open Classical in` supplies, as it did for a quotient.
 @description
-Show that `(a : G) ∈ H` for every `a : H.carrier`, and that a subgroup of a finite group has at most as many elements as the group, `Fintype.card H.carrier ≤ Fintype.card G`, under `open Classical in`.
+Show that `(a : G) ∈ H` for every `a : H.carrier`. Show also, under `open Classical in`, that a subgroup of a finite group has at most as many elements as the group:
+```lean
+Fintype.card H.carrier ≤ Fintype.card G
+```
 -/
 
 @[to_additive AddSubgroup.coe_mem]
@@ -259,9 +283,17 @@ theorem Subgroup.card_le_card_group {G : Type u} [Group G] [Fintype G] (H : Subg
 @concept subgroups
 
 @preamble
-With its elements as the type `H.carrier`, a subgroup `H` is a group under the operation of `G`: the product of two elements of `H` is their product in `G`, paired with the proof, from `H.mul_mem`, that it lies in `H`, and the neutral element and the inverse are built the same way from `H.one_mem` and `H.inv_mem`, so the three conditions of the definition are what the instance is built from. Each law is an equation between two elements of the subtype, which holds as soon as their elements of `G` are equal: Mathlib's `Subtype.ext : (a : G) = b → a = b`, as `Fin.ext` for `Fin n`. The equations `((a * b : H.carrier) : G) = (a : G) * (b : G)`, `((1 : H.carrier) : G) = 1` and `((a⁻¹ : H.carrier) : G) = (a : G)⁻¹` hold by definition, and later proofs rewrite with them. In the first, both factors on the right are taken into `G` before they are multiplied; written `a * b`, the product would be formed in `H.carrier` and taken into `G` afterwards, and the equation would say nothing.
+With its elements as the type `H.carrier`, a subgroup `H` is a group under the operation of `G`. The operations are those of `G`, and the three conditions of the definition keep their results in `H`. Two elements of `H.carrier` are equal when their elements of `G` are, as for `Fin n`:
+```lean
+theorem Subtype.ext {a b : H.carrier} : (a : G) = (b : G) → a = b
+```
 @description
-Supply the instance `Group H.carrier` for a subgroup `H` of `G`, and prove the three equations `Subgroup.coe_mul`, `Subgroup.coe_one` and `Subgroup.coe_inv`, each of which holds by definition.
+Supply the instance `Group H.carrier` for a subgroup `H` of `G`, and prove the three equations below, `Subgroup.coe_mul`, `Subgroup.coe_one` and `Subgroup.coe_inv`, each of which holds by definition. On the right of the first, both factors are taken into `G` first.
+```lean
+((a * b : H.carrier) : G) = (a : G) * (b : G)
+((1 : H.carrier) : G) = 1
+((a⁻¹ : H.carrier) : G) = (a : G)⁻¹
+```
 -/
 
 @[to_additive AddSubgroup.instAddGroupCarrier]
@@ -295,16 +327,40 @@ theorem Subgroup.coe_inv {G : Type u} [Group G] {H : Subgroup G} (a : H.carrier)
 /-! @end -/
 
 /--
+@problem eq_of_coe_eq
+@title An Element of a Subgroup is Determined by Its Value
+@concept subgroups
+
+@preamble
+The previous problem used `Subtype.ext`: two elements of `H.carrier` with the same element of `G` are equal. It is proved by taking the two pairs apart. A value of a structure type is built by the structure's one constructor, which Lean names `mk`, from its fields, and
+```lean
+cases a with
+| mk x hx => …
+```
+opens `a : H.carrier` into its element `x` and its proof `hx`. The tactic `subst h` replaces one variable by the other through an equation `h : x = y`. Two pairs with the same element differ only in their proofs, and two proofs of one proposition are equal in Lean.
+@description
+Show that two elements `a` and `b` of `H.carrier` with `(a : G) = (b : G)` are equal, without `Subtype.ext`.
+-/
+@[to_additive AddSubgroup.eq_of_coe_eq]
+theorem Subgroup.eq_of_coe_eq {G : Type u} [Group G] {H : Subgroup G} {a b : H.carrier}
+    (h : (a : G) = (b : G)) : a = b := by
+  cases a with
+  | mk x hx =>
+    cases b with
+    | mk y hy =>
+      change x = y at h
+      subst h
+      rfl
+
+/--
 @problem subgroup_ext
 @title Two Subgroups With the Same Elements Are Equal
 @concept subgroups
 
 @preamble
-A subgroup is determined by its elements: two subgroups with the same members are equal, as two sets are, because the proofs of the three conditions make no difference to equality. This is how every equation between subgroups is proved from here on, Mathlib's `Subgroup.ext`: `apply Subgroup.ext`, then `intro x`, then a statement about one element.
-
-A structure is opened into its fields by `cases H with | mk c _ _ _ =>`, naming the carrier and leaving the proofs unnamed, as `ZMod.ext` was proved in the examples section. The two carriers are then sets with the same members, equal by `Set.ext`; once they are identified, the two sides differ only in their proofs of the three conditions, and two proofs of one proposition are equal in Lean, so nothing remains to check.
+A subgroup is determined by its elements: two subgroups with the same members are equal, as two sets are. We name this `Subgroup.ext`. A subgroup opens into its four fields as an element of `H.carrier` opened into two in the previous problem. Two subgroups with the same carrier differ only in three proofs, which make no difference, as the proof in a pair made none.
 @description
-Show that two subgroups `H` and `K` with `x ∈ H ↔ x ∈ K` for every `x` are equal.
+Show that two subgroups `H` and `K` with `x ∈ H ↔ x ∈ K` for every `x` are equal. `Set.ext` of the first section may be useful.
 -/
 @[to_additive AddSubgroup.ext]
 theorem Subgroup.ext {G : Type u} [Group G] {H K : Subgroup G} (h : ∀ x, x ∈ H ↔ x ∈ K) :
@@ -323,12 +379,18 @@ theorem Subgroup.ext {G : Type u} [Group G] {H K : Subgroup G} (h : ∀ x, x ∈
 @concept subgroups
 
 @preamble
-Every group has two subgroups at once: the whole group, and `{1}`, with the neutral element alone, the *trivial subgroup*. Mathlib writes them `⊤` and `⊥` (typed `\top` and `\bot`), the top and the bottom of the subgroups ordered by inclusion, through the notation class
+Every group has two obvious subgroups: the whole group, and `{1}`, with the neutral element alone, the *trivial subgroup*. We write them `⊤` and `⊥` (typed `\top` and `\bot`), the largest and the smallest subgroup, through the notation class
 ```lean
 class Top (α : Type u) where
   top : α
 ```
-and `Bot`, the same with the field `bot`; each is built as `⟨…⟩` with the subgroup inside it written `{ carrier := …, one_mem' := …, … }`. The carrier of `⊤` is `Set.univ`, the set of all elements, with `Set.mem_univ x : x ∈ Set.univ`; the carrier of `⊥` is the singleton `{1}`, with `Set.mem_singleton 1 : 1 ∈ {1}` and `Set.mem_singleton_iff : x ∈ {a} ↔ x = a`, which turns a hypothesis `ha : a ∈ {1}` into the equation `a = 1` that `rw` can use. The memberships `x ∈ ⊤`, always, and `x ∈ ⊥ ↔ x = 1`, the second by definition, are what later proofs use, under Mathlib's names. The context holds `one_mul` and `inv_one`.
+and `Bot`, the same with the field `bot`. Each instance is `⟨…⟩` around a subgroup written with the brace notation for structures. The carrier of `⊤` is `Set.univ`, the set of all elements, and the carrier of `⊥` is the singleton `{1}`. Mathlib's laws for them are
+```lean
+theorem Set.mem_univ (x : α) : x ∈ Set.univ
+theorem Set.mem_singleton (a : α) : a ∈ {a}
+theorem Set.mem_singleton_iff {a b : α} : a ∈ {b} ↔ a = b
+```
+The context holds `one_mul` and `inv_one`.
 @description
 Supply the instances `Top (Subgroup G)` and `Bot (Subgroup G)`, and prove `Subgroup.mem_top`, that every `x` is in `⊤`, and `Subgroup.mem_bot`, that `x ∈ ⊥ ↔ x = 1`.
 -/
@@ -373,9 +435,18 @@ theorem Subgroup.mem_bot {G : Type u} [Group G] {x : G} : x ∈ (⊥ : Subgroup 
 @concept subgroups
 
 @preamble
-Subgroups are compared by inclusion: `H ≤ K` when every element of `H` is in `K`. So `⊥` is the smallest subgroup and `⊤` the largest, and since a subgroup is determined by its elements, `H ≤ K` and `K ≤ H` force `H = K`. The symbol comes from Lean's class `LE`, with the one field `le`, and `H ≤ K` is defined as `∀ ⦃x⦄, x ∈ H → x ∈ K`, with the strict implicit binder of `Function.Injective`: for `h : H ≤ K` and `hx : x ∈ H` the term `h hx` proves `x ∈ K`, and a goal `H ≤ K` opens on `intro x hx`. Mathlib's names for these facts, on any ordered type, are `bot_le`, `le_top` and `le_antisymm`; here they are proved for subgroups under those names. The context holds `Subgroup.mem_bot`, `Subgroup.mem_top`, `Subgroup.one_mem` and `Subgroup.ext`.
+Subgroups are compared by inclusion: `H ≤ K` when every element of `H` is in `K`. So `⊥` is the smallest subgroup and `⊤` the largest, and since a subgroup is determined by its elements, `H ≤ K` and `K ≤ H` force `H = K`. The symbol comes from Lean's class
+```lean
+class LE (α : Type u) where
+  le : α → α → Prop
+```
+`H ≤ K` is defined with the strict implicit binder of `Function.Injective`, so for `h : H ≤ K` and `hx : x ∈ H` the term `h hx` proves `x ∈ K`. We prove the three facts as `Subgroup.bot_le`, `Subgroup.le_top` and `Subgroup.le_antisymm`. The context holds `Subgroup.mem_bot`, `Subgroup.mem_top`, `Subgroup.one_mem` and `Subgroup.ext`.
 @description
-Supply the instance `LE (Subgroup G)` with `H ≤ K` as `∀ ⦃x⦄, x ∈ H → x ∈ K`; show that `⊥ ≤ H` and `H ≤ ⊤` for every subgroup `H`; and show that `H ≤ K` and `K ≤ H` give `H = K`.
+Supply the instance `LE (Subgroup G)` with `H ≤ K` defined as
+```lean
+∀ ⦃x⦄, x ∈ H → x ∈ K
+```
+Show that `⊥ ≤ H` and `H ≤ ⊤` for every subgroup `H`, and that `H ≤ K` and `K ≤ H` give `H = K`.
 -/
 
 @[to_additive AddSubgroup.instLE]
@@ -412,9 +483,9 @@ theorem Subgroup.le_antisymm {G : Type u} [Group G] {H K : Subgroup G} (h₁ : H
 @concept subgroups
 
 @preamble
-A subgroup closed under products is closed under powers: `g ^ n ∈ H` whenever `g ∈ H`, by induction on `n`, since `g ^ (n + 1)` is `g ^ n * g`; and then `g ^ k ∈ H` for every integer `k`, by the two cases of an integer, a negative power being the inverse of a natural one. So a subgroup containing `g` contains every power of `g`, and an additive subgroup every multiple. In `ZMod 6` every integer multiple of `2` is `0`, `2` or `4`: the copy `AddSubgroup.zsmul_mem` applied to the even residues, once `2` is seen to be among them, which `decide` checks after the membership is rewritten into the disjunction it stands for. The context holds `pow_zero`, `pow_succ` and `zpow_negSucc` of the previous section, and `mem_zmodSixEvens`; it does not hold `zpow_add_one` and `zpow_sub_one`, so the integer case is a `cases` on `k` and not an induction, and for `Int.ofNat n` the power `g ^ Int.ofNat n` is `g ^ n` by definition, which `exact` sees through.
+A subgroup closed under products is closed under powers: `g ^ n ∈ H` whenever `g ∈ H`, and then `g ^ k ∈ H` for every integer `k`, a negative power being the inverse of a natural one. An additive subgroup contains every multiple of each of its elements, by the additive version `AddSubgroup.zsmul_mem`. In `ZMod 6` every integer multiple of `2` is `0`, `2` or `4`. The context holds `pow_zero`, `pow_succ` and `zpow_negSucc` of the previous section, and `mem_zmodSixEvens`.
 @description
-Show that `g ^ n ∈ H` for every natural number `n`, and `g ^ k ∈ H` for every integer `k`, whenever `g ∈ H`, under Mathlib's names `Subgroup.pow_mem` and `Subgroup.zpow_mem`; and conclude that `k • 2 ∈ zmodSixEvens` for every integer `k`.
+Show that `g ^ n ∈ H` for every natural number `n`, and `g ^ k ∈ H` for every integer `k`, whenever `g ∈ H`, under the names `Subgroup.pow_mem` and `Subgroup.zpow_mem`. Conclude that `k • 2 ∈ zmodSixEvens` for every integer `k`.
 -/
 
 @[to_additive AddSubgroup.nsmul_mem]
@@ -449,7 +520,7 @@ theorem zmod_six_two_zsmul_mem (k : ℤ) : k • (2 : ZMod 6) ∈ zmodSixEvens :
 @title The Centre
 @kind definition
 
-The centre of a group is the set of elements that commute with every element. It is a subgroup, and it is the whole group exactly when the group is commutative, so it measures how far a group is from commutative: trivial in D₃, two elements in D₄, everything in the Klein four-group. The subject's goal, that a group of order `p²` is commutative, is proved by showing that its centre is large.
+The centre of a group is the set of elements that commute with every element. It is a subgroup, and it is the whole group exactly when the group is commutative, so it measures how far a group is from commutative: trivial in D₃, two elements in D₄, everything in the Klein four-group.
 -/
 
 /-!
@@ -458,9 +529,13 @@ The centre of a group is the set of elements that commute with every element. It
 @concept centre
 
 @preamble
-The *centre* of `G` is the set of elements that commute with every element of `G`, `{z | ∀ g, g * z = z * g}`, Mathlib's `Subgroup.center G`. It is a subgroup: `1` commutes with everything; if `a` and `b` commute with `g`, so does `a * b`, by moving `g` across one factor at a time; and if `a` commutes with every element, so does `a⁻¹`, since an equation between two elements still holds after both of its sides are inverted, and the inverse of a product is known. A hypothesis `ha : a ∈ {z | ∀ g, …}` is the statement it abbreviates, so `ha g` is the equation for `g`, and a goal `a * b ∈ {z | ∀ g, …}` opens on `intro g`. The equation `z ∈ center G ↔ ∀ g, g * z = z * g` holds by definition and is the form later proofs rewrite with. The context holds `mul_inv_rev` and `inv_inv`.
+The *centre* of `G` is the set of elements that commute with every element of `G`:
+```lean
+{z | ∀ g, g * z = z * g}
+```
+It is a subgroup. `1` commutes with everything. If `a` and `b` commute with `g`, so does `a * b`. If `a` commutes with every element, so does `a⁻¹`. A hypothesis that `a` lies in this set is the statement it abbreviates, so `ha g` is the equation for `g`, and such a goal opens on `intro g`. The additive version is `AddSubgroup.center`. The context holds `mul_inv_rev` and `inv_inv`.
 @description
-Define `Subgroup.center G`, the centre of `G`, as the subgroup with carrier `{z | ∀ g, g * z = z * g}`, and prove `Subgroup.mem_center_iff`, which holds by definition.
+Define `Subgroup.center G`, the centre of `G`, as the subgroup with that carrier, and prove `Subgroup.mem_center_iff`, which says that `z ∈ center G` means that `z` commutes with every `g`; it holds by definition.
 -/
 
 @[to_additive AddSubgroup.center]
@@ -501,9 +576,9 @@ theorem Subgroup.mem_center_iff {G : Type u} [Group G] {z : G} :
 @concept centre
 
 @preamble
-The centre is the whole group exactly when every pair of elements commutes: the two subgroups have the same members exactly when every element commutes with every other. So a commutative group is its own centre, and the Klein four-group is: `center (DihedralGroup 2) = ⊤`, through the instance `CommGroup (DihedralGroup 2)` of the examples section, which the context holds. Read the other way, the equivalence says that a group with two elements that do not commute has a centre smaller than the whole group. A hypothesis `h : center G = ⊤` is an equation between subgroups, and `rw` uses it as it uses any equation. The context holds `Subgroup.ext`, `Subgroup.mem_top`, `Subgroup.mem_center_iff` and `mul_comm`.
+The centre is the whole group exactly when every pair of elements commutes. So a commutative group is its own centre; so is the Klein four-group, through the instance `CommGroup (DihedralGroup 2)` of the examples section, which the context holds. The additive groups `ℤ`, `ZMod n` and `Bool` are commutative, so their centres are everything, through the additive versions and the instance `AddCommGroup ℤ`. A hypothesis `h : center G = ⊤` is an equation between subgroups, and `rw` uses it as it uses any equation. The context holds `Subgroup.ext`, `Subgroup.mem_top`, `Subgroup.mem_center_iff` and `mul_comm`.
 @description
-Show that `center G = ⊤` exactly when `a * b = b * a` for all `a` and `b`; that the centre of a commutative group is `⊤`; and that `center (DihedralGroup 2) = ⊤`.
+Show that `center G = ⊤` exactly when `a * b = b * a` for all `a` and `b`; that the centre of a commutative group is `⊤`; that `center (DihedralGroup 2) = ⊤`; and that `AddSubgroup.center ℤ = ⊤`.
 -/
 
 @[to_additive AddSubgroup.center_eq_top_iff]
@@ -534,6 +609,9 @@ theorem Subgroup.center_eq_top {G : Type u} [CommGroup G] : Subgroup.center G = 
 theorem center_klein : Subgroup.center (DihedralGroup 2) = ⊤ :=
   Subgroup.center_eq_top
 
+theorem int_center : AddSubgroup.center ℤ = ⊤ :=
+  AddSubgroup.center_eq_top
+
 /-! @end -/
 
 /-!
@@ -542,7 +620,9 @@ theorem center_klein : Subgroup.center (DihedralGroup 2) = ⊤ :=
 @concept centre
 
 @preamble
-In D₃, the triangle, nothing but `1` commutes with every symmetry: its centre is `⊥`. In D₄, the square, the half turn `r 2` commutes with everything, since turning the square halfway round and then reflecting it is reflecting it and then turning it halfway round, and nothing else does but `1`: the centre is `{1, r 2}`, that is, `r 0` and `r 2`; and since D₄ is not commutative, its centre is not `⊤`, by the previous problem's equivalence and `d4_not_comm` of the examples section. The first two are statements about finitely many elements, but `decide` fails on them as they stand, with `failed to synthesize Decidable`, since it cannot see inside `Subgroup.center` or `⊥`; each membership is first rewritten into what it says, under the `∀` that a statement about every element carries, as `simp only` unfolded the table under its binders in the examples section. The centre of D₄ is stated element by element, as a membership. D₃ stands in for the symmetric group on three points, whose centre is trivial too. The context holds `Subgroup.ext`, `Subgroup.mem_center_iff`, `Subgroup.mem_bot`, `Subgroup.center_eq_top_iff` and `d4_not_comm`.
+In D₃, the triangle, nothing but `1` commutes with every symmetry: its centre is `⊥`. In D₄, the square, the half turn `r 2` commutes with everything, since turning the square halfway round and then reflecting it is reflecting it and then turning it halfway round. Nothing else does but `1`: the centre is `{1, r 2}`, that is, `r 0` and `r 2`.
+
+The first two statements below are about finitely many elements, but `decide` needs the memberships written out as what they say first. The context holds `Subgroup.ext`, `Subgroup.mem_center_iff`, `Subgroup.mem_bot`, `Subgroup.center_eq_top_iff` and `d4_not_comm`.
 @description
 Show that the centre of `DihedralGroup 3` is `⊥`; that `x` is in the centre of `DihedralGroup 4` exactly when `x = r 0` or `x = r 2`; and that the centre of `DihedralGroup 4` is not `⊤`.
 -/
@@ -570,7 +650,7 @@ theorem d4_center_ne_top : Subgroup.center (DihedralGroup 4) ≠ ⊤ := by
 @title Intersections of Subgroups
 @kind definition
 
-The intersection of two subgroups is a subgroup, and so is the intersection of any family of them, so any two subgroups have a greatest subgroup below both. The intersection of all the subgroups containing a set is the smallest subgroup containing it, which is how the subgroup generated by a set is defined.
+The intersection of two subgroups is a subgroup, and so is the intersection of any family of them, so any two subgroups have a greatest subgroup below both. The intersection of all the subgroups containing a set is the smallest subgroup containing it.
 -/
 
 /-!
@@ -579,14 +659,14 @@ The intersection of two subgroups is a subgroup, and so is the intersection of a
 @concept intersections
 
 @preamble
-Two subgroups `H` and `K` meet in a subgroup: `1` is in both, a product of two elements of both is in both, and so is an inverse, each by the condition of `H` and the condition of `K`. Mathlib writes the intersection `H ⊓ K` (typed `\glb`), through the class
+Two subgroups `H` and `K` meet in a subgroup: `1` is in both, a product of two elements of both is in both, and so is an inverse. We write the intersection `H ⊓ K` (typed `\glb`), for `min H K`, through the class
 ```lean
 class Min (α : Type u) where
   min : α → α → α
 ```
-The carrier is `H.carrier ∩ K.carrier`, and `x ∈ H ⊓ K ↔ x ∈ H ∧ x ∈ K` holds by definition, with `ha.1` and `ha.2` the two halves of a membership `ha`. It is the greatest subgroup below both, Mathlib's `inf_le_left`, `inf_le_right` and `le_inf`. In the integers, the multiples of `2` that are multiples of `3` are the multiples of `6`: `2ℤ ⊓ 3ℤ = 6ℤ`; `omega` decides divisibility by a numeral. The context holds `mem_intMultiples` and the copies `AddSubgroup.ext` and `AddSubgroup.mem_inf`.
+Its carrier is `H.carrier ∩ K.carrier`. The halves of `ha : x ∈ H ⊓ K` read `x ∈ H.carrier` and `x ∈ K.carrier`, and `exact` accepts them as proofs of `x ∈ H` and `x ∈ K`. It is the greatest subgroup below both, which we prove as `Subgroup.inf_le_left`, `Subgroup.inf_le_right` and `Subgroup.le_inf`. `⊓` works for additive subgroups as well. In the integers the multiples of both `2` and `3` are the multiples of `6`. The context holds `mem_intMultiples`, `AddSubgroup.ext`, and `AddSubgroup.mem_inf`, the additive version of `Subgroup.mem_inf`.
 @description
-Supply the instance `Min (Subgroup G)` with `H ⊓ K` the subgroup with carrier `H.carrier ∩ K.carrier`; prove `Subgroup.mem_inf`, which holds by definition; show that `H ⊓ K` lies below `H` and below `K`, and above every subgroup that lies below both; and show that `intMultiples 2 ⊓ intMultiples 3 = intMultiples 6`.
+Supply the instance `Min (Subgroup G)`, and prove `Subgroup.mem_inf`, that `x ∈ H ⊓ K` exactly when `x ∈ H` and `x ∈ K`, which holds by definition. Show that `H ⊓ K` lies below `H` and below `K`, and above every subgroup that lies below both, and that `2ℤ ⊓ 3ℤ = 6ℤ`. `omega`, which decides divisibility by a numeral, may be useful.
 -/
 
 @[to_additive AddSubgroup.instMin]
@@ -634,14 +714,18 @@ theorem intMultiples_two_inf_three : intMultiples 2 ⊓ intMultiples 3 = intMult
 @concept intersections
 
 @preamble
-The intersection of any set `S` of subgroups, not only of two, is a subgroup: an element of the intersection lies in every `H ∈ S`, and each condition holds in the intersection because it holds in each `H`. Mathlib writes it `sInf S`, the greatest lower bound of a set, through the class
+The intersection of any set `S` of subgroups, not only of two, is a subgroup: an element of the intersection lies in every `H ∈ S`. We write it `sInf S`, the greatest lower bound of a set, through the class
 ```lean
 class InfSet (α : Type u) where
   sInf : Set α → α
 ```
-The carrier is `{x | ∀ H ∈ S, x ∈ H}`, where `∀ H ∈ S, …` abbreviates `∀ H, H ∈ S → …`, so a membership in it is a function of a subgroup `H` and a proof `hH : H ∈ S`. The intersection lies below every member of `S`, and above every subgroup that lies below all of them: `sInf_le` and `le_sInf` in Mathlib, which say that it is the greatest lower bound. For the two-element set `{H, K}`, whose membership `L ∈ {H, K}` unfolds to `L = H ∨ L = K` as for `{0, 2, 4}`, it is `H ⊓ K`, Mathlib's `sInf_pair`. The context holds `Subgroup.mem_inf`.
+The carrier is `{x | ∀ H ∈ S, x ∈ H}`, where `∀ H ∈ S, …` abbreviates `∀ H, H ∈ S → …`, as `∃ x ∈ S, …` abbreviated `∃ x, x ∈ S ∧ …` in the first section, so a membership in it is a function of a subgroup `H` and a proof `hH : H ∈ S`. The intersection lies below every member of `S`, and above every subgroup that lies below all of them. For the two-element set `{H, K}` it has the same elements as `H ⊓ K`. A membership `L ∈ {H, K}` means `L = H ∨ L ∈ {K}`, and `rw` accepts the second half as `L = K`. The context holds `Subgroup.mem_inf`.
 @description
-Supply the instance `InfSet (Subgroup G)`; prove `Subgroup.mem_sInf`, that `x ∈ sInf S ↔ ∀ H ∈ S, x ∈ H`, which holds by definition; show that `sInf S ≤ H` for every `H ∈ S`, and that `K ≤ sInf S` whenever `K ≤ H` for every `H ∈ S`; and show that `x ∈ sInf {H, K} ↔ x ∈ H ⊓ K`.
+Supply the instance `InfSet (Subgroup G)`, and prove `Subgroup.mem_sInf`, which holds by definition:
+```lean
+x ∈ sInf S ↔ ∀ H ∈ S, x ∈ H
+```
+Show that `sInf S ≤ H` for every `H ∈ S`, and that `K ≤ sInf S` whenever `K ≤ H` for every `H ∈ S`. Show that `x ∈ sInf {H, K}` exactly when `x ∈ H ⊓ K`.
 -/
 
 @[to_additive AddSubgroup.instInfSet]
@@ -696,7 +780,7 @@ theorem Subgroup.mem_sInf_pair {G : Type u} [Group G] {H K : Subgroup G} {x : G}
 @kind definition
 @goal
 
-The subgroup generated by a set is the smallest subgroup containing it, and the subgroup generated by one element is the set of its powers. A group generated by one element is cyclic: the integers, and the integers modulo `n`, each generated by the number `1`. Cyclic groups are the simplest, and the subgroup an element generates is what Lagrange's theorem counts to bound the order of the element.
+The subgroup generated by a set is the smallest subgroup containing it, and the subgroup generated by one element is the set of its powers. A group generated by one element is cyclic: the integers, and the integers modulo n, each generated by 1. Every cyclic group is commutative.
 -/
 
 /-!
@@ -705,9 +789,16 @@ The subgroup generated by a set is the smallest subgroup containing it, and the 
 @concept generated_subgroups
 
 @preamble
-The subgroup *generated* by a set `X` is the smallest subgroup containing `X`: the intersection of all the subgroups that contain `X`, `sInf {H | X ⊆ H.carrier}`, Mathlib's `Subgroup.closure X`, the *closure* of `X`, since it is `X` closed up under the three operations. The intersection contains `X`, since each subgroup in the family does, and it lies below every subgroup `H` containing `X`, since `H` is in the family. Together, `closure X ≤ H` exactly when `X ⊆ H.carrier`, which is what makes it the smallest. A membership `x ∈ closure X` is, by definition, `∀ H : Subgroup G, X ⊆ H.carrier → x ∈ H`, a function of a subgroup and a proof that it contains `X`, and the previous problem's `Subgroup.mem_sInf` says so already, up to unfolding. `X ⊆ H.carrier` is `∀ ⦃a⦄, a ∈ X → a ∈ H.carrier`, so `h hx` for `hx : x ∈ X` proves `x ∈ H.carrier`, which is `x ∈ H` up to unfolding; `change` restates one as the other, and `rw` sees only what is written. The context holds `Subgroup.mem_sInf` and `Subgroup.sInf_le`, and not `le_sInf`.
+The subgroup *generated* by a set `X` is the smallest subgroup containing `X`: the intersection of all the subgroups that contain `X`. It is called the *closure* of `X`, `Subgroup.closure X`, since it is `X` closed up under products and inverses. A membership in it is, by definition, a statement about every subgroup containing `X`, as a membership in `sInf` was. The context holds `Subgroup.mem_sInf` and `Subgroup.sInf_le`.
 @description
-Define `Subgroup.closure X` as the intersection of the subgroups containing `X`; prove `Subgroup.mem_closure`, which holds by definition; and show `Subgroup.subset_closure`, that `X ⊆ (closure X).carrier`, and `Subgroup.closure_le`, that `closure X ≤ H ↔ X ⊆ H.carrier`.
+Define `Subgroup.closure X` as the intersection of the subgroups containing `X`, and prove `Subgroup.mem_closure`, which holds by definition:
+```lean
+x ∈ closure X ↔ ∀ H : Subgroup G, X ⊆ H.carrier → x ∈ H
+```
+Show `Subgroup.subset_closure`, that `X` lies in the carrier of its closure, and `Subgroup.closure_le`:
+```lean
+closure X ≤ H ↔ X ⊆ H.carrier
+```
 -/
 
 @[to_additive AddSubgroup.closure]
@@ -747,9 +838,13 @@ theorem Subgroup.closure_le {G : Type u} [Group G] {X : Set G} {H : Subgroup G} 
 @concept generated_subgroups
 
 @preamble
-The powers of one element `g`, with every integer as exponent, form a subgroup: `1 = g ^ 0`, `g ^ k * g ^ l = g ^ (k + l)` and `(g ^ k)⁻¹ = g ^ (-k)`, the laws of integer powers of the previous section. Mathlib writes it `Subgroup.zpowers g`, and its carrier is `{x | ∃ k : ℤ, g ^ k = x}`, so a membership is taken apart by `intro ⟨k, hk⟩` and proved by a witness, `⟨k + l, _⟩`. Its copy is `AddSubgroup.zmultiples a`, the integer multiples `k • a` of `a`. The element generates its own subgroup, `g ∈ zpowers g`, as `g ^ 1`. The context holds `zpow_zero`, `zpow_one`, `zpow_add` and `zpow_neg`.
+The powers of one element `g`, with every integer as exponent, form a subgroup, by the laws of integer powers of the previous section. We write it `Subgroup.zpowers g`, and its carrier is
+```lean
+{x | ∃ k : ℤ, g ^ k = x}
+```
+Its additive version is `AddSubgroup.zmultiples a`, the integer multiples `k • a` of `a`. The context holds `zpow_zero`, `zpow_one`, `zpow_add` and `zpow_neg`.
 @description
-Define `Subgroup.zpowers g`; prove `Subgroup.mem_zpowers_iff`, that `x ∈ zpowers g ↔ ∃ k : ℤ, g ^ k = x`, which holds by definition; and show that `g ∈ zpowers g`.
+Define `Subgroup.zpowers g`, and prove `Subgroup.mem_zpowers_iff`, that `x ∈ zpowers g` exactly when `x` is an integer power of `g`, which holds by definition. Show that `g ∈ zpowers g`, under the name `Subgroup.mem_zpowers`.
 -/
 
 @[to_additive AddSubgroup.zmultiples]
@@ -789,7 +884,7 @@ theorem Subgroup.mem_zpowers {G : Type u} [Group G] (g : G) : g ∈ Subgroup.zpo
 @concept generated_subgroups
 
 @preamble
-The subgroup generated by the set `{g}` and the subgroup of powers of `g` are the same subgroup, Mathlib's `Subgroup.zpowers_eq_closure`. Each contains the other: a subgroup that contains `g` contains all of its powers, and `zpowers g` is itself a subgroup containing `g`. The set `{g}` is a singleton, with `Set.mem_singleton g : g ∈ {g}` and `Set.mem_singleton_iff : x ∈ {g} ↔ x = g`, as for `⊥`. So the smallest subgroup containing `g` is the one built from `g` by multiplying and inverting, which justifies calling `zpowers g` the subgroup generated by `g`. The context holds `Subgroup.le_antisymm`, `Subgroup.zpow_mem`, `Subgroup.subset_closure`, `Subgroup.closure_le`, `Subgroup.mem_zpowers_iff` and `Subgroup.mem_zpowers`.
+The subgroup generated by the set `{g}` and the subgroup of powers of `g` are the same subgroup. Each contains the other: a subgroup that contains `g` contains all of its powers, and `zpowers g` is itself a subgroup containing `g`. The set `{g}` is a singleton, with the laws `Set.mem_singleton` and `Set.mem_singleton_iff` met for `⊥`. `Subgroup.zpow_mem` takes its subgroup as an explicit first argument, written `K.zpow_mem` for a subgroup `K`, as `H.mul_mem` is. The context holds `Subgroup.le_antisymm`, `Subgroup.zpow_mem`, `Subgroup.subset_closure`, `Subgroup.closure_le`, `Subgroup.mem_zpowers_iff` and `Subgroup.mem_zpowers`.
 @description
 Show that `zpowers g = closure {g}`.
 -/
@@ -814,9 +909,13 @@ theorem Subgroup.zpowers_eq_closure {G : Type u} [Group G] (g : G) :
 @concept generated_subgroups
 
 @preamble
-A group is *cyclic* when a single element generates it: some `g` with every `x` in `zpowers g`, Mathlib's `IsCyclic G`, which it states as the surjectivity of `k ↦ g ^ k`; its copy is `IsAddCyclic A`. A cyclic group is commutative, since any two of its elements are powers of the one generator, and two powers of one element commute; core Lean has `Int.add_comm`. `IsCyclic G` is a proposition with a name, a `def` into `Prop` as `IsOfFinOrder` was, so a proof of it is a witness with a function, `⟨g, fun x => …⟩`, or in two steps, `apply Exists.intro g` naming the witness and leaving its property as the goal; `obtain ⟨g, hg⟩ := h` opens a hypothesis `h : IsCyclic G`. The context holds `zpow_add` and `Subgroup.mem_zpowers_iff`.
+A group is *cyclic* when a single element generates it: some `g` with every `x` in `zpowers g`. We write `IsCyclic G`, and its additive version is `IsAddCyclic A`. A cyclic group is commutative, since any two of its elements are powers of the one generator. `IsCyclic G` is a proposition with a name, a `def` into `Prop` as `IsOfFinOrder` was, and `obtain ⟨g, hg⟩ := h` opens a hypothesis `h : IsCyclic G`. Mathlib makes `IsCyclic` a class; here it is a definition. The context holds `zpow_add`, `Subgroup.mem_zpowers_iff` and core's `Int.add_comm`.
 @description
-Define `IsCyclic G` as `∃ g : G, ∀ x, x ∈ Subgroup.zpowers g`, under its mark, and show that in a cyclic group `a * b = b * a`.
+Define `IsCyclic G` as
+```lean
+∃ g : G, ∀ x, x ∈ Subgroup.zpowers g
+```
+and show that in a cyclic group `a * b = b * a`.
 -/
 
 @[to_additive IsAddCyclic]
@@ -839,22 +938,37 @@ theorem IsCyclic.mul_comm {G : Type u} [Group G] (h : IsCyclic G) (a b : G) : a 
 
 /-! @end -/
 
+/--
+@problem int_zsmul_eq_mul
+@title Multiples in the Integers Are Products
+@concept generated_subgroups
+
+@preamble
+In the integers an integer multiple is a product, `k • n = k * n` for all integers `k` and `n`, as the previous section showed `k • 1 = k`: by induction over the integers in both directions, each step the distributive law. The step up is routine. The step down is not, since lowering the multiplier by one adds a negative, `+ -n`, where the distributive law subtracts, `- 1 * n`, and the two sides meet only after `a - b` is rewritten as `a + -b`:
+```lean
+(-↑k - 1) • n = (-↑k) • n + -n = -↑k * n + -n
+  = -↑k * n - 1 * n = (-↑k - 1) * n
+```
+The context holds `zero_zsmul`, `add_one_zsmul`, `sub_one_zsmul`, and core Lean's laws of `ℤ`, among them `Int.add_mul`, `Int.sub_mul` and `Int.sub_eq_add_neg`.
+@description
+Show that `k • n = k * n` for all integers `k` and `n`.
+-/
+theorem int_zsmul_eq_mul (k n : ℤ) : k • n = k * n := by
+  induction k with
+  | zero => rw [zero_zsmul, Int.zero_mul]
+  | succ k ih => rw [add_one_zsmul, ih, Int.add_mul, Int.one_mul]
+  | pred k ih => rw [sub_one_zsmul, ih, Int.sub_mul, Int.one_mul, Int.sub_eq_add_neg]
+
 /-!
 @problem int_cyclic
 @title The Integers Are Cyclic
 @concept generated_subgroups
 
 @preamble
-In the integers an integer multiple is a product, `k • n = k * n` for all integers `k` and `n`, as `k • 1 = k` was for natural `k` in the previous section: by the induction over the integers in both directions, each step the distributive law. So the multiples of `n` in the group's sense are its multiples in the everyday sense, `x ∈ zmultiples n ↔ n ∣ x`, and `zmultiples n` is the subgroup `nℤ` of the first concept: the subgroups `nℤ` are the cyclic subgroups of the integers. With `n = 1`, every integer is a multiple of `1`, since `1` divides everything: the integers are cyclic, `IsAddCyclic ℤ`. The context holds `zero_zsmul`, `add_one_zsmul`, `sub_one_zsmul`, `AddSubgroup.mem_zmultiples_iff`, `AddSubgroup.ext`, `mem_intMultiples`, and core's `Int.zero_mul`, `Int.add_mul`, `Int.sub_mul`, `Int.one_mul`, `Int.sub_eq_add_neg`, `Int.mul_comm` and `Int.one_dvd`.
+Since a multiple in the integers is a product, the multiples of `n` in the group's sense are its multiples in the everyday sense. So `zmultiples n` is `intMultiples n`, the subgroup `nℤ` of the first concept of this section, and the subgroups `nℤ` are the cyclic subgroups of the integers. The integers themselves are cyclic, `IsAddCyclic ℤ`. The context holds `int_zsmul_eq_mul`, `AddSubgroup.mem_zmultiples_iff`, `AddSubgroup.ext`, `mem_intMultiples`, and core's `Int.mul_comm` and `Int.one_dvd`.
 @description
-Show that `k • n = k * n` in `ℤ`; that `x ∈ zmultiples n ↔ n ∣ x`; that `zmultiples n = intMultiples n`; and that `ℤ` is cyclic.
+Show that in `ℤ` the membership `x ∈ zmultiples n` is `n ∣ x`, that `zmultiples n = intMultiples n`, and that `ℤ` is cyclic.
 -/
-
-theorem int_zsmul_eq_mul (k n : ℤ) : k • n = k * n := by
-  induction k with
-  | zero => rw [zero_zsmul, Int.zero_mul]
-  | succ k ih => rw [add_one_zsmul, ih, Int.add_mul, Int.one_mul]
-  | pred k ih => rw [sub_one_zsmul, ih, Int.sub_mul, Int.one_mul, Int.sub_eq_add_neg]
 
 theorem mem_zmultiples_int {n x : ℤ} : x ∈ AddSubgroup.zmultiples n ↔ n ∣ x := by
   rw [AddSubgroup.mem_zmultiples_iff]
@@ -880,9 +994,9 @@ theorem isAddCyclic_int : IsAddCyclic ℤ :=
 @concept generated_subgroups
 
 @preamble
-The residue `1` generates `ZMod n`: the multiple `k • 1` is the residue with value `k % n`, by induction on `k`, each step an equation of values, with the first section's `mod_add_mod_eq_add_mod` adding remainders; the value of the residue `1` is `1 % n` by definition, which a `change` makes visible. Every residue `x` is then the multiple `x.val • 1`, an equation of residues that `ZMod.ext` reduces to their values. In `ZMod 6` the multiples of `2` are the even residues, `zmultiples 2 = zmodSixEvens`: each multiple is even by `zmod_six_two_zsmul_mem`, and each even residue is itself a multiple of `2`, which `decide` checks once the multiplier is named. The context holds `zero_nsmul`, `succ_nsmul`, `natCast_zsmul`, `ZMod.val_add`, `ZMod.val_zero`, `ZMod.ext`, `Nat.mod_eq_of_lt`, `AddSubgroup.mem_zmultiples_iff`, `mem_zmodSixEvens` and `AddSubgroup.ext`.
+The value of the multiple `k • 1` in `ZMod n` is `k % n`, with remainders added as in the first section; the value of the residue `1` is `1 % n` by definition. In `ZMod 6` the multiples of `2` are the even residues. The context holds `zero_nsmul`, `succ_nsmul`, `natCast_zsmul`, `ZMod.val_add`, `ZMod.val_zero`, `Fin.ext`, `Nat.mod_eq_of_lt`, `mod_add_mod_eq_add_mod`, `AddSubgroup.mem_zmultiples_iff`, `AddSubgroup.ext`, `mem_zmodSixEvens` and `zmod_six_two_zsmul_mem`.
 @description
-Show that `(k • (1 : ZMod n)).val = k % n` for every natural number `k`; that `ZMod n` is cyclic, `IsAddCyclic (ZMod n)`; and that `zmultiples 2 = zmodSixEvens` in `ZMod 6`.
+Show that the value of the multiple `k • (1 : ZMod n)` is `k % n` for every natural number `k`, that `ZMod n` is cyclic, and that `zmultiples 2 = zmodSixEvens` in `ZMod 6`.
 -/
 
 theorem ZMod.val_nsmul_one {n : ℕ} [NeZero n] (k : ℕ) : (k • (1 : ZMod n)).val = k % n := by
@@ -899,8 +1013,8 @@ theorem isAddCyclic_zmod (n : ℕ) [NeZero n] : IsAddCyclic (ZMod n) := by
   rw [AddSubgroup.mem_zmultiples_iff]
   apply Exists.intro (x.val : ℤ)
   rw [natCast_zsmul]
-  apply ZMod.ext
-  rw [ZMod.val_nsmul_one, Nat.mod_eq_of_lt x.val_lt]
+  apply Fin.ext
+  rw [ZMod.val_nsmul_one, Nat.mod_eq_of_lt x.isLt]
 
 theorem zmultiples_two_zmod_six : AddSubgroup.zmultiples (2 : ZMod 6) = zmodSixEvens := by
   apply AddSubgroup.ext
