@@ -64,7 +64,11 @@ def tokens(code):
 
 def prose_tokens(text):
     out = set()
-    for span in re.findall(r"`([^`\n]+)`", text or ""):
+    text = text or ""
+    for block in re.findall(r"```[^\n]*\n(.*?)```", text, flags=re.S):  # fenced blocks teach too
+        out.update(tokens(block))
+    text = re.sub(r"```.*?```", " ", text, flags=re.S)
+    for span in re.findall(r"`([^`\n]+)`", text):
         out.update(tokens(span))
     return out
 

@@ -404,8 +404,8 @@ definition whose equations it would have to regenerate: each such notion has an 
 the student writes as a short problem right after the original** (`add_group`, the `AddCommGroup`
 half of `comm_group`, `nsmul`, `zsmul`, `add_subgroup`), followed outside the block by lines
 `attribute [to_additive existing AddGroup] Group` pairing the two, one declaration per line. For
-§6–§12 this means: `MonoidHom` gets the twin `AddMonoidHom` (`A →+ B`) and `MulEquiv` the twin
-`AddEquiv` (`≃+`); `Subgroup.Normal` its `AddSubgroup.Normal`; the quotient group `G ⧸ N` its
+§6–§12 this means: `GroupHom` gets the twin `AddGroupHom` (`A →+ B`) and `GroupIso` the twin
+`AddGroupIso` (`≃+`) (**Decisions** 3); `Subgroup.Normal` its `AddSubgroup.Normal`; the quotient group `G ⧸ N` its
 additive quotient `A ⧸ N` for an additive subgroup (`QuotientAddGroup`), so that `ℤ ⧸ nℤ` and
 `ZMod 6 ⧸ ⟨3⟩` are additive quotients; `MulAction` its `AddAction` only if `ZMod n` acting on
 `Fin n` stays (it can be dropped: `Dₙ` on the vertices shows the same). A map from a
@@ -1142,15 +1142,15 @@ that a coercion instance never reaches a later problem's context (**As built**, 
 the application is spelled out through a named function (`f.toFun x`, or a named `apply`), and
 the §6 session chooses the spelling before writing.
 
-- `homomorphisms`: the student's structure (`MonoidHom` or `GroupHom`, **Decisions** 3) with
+- `homomorphisms`: the student's structure (`GroupHom`, **Decisions** 3) with
   `toFun` and `map_mul'`, a `CoeFun` instance, the notation `G →* H`; Milne 1.21 as the first
   theorems: `map_one`, `map_inv`, `map_pow`, `map_zpow`; `comp` and `id`; the examples: the
   reduction `ℤ →* ZMod n`, `k ↦ k % n` (with `Int.emod` and its non-negativity, said once),
   the reduction `ZMod 6 →* ZMod 2`, the orientation `DihedralGroup n →* Bool` (`r i ↦ false`,
   `sr i ↦ true`), the inclusion `H.subtype : H →* G`, `fst : G × H →* G`, conjugation by `g`.
   (7)
-- `isomorphisms`: `MulEquiv` extending `Equiv` with `map_mul'`, the notation `G ≃* H`;
-  `MulEquiv.ofBijective`; `symm`; isomorphic finite groups have the same cardinality; an
+- `isomorphisms`: `GroupIso` extending `Equiv` with `map_mul'`, the notation `G ≃* H`;
+  `GroupIso.ofBijective`; `symm`; isomorphic finite groups have the same cardinality; an
   isomorphism carries commutativity and orders of elements; `ZMod 2 ≃* Bool`;
   `DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` (Milne: `D₃` is `S₃`), its map on six elements and
   `map_mul'` by `decide`; `DihedralGroup 2` is not isomorphic to `ZMod 4`, since it has no
@@ -1165,6 +1165,90 @@ the §6 session chooses the spelling before writing.
 
 Budget: 21, which is over: `homomorphisms` can give the two reductions one problem and drop
 conjugation to §11, where it is needed.
+
+**As built (2026-10-26).** `PolyaAlgebra/GroupTheory/Homomorphisms.lean`: 22 problems over 4
+concepts, in this order: `homomorphisms` (`group_hom`, the structure `GroupHom G H` with
+`toFun` and `map_mul' : ∀ a b : G, toFun (a * b) = toFun a * toFun b`, applied as `f.toFun a`,
+and the notation `G →* H`; `add_group_hom`, the twin `AddGroupHom` with `map_add'` and
+`A →+ B`, paired by an `attribute [to_additive existing …]` line; `map_one`, with
+`GroupHom.map_mul` and `GroupHom.map_one` given, the second worked as a `calc` through
+`mul_eq_left`, and `GroupHom.map_inv` the exercise; `map_pow`, `GroupHom.map_pow` by induction
+and `map_zpow` by cases; `comp`, `GroupHom.comp`, `GroupHom.id` and `GroupHom.fst`;
+`zmod_reductions`, `zmodSixToTwo : AddGroupHom (ZMod 6) (ZMod 2)` through `toFin 2 a.val` with
+its law by `decide`, and `intToZMod n : ℤ →+ ZMod n`, `k ↦ k • 1` by `add_zsmul`, with
+`zmodSixToTwo_five` and `intToZMod_six_neg_one`; `orientation`, with `swap2`, `swap2_mul_self`
+and `swap2_ne_one` given, `DihedralGroup.orientation n : DihedralGroup n →* Equiv.Perm (Fin 2)`);
+`isomorphisms` (`group_iso`, `GroupIso G H extends G ≃ H` with `map_mul'` and `G ≃* H`;
+`add_group_iso`, the twin `AddGroupIso` with `A ≃+ B`; `zmod_two_iso_bool`, `zmodTwoIsoBool :
+ZMod 2 ≃+ Bool` from §3's `zmodTwoEquivBool` and `zmodTwoEquivBool_add`, with
+`zmodTwoIsoBool_invFun_true`, the first value of a structure that extends another;
+`group_iso_symm`, `GroupIso.toGroupHom` and `GroupIso.symm`;
+`group_iso_invariants`, `GroupIso.card_eq` through `Fintype.card_congr` and `GroupIso.mul_comm`;
+`klein_not_zmod_four`, `GroupIso.mul_self_eq_one`, `zmod_two_prod_add_self` and
+`not_nonempty_addGroupIso_zmod_four : ¬ Nonempty (ZMod 2 × ZMod 2 ≃+ ZMod 4)`);
+`kernels_and_images` (`ker`, `GroupHom.ker f` with carrier `{x | f.toFun x = 1}` and
+`mem_ker`; `range`, `GroupHom.range f` with carrier `{y | ∃ x, f.toFun x = y}`, `mem_range` and
+`range_eq_top`; `ker_eq_bot_iff`; `kernel_examples`, `ker_zmodSixToTwo : … = zmodSixEvens` and
+`ker_orientation : … = rotations n` and `range_zmodSixToTwo : … = ⊤`; `int_to_zmod_nat_mem_ker`,
+`intToZMod_natCast_mem_ker : (m : ℤ) ∈ (intToZMod n).ker ↔ n ∣ m`; `ker_int_to_zmod`,
+`Subgroup.inv_mem_iff` and `ker_intToZMod : … = intMultiples n`; `to_perm3`,
+`DihedralGroup.toPerm3 : DihedralGroup 3 →* Equiv.Perm (Fin 3)`, `r i ↦ rot3 ^ i.val`, `sr i ↦
+reflect3 * rot3 ^ i.val`, its law by `decide`, and `ker_toPerm3 : … = ⊥`); and `cayley` (`mul_left`, `Equiv.mulLeft g : Equiv.Perm G` with its additive
+version `Equiv.addLeft` and `addLeft_one_zmod_three : Equiv.addLeft 1 = rot3`; `cayley`, `cayley G
+: G →* Equiv.Perm G` and `cayley_injective`), with the `@goal`. `FewerAxioms.lean` stays the
+root's last import and now imports `Homomorphisms`. Extraction: 149 problems, 0 errors, 29
+concepts in 7 sections; budgets and concept lengths clean, five problems under the 17-line floor
+(`add_group_hom`, `comp`, `group_iso_invariants`, `ker_eq_bot_iff`, `mul_left`); prose names and
+stub shortcuts clean after their exceptions; the vocabulary audit 0 of 149, once it read fenced
+blocks (`STYLE.md`, **Learned building §6**). Every structure spec was compiled against implicit
+binders and the law reversed (`GroupHom`, `GroupIso`), the kernel's and the image's carriers
+with their equations reversed, and another `zmodSixToTwo` (`⟨a.val % 2, by omega⟩`), and rejects
+a wrong `GroupHom` and a wrong `GroupIso`; `links.yaml` carries
+`programming/structures → grouptheory/homomorphisms`.
+
+Eight departures from the entry. (1) **No `CoeFun`**: a homomorphism applies as `f.toFun a`, and
+the prose says once that Mathlib writes `f a`. (2) **`GroupIso.ofBijective` is not built**; the
+isomorphisms are built from their equivalences, and the inverse is `symm`. (3) **`D₃ ≃* S₃` is an
+injective homomorphism**, `toPerm3` with trivial kernel: `Equiv.Perm (Fin 3)` has no `Fintype`
+under the fence, so the isomorphism's surjectivity cannot be decided, and the prose says that
+`S₃` has six elements, a count the subject does not make. (4) **Orders of elements carried by an
+isomorphism are not built**; the invariants are the number of elements and commutativity, and
+`V₄ ≇ ZMod 4` goes through `a + a = 0` rather than an element of order 4. (5) **`Subgroup.map`,
+`Subgroup.comap` and the inclusion `H.subtype` wait for §10**, and conjugation for §11, where they
+are needed. (6) **`cayley` has no additive version**, since `Equiv.Perm G` is a multiplicative
+group for an additive `G`. (7) **`zmodSixToTwo`'s type is written `AddGroupHom (ZMod 6) (ZMod
+2)`**, not `ZMod 6 →+ ZMod 2`, because a later definition shares its auxiliary proof and the
+closure does not replay the notation (`STYLE.md`, **Learned building §6**); and the isomorphism
+`ZMod 2 ≃+ Bool` is a problem of its own. (8) **Twenty-two problems**, against a budget of
+21: the twins `AddGroupHom` and `AddGroupIso` take a problem each, the isomorphism of the groups of
+order two takes one, and the kernel of `ℤ →+ ZMod n` takes two (the natural numbers, then the
+negatives through `Subgroup.inv_mem_iff`), while the reductions share a problem, as the entry
+proposed; the orientation goes to `Equiv.Perm (Fin 2)` rather than `Bool`, as **Spelling** says.
+
+The student review (one blind agent per concept, `scripts/review/`, briefs filled from
+`PROMPT.md`) ran the same day: every one of the 22 problems passed, and no reviewer revealed a
+solution before passing or found double teaching. The draft changed in these ways. The commonest
+finding was a step that holds only by definition, unsaid: the `Int.ofNat` case of `map_zpow`
+(`rw [map_pow]` does not match `a ^ Int.ofNat n`), `fst`'s law (the student reaches for
+`prod_mul_def`, outside the context), `e.toGroupHom.map_one` in `klein_not_zmod_four` (`rw`
+fails where `exact` works), and the goals of `cayley` (`rw [mul_assoc]` finds no pattern); each
+preamble now says so in a sentence. Order: `zmod_two_iso_bool` moved before
+`group_iso_symm`, since `symm` asked for a value of an extending structure before any problem
+had shown one, and its check is now `zmodTwoIsoBool_invFun_true`; `to_perm3` moved to the end
+of its concept, beside Cayley's theorem. The image was defined and never used, so
+`kernel_examples` adds `range_zmodSixToTwo`; its preamble says that `decide` refuses a goal
+about a variable named by `intro`, and that `simp only` rewrites under the `∀`. Giveaways cut:
+`zmod_reductions` no longer pairs each law with its closer, and `cayley` no longer names the
+point `1`. Smaller fixes: the law of a homomorphism is written as mathematics (f(ab) = f(a)
+f(b)), not as Lean the student cannot type; context lists name `one_mul`, `inv_one` and
+`Subgroup.inv_mem`; `Nonempty` was met in the first section, not the fourth; `ZMod 2 × ZMod 2`
+is isomorphic to the Klein four-group; `mul_left` shows the two cancellation laws it names; and
+the spec of `GroupIso` and `AddGroupIso` now accepts a law written through the coercion
+`toEquiv (a * b)` (`first | exact h | exact h.symm | grind`), which `grind` alone rejected. Left
+for the owner: the non-example `¬ ∀ a b : ZMod 5, toFin 2 (a + b).val = …` (checked by `decide`);
+folding each twin structure into its original's problem; moving `Subgroup.inv_mem_iff` to §5's
+`pow_mem`; and ending `cayley` with `(cayley G).ker = ⊥`. 149 problems, 0 errors; budgets, prose
+names, stub shortcuts and the vocabulary audit clean.
 
 ### §7. Cosets and Lagrange's Theorem
 
@@ -1540,7 +1624,7 @@ recorded so that a session does not reopen them.
   draft had taken `G →* H` from the fence because every `Fintype` module beyond `Card` carries
   `MonoidHom`; with `Group` itself out of the fence those modules are out too, and nothing
   forces the name.
-- **3. The name of the homomorphism structure** (open, 2026-10-21). By what §6's first
+- **3. The name of the homomorphism structure** (open, 2026-10-21; settled by the owner, 2026-10-26). By what §6's first
   definition is called:
   - *`MonoidHom`*, Mathlib's name for a homomorphism of groups, with Mathlib's notation
     `G →* H`, and a sentence in the prose saying that Mathlib names it after the monoid
@@ -1551,6 +1635,14 @@ recorded so that a session does not reopen them.
   **Recommendation: `MonoidHom`**, for the vocabulary rule; the field names `map_mul'`,
   `map_one` and the notation are Mathlib's in either case. **Taken as recommended, 2026-10-21**,
   by the session that built §1, the owner not having objected; a name, cheap to change before §6.
+  **Overruled by the owner, 2026-10-26**, after §6 was built: `MonoidHom` names a structure the
+  subject never defines, and the prose never said why, so the homomorphism is `GroupHom` with the
+  twin `AddGroupHom`, and the isomorphism, for the same reason, `GroupIso` with the twin
+  `AddGroupIso` in place of Mathlib's `MulEquiv` and `AddEquiv`; the notations `→*`, `→+`, `≃*`
+  and `≃+` stay Mathlib's. The slugs moved with them (`group_hom`, `add_group_hom`, `group_iso`,
+  `add_group_iso`, `group_iso_symm`, `group_iso_invariants`, `zmod_two_iso_bool`), the subject
+  being unpublished. `Hom` alone was rejected: rings, modules and Mathlib's categories all have
+  homomorphisms, and Mathlib's category theory already spells `Hom`.
 - **4. The operation's symbol, and so the shape of the class** (open, 2026-10-21; it follows
   from the owner's two points of the same day, that `ZMod n` is built with `%` and that `ℤ` is
   an example). By what §2's first instance for `ℤ` looks like:
@@ -1768,7 +1860,29 @@ recorded so that a session does not reopen them.
 
 ## Next step
 
-§6, Homomorphisms, in a fresh session: "Do the next section in Group Theory, which is §6
+§7, Cosets and Lagrange's Theorem, in a fresh session: "Do the next section in Group Theory,
+which is §7 Cosets and Lagrange's Theorem". First, the student review of §6 with
+`scripts/review/`, as §1–§5 had, if this session did not finish it (§6's **As built** says
+whether it ran). Read §7's entry, §6's **As built** (the names as they are in Lean: `G →* H` for
+`GroupHom G H` applied as `f.toFun a`, `GroupHom.map_mul`, `map_one`, `map_inv`, `map_pow`,
+`map_zpow`, `comp`, `id`, `fst`; `G ≃* H` for `GroupIso G H` extending `G ≃ H`, with
+`toGroupHom`, `symm`, `card_eq`, `mul_comm`, `mul_self_eq_one`; `f.ker`, `f.range`, `mem_ker`,
+`mem_range`, `range_eq_top`, `ker_eq_bot_iff`, `Subgroup.inv_mem_iff`; the examples
+`zmodSixToTwo`, `intToZMod n`, `DihedralGroup.orientation n`, `swap2`, `zmodTwoIsoBool`,
+`DihedralGroup.toPerm3`, `ker_zmodSixToTwo`, `ker_orientation`, `ker_intToZMod`; `Equiv.mulLeft`
+and `cayley`, each with its additive version but `cayley`), `STYLE.md` with **Learned building
+§6** (a notation is replayed only for a pulled item that names its declaration; inside
+`Group.x`, `mul_one` is the class field; `decide` and free variables; no `Fintype` on a product),
+and §1–§6 in full before writing. The entry predates the symbols: its `∗` is `*`, and every coset,
+relation and quotient carries a written `@[to_additive NAME]` (`leftAddCoset`,
+`QuotientAddGroup.leftRel`, the additive `HasQuotient` instance a twin of the multiplicative one)
+so that the cosets of `2ℤ` and the subgroups of `ZMod 6` are additive, as the running examples
+are. The hazard the entry names, `Quotient.out` under choice, stands; test the `HasQuotient`
+instance at the first extract, since §5 found that only an instance a compiled term names reaches
+a later context. The goal moves to §7's last concept; `FewerAxioms.lean` stays the root's last
+import and then imports §7's file.
+
+The previous next step, kept for the record: §6, Homomorphisms, in a fresh session: "Do the next section in Group Theory, which is §6
 Homomorphisms", once the publisher change the additive refactor needs is released and repinned
 (`STYLE.md`, **Learned refactoring to additive groups**; until then `lake exe polya extract`
 fails 44 problems). Read **Spelling** under **The sections** first (from 2026-10-23: additive
@@ -1801,21 +1915,10 @@ the orientation `Dₙ →* Equiv.Perm (Fin 2)`, `Prod.fst`; `ZMod 2 ≃+ Bool` f
 and `zmodTwoEquivBool_add`; `DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` by `decide`; `V₄` not
 isomorphic to `ZMod 4`; the kernels `⟨2⟩ = zmodSixEvens`, `nℤ = intMultiples n`, the rotations.
 The goal moves to §6's last concept;
-`ExtraCredit.lean` stays the root's last import and now imports `Subgroups`. After §6, run the
+`FewerAxioms.lean` (formerly `ExtraCredit.lean`, the section Extra Credit) stays the root's last import and now imports `Subgroups`. After §6, run the
 student review with `scripts/review/` as §1–§5 did (the §5 review's findings are under §5's
 **As built**). Decision 3 is taken (`MonoidHom`); the owner may still overrule 3 and 5 before §6
 and §8.
-
-The previous next step, kept for the record: §5, Subgroups, in a fresh session: "Do the next
-section in Group Theory, which is §5 Subgroups". Read §5's entry, §4's **As built**, `STYLE.md`
-with **Learned building §4**, and §1–§4 in full before writing. The §5 hazard named in the
-entry: the coercion `↥H` of a subgroup to a type, tested at the first extract. The §5 examples by
-the running-examples table: the rotations `{r i}` of `Dₙ`, `⟨2⟩ = {0, 2, 4}` in `ZMod 6`, `nℤ` in
-`ℤ`; `center S₃ = ⊥` by `decide` (no `Fintype` on `Equiv.Perm (Fin 3)`: state it over `D₃` or as
-a `∀` the student proves), `center D₄ = {𝟙, r 2}`, `center ℤ = ⊤`; `zpowers 1 = ⊤` in `ℤ` and
-`ZMod n`. The goal moves to §5's last concept; `ExtraCredit.lean` stays the root's last import.
-After §5, run the student review with `scripts/review/` as §1–§4 did, and add §5's link to
-`links.yaml` (`programming/structures → grouptheory/subgroups`).
 
 ## The prompts that produced this plan
 

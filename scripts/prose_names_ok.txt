@@ -35,3 +35,12 @@ subgroup: mem
 pow_mem: zpow_add_one, zpow_sub_one
 nsmul: ng
 add_subgroup: carrier, zero_mem', add_mem', neg_mem', Subgroup
+group_hom: toFun, map_mul'
+add_group_hom: toFun, map_add', AddSubgroup, Subgroup, GroupHom
+map_one: map_mul'
+group_iso: toFun, invFun, left_inv, right_inv, map_mul', GroupHom
+add_group_iso: map_add', AddGroupHom, GroupHom, GroupIso
+group_iso_symm: toFun, invFun
+ker_int_to_zmod: nℤ
+cayley: Sₙ
+zmod_two_iso_bool: invFun

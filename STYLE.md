@@ -464,7 +464,7 @@ invite it. Section 1 did this for `equiv_bijective` and `residue_bijective` afte
   product's equation is `prod_mul_def`; the fence probe lists `Prod.mul_def` as known.
 - **Extra credit lives in a last section.** By the syllabus rule every concept declared before
   the goal is on its path, so extra credit placed in the middle of the subject becomes
-  recommended the moment the goal moves past it. `ExtraCredit.lean`, imported last by the
+  recommended the moment the goal moves past it. `FewerAxioms.lean`, imported last by the
   root, holds what nothing builds on, and each section's goal move leaves it after the goal.
 - `Fin 2` literal patterns work in a `match`, `| (0, k) => … | (1, k) => …`, and Lean sees that
   no third case is possible; `cases a <;> cases b <;> cases c` with `·` bullets afterwards
@@ -774,6 +774,51 @@ then re-read by a fresh reviewer. What it settled:
 - **The subject description states the current goal**, not the plan's eventual one, and
   lists only what is built.
 
+## Learned building §6 (2026-10-26)
+
+- **A structure's name says what it is, even where Mathlib's does not** (the owner, 2026-10-26):
+  the homomorphism is `GroupHom` and the isomorphism `GroupIso`, with the twins `AddGroupHom`
+  and `AddGroupIso`, since Mathlib's `MonoidHom` and `MulEquiv` name structures the subject never
+  defines; the notations `→*`, `→+`, `≃*`, `≃+` and the field and theorem names (`map_mul'`,
+  `map_one`, `ker`, `symm`) stay Mathlib's. The plan's **Decisions** 3 has the reasoning.
+- **A homomorphism applies as `f.toFun x`**, the field itself, as polya-topology's `Homeomorph`
+  does, with no `CoeFun` instance (§5); the prose says once that Mathlib writes `f a`. An isomorphism `extends G ≃ H`, so `e.toFun`, `e.invFun`,
+  `e.left_inv` and `e.right_inv` are reached directly; the spec of each structure is
+  `have h := @GroupHom.map_mul' G H _ _ f a b; grind`, which accepts both binder styles and both
+  orientations, and a kernel's membership spec is `change _ = _ at h; grind`.
+- **A notation is replayed only for a pulled item that names its declaration.** `zmodTwoIsoBool`
+  reuses the auxiliary proof `zmodSixToTwo._proof_2 : NeZero (1 + 1)`, so the closure pulls
+  `zmodSixToTwo` into its context (the shared-proof lesson of §3); its text named `→+`, not
+  `AddGroupHom`, and the context failed with `unexpected token '+'`. The fix inside the project
+  is to write the type of a definition whose proofs others may share as the structure's name,
+  `AddGroupHom (ZMod 6) (ZMod 2)`; the root fix, replaying a notation when a pulled item's text
+  contains its symbol, is the publisher's, and waits on the owner.
+- **Inside a declaration named `Group.x`, `mul_one` is the class field `Group.mul_one`**, whose
+  binders differ, and `rw [mul_one]` fails; the Cayley homomorphism is `cayley`, outside the
+  `Group` namespace.
+- **A homomorphism into `Equiv.Perm G` has no additive version**: the permutations of an
+  additive group form a multiplicative group, and `@[to_additive]` refuses. `cayley` carries no
+  mark, and the prose says why.
+- **`decide` cannot decide a case with free variables** (`Expected type must not contain free
+  variables`): the orientation's reflection-by-reflection case is `swap2 * swap2 = 1` under
+  `sr i * sr j`, given as `swap2_mul_self` and used by `exact`.
+- **No `Fintype` on a product or on `Equiv.Perm (Fin 3)` under the fence**: a statement over
+  `ZMod 2 × ZMod 2` ranges over `x y : ZMod 2` instead, and `D₃ ≃* S₃` is an injective
+  homomorphism with the count of `S₃` said in prose.
+- **The vocabulary audit reads fenced blocks.** Since the prose review moved signatures into
+  `lean` blocks, the audit's inline-backtick reading flagged 20 references whose names were
+  taught in a block; `scripts/audit_vocabulary.py` now counts the names in fenced blocks too,
+  and the subject passes with 0 of 149.
+- **A spec over a structure that extends `Equiv` tries `exact` before `grind`**: a student may
+  write the law through the coercion, `toEquiv (a * b) = toEquiv a * toEquiv b`, which is
+  `toFun` only by definition, and `grind` rejects it; `first | exact h | exact h.symm | grind`
+  accepts that form, both binder styles and both orientations.
+- **The reviewers' findings, in order of frequency**: a step that holds only by definition,
+  unsaid (`a ^ Int.ofNat n`, a projection's law, `e.toGroupHom`'s function, `Equiv.mulLeft`'s
+  values), where the trained `rw` fails; a device used before the problem that shows it (a value
+  of an extending structure); a notion defined and never used (the image); a preamble pairing
+  each goal with its closer. Every problem passed, and no double teaching was found.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:
@@ -792,7 +837,8 @@ then re-read by a fresh reviewer. What it settled:
   ../polya-basic/.lake/polya/bundles/<subject> …` (one `--prior` per subject of polya-basic,
   extracted there) — the vocabulary audit of `AUDIT.md` in `polya-topology`: does each
   reference proof use only what the course has taught by that point? The baseline is
-  `polya-basic`'s five subjects. Section 1 passed it on 2026-10-21 with 0 of 21.
+  `polya-basic`'s five subjects, and names in backticks and in fenced `lean` blocks count as taught.
+  Section 1 passed it on 2026-10-21 with 0 of 21, the six sections on 2026-10-26 with 0 of 149.
 
 **The student review after each section** uses `scripts/review/`: `make_view.py BUNDLE OUT`
 renders the bundle answer-free (concepts, preambles, descriptions, starting code), `check.py

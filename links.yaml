@@ -66,3 +66,7 @@ links:
     to: grouptheory/subgroups
     weight: 0.7
     note: A structure with data fields and proof fields is declared there; here a subgroup is a structure holding a set and the three closure conditions, with a `Membership` instance so that `x ∈ H` is membership in its carrier.
+  - from: programming/structures
+    to: grouptheory/homomorphisms
+    weight: 0.5
+    note: A structure with a data field and a proof field is declared there; here a homomorphism is a structure holding a function and the law that it carries products to products, applied through its field as `f.toFun a`.

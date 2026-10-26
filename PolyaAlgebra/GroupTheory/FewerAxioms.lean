@@ -8,9 +8,9 @@ import Mathlib.Algebra.Quotient         -- the ⧸ notation (HasQuotient)
 import Mathlib.Order.Notation           -- ⊤, ⊥, ⊓, ⊔ as classes
 import Mathlib.Data.Nat.Find            -- Nat.find
 import Mathlib.Data.Int.Init            -- Int.induction_on
-import PolyaAlgebra.GroupTheory.Subgroups
+import PolyaAlgebra.GroupTheory.Homomorphisms
 
-/-! @section Extra Credit -/
+/-! @section Fewer Axioms -/
 
 universe u
 

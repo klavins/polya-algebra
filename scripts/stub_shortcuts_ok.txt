@@ -59,3 +59,6 @@ to_fin_or_zero       # toFinOrZero_check is the definition evaluated at two numb
 inv_eq_pow           # zmod_six_neg_eq_nsmul is the additive copy neg_eq_addOrderOf_sub_one_nsmul applied to ZMod 6, which the check exists to demand (decide cannot evaluate addOrderOf)
 eq_of_coe_eq         # Subtype.ext (SetCoe.ext) by hand, the warm-up opening a structure with `cases … | mk` before subgroup_ext; the description excludes it
 center_eq_top        # int_center is the additive copy AddSubgroup.center_eq_top applied to ℤ, which the check exists to demand
+zmod_reductions      # zmodSixToTwo_five and intToZMod_six_neg_one are residues computed, a decide; the homomorphisms are the lesson
+zmod_two_iso_bool  # zmodTwoIsoBool_invFun_true is a residue computed, a decide; the isomorphism is the lesson
+ker                  # mem_ker holds by definition, as mem_zpowers_iff does; the kernel as a subgroup is the lesson
