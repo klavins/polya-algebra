@@ -467,7 +467,6 @@ theorem Subgroup.index_bot {G : Type u} [Group G] [Fintype G] :
 @concept lagrange
 @title Lagrange's Theorem
 @kind theorem
-@goal
 
 In a finite group, the number of elements is the index of a subgroup times the number of elements of the subgroup. So the order of a subgroup divides the order of the group, which rules out subgroups of most sizes before any is looked for.
 -/

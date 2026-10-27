@@ -857,6 +857,31 @@ then re-read by a fresh reviewer. What it settled:
   hunted for two of them. **A preamble says why the problem is here and what the student cannot
   guess; the description says what to do, in words; the starting code says it in Lean.**
 
+## Learned building §8 (2026-10-27)
+
+- **A later problem uses a student definition through a named theorem, never through its
+  projection.** `Nat.Prime p` may be written `1 < p ∧ …`, `p ≥ 2 ∧ …` or with the disjunction
+  reversed, and the spec accepts them all, but `hp.2 m hm` in a later reference fixes the
+  author's shape. The definition's problem proves the fact under Mathlib's name
+  (`Nat.Prime.eq_one_or_self_of_dvd`, beside `Nat.Prime.two_le`), and every later reference uses
+  that name, so it reaches their contexts. The sweep found no other instance in §1–§7.
+- **`/-- @problem -/` cannot precede `open Classical in`**, the §7 lesson, broken again in five
+  problems at the first build: a problem whose declaration opens `Classical` is a block.
+- **A rewrite of `n` inside `ZMod n` fails** with `motive is not type correct`, since `n` is in the
+  type too; rewrite the count side (`rw [Fintype.card_of_bijective hb, card_zmod]`), and say so at
+  the first problem where it bites (`zmod_add_order_of_one`).
+- **A context fact the student applies forwards is shown with its hypotheses.** Naming
+  `pow_sub_eq_one_of_pow_eq` was not enough: its `i < j` comes before the equation, and both
+  students learned it from type errors. A fact with a side condition, an argument order or a
+  direction (`Fintype.card_of_bijective` runs from the bijection's domain) is shown in a `lean`
+  block or said in words.
+- **Say where a fact comes from, correctly**: `Nat.le_of_dvd` is core Lean's even though the
+  previous section showed it, and a theorem the first section displayed was not "proved" there.
+- **The editor found what no student did**, again: two concept descriptions claiming more than
+  was built (a group of prime order "with no room for subgroups", which has two), wrong origins,
+  and a sentence explaining how the context is built. The students' commonest finding was, as
+  in every section, prose that handed over the proof.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:

@@ -70,3 +70,7 @@ links:
     to: grouptheory/homomorphisms
     weight: 0.5
     note: A structure with a data field and a proof field is declared there; here a homomorphism is a structure holding a function and the law that it carries products to products, applied through its field as `f.toFun a`.
+  - from: naturals/dvd_laws
+    to: grouptheory/primes
+    weight: 0.6
+    note: The laws of divisibility are proved there on the student's naturals; here a prime is defined through its divisors on Lean's `ℕ`, and Euclid's lemma follows from coprimality.

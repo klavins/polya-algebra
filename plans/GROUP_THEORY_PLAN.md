@@ -370,7 +370,7 @@ What the Group-free fence costs, and what replaces it:
 | `Finset.sum`, the class equation as a sum | block counting by `Finset.induction_on` and `Finset.card_union_of_disjoint` (§12) |
 | `Quotient.fintype` | not lost after all: it is in the fence, and `Fintype (G ⧸ H)` is instance search under `open Classical in` (§1 teaches it; §7 uses it) |
 | pigeonhole, `Fintype.exists_ne_map_eq_of_card_lt` | the contrapositive of `Fintype.card_le_of_injective` (§1, used in §4) |
-| `Nat.Prime` and Euclid's lemma | the student's `Nat.Prime`, Milne's definition, with Euclid's lemma from core's `Nat.Coprime` (§8) |
+| `Nat.Prime` | the student's `Nat.Prime`, Milne's definition, with coprimality from core's `Nat.Coprime` (§8); Euclid's lemma dropped by the owner, 2026-10-27, as nothing uses it |
 | `ZMod n`, `DihedralGroup n`, `Group (G × H)`, `Group (Equiv.Perm X)` | the student's (§3), as the owner wants |
 | `AddGroup ℤ`, `to_additive`'s copies | the student's `AddGroup` and its twins; `Mathlib.Tactic.ToAdditive` is in the fence, so the mark works on the student's declarations |
 | `Fintype (Equiv.Perm (Fin n))` | not needed: orders are counted on `DihedralGroup n` and `ZMod n`, whose `Fintype` the student builds; `Sₙ`'s order `n!` is prose |
@@ -1376,6 +1376,56 @@ Milne 1.16, 1.27, 1.28, 1.31, Exercise 1-5. No new Lean: `Nat.Coprime` is §1's.
 Budget: 14. Primes are arithmetic, not group theory; whether they are the student's problems
 here or a library module's is an open decision (**Decisions** 5).
 
+**As built (2026-10-27).** `PolyaAlgebra/GroupTheory/Cyclic.lean`: 14 problems over 3 concepts,
+in this order: `cyclic_subgroups` (`zpow_mod_order_of`, `zpow_orderOf_mul_eq_one : g ^ (↑(orderOf
+g) * q) = 1` by induction over `ℤ` and `zpow_mod_orderOf : g ^ (k % ↑(orderOf g)) = g ^ k` through
+`Int.emod_add_mul_ediv`; `pow_inj_of_lt_order_of`, `pow_inj_of_lt_orderOf`;
+`exists_pow_of_mem_zpowers`, `exists_pow_lt_orderOf_of_mem_zpowers` under `[Finite G]`, through
+`Int.emod_nonneg`, `Int.emod_lt_of_pos` and `Int.eq_ofNat_of_zero_le`; `card_zpowers`,
+`Fintype.card_zpowers : Fintype.card (zpowers g).carrier = orderOf g` by a bijection from
+`Fin (orderOf g)`, as `card_rotations` was counted; `order_of_dvd_card`, `orderOf_dvd_card` and
+`pow_card_eq_one`; `zmod_add_order_of_one`, `ZMod.addOrderOf_one : addOrderOf (1 : ZMod n) = n`);
+`primes` (`nat_prime`, the student's `Nat.Prime p := 2 ≤ p ∧ ∀ m, m ∣ p → m = 1 ∨ m = p`,
+`Nat.Prime.two_le`, `Nat.Prime.eq_one_or_self_of_dvd`, through which every later reference reads a
+prime's divisors, and `Nat.prime_five` by a bounded `decide`; `prime_coprime`,
+`Nat.Prime.coprime_iff_not_dvd`;
+`prime_dvd_of_dvd_pow`, `Nat.Prime.dvd_of_dvd_pow_of_ne_one`, which §12 needs); and
+`prime_order`, with the `@goal` (`eq_top_of_card_eq`, `Subgroup.eq_top_of_card_eq` through
+`Fintype.bijective_iff_injective_and_card`; `eq_bot_of_card_eq`, `Subgroup.eq_bot_of_card_eq`
+through `Fintype.card_eq_one_iff`; `prime_card_cyclic`, `Subgroup.zpowers_eq_top_of_prime_card`;
+`is_cyclic_of_prime_card`, `isCyclic_of_prime_card` through `Fintype.exists_ne_of_one_lt_card`, and
+`zmultiples_eq_top_zmod_five`; `prime_card_subgroups`,
+`Subgroup.eq_bot_or_eq_top_of_prime_card`). Every general theorem but the arithmetic of primes
+carries its additive version. `FewerAxioms.lean` stays the root's last import and now imports
+`Cyclic`. Extraction: 183 problems, 0 errors, 36 concepts in 9 sections; every new problem
+verified at once, with no repair; `checks.py all`, the budgets, prose names, stub shortcuts and
+the vocabulary audit (0 of 183) clean. The `Nat.Prime` spec was compiled against `1 < p`,
+`p ≥ 2` and the disjunction reversed, and rejects `1 ≤ p` and a definition without `m = p`.
+
+Three departures from the entry. (1) **The index formula moved to §10** (the owner,
+2026-10-27): `(H : K)` needs `K` as a subgroup of `H.carrier`, which is `comap` of the inclusion,
+unbuilt. (2) **The running example of `cyclic_subgroups` is `1` in `ZMod n`, not `r 1` in
+`Dₙ`**: `(r 1) ^ k = r k` is not built, while `ZMod n`'s multiples of `1` are §5's
+`ZMod.val_nsmul_one`; the general `n` makes it a theorem rather than a `decide`. (3) **The
+counting needed two warm-ups and two recognitions**: `pow_inj_of_lt_orderOf` and
+`exists_pow_lt_orderOf_of_mem_zpowers` carry the two halves of the bijection, and
+`Subgroup.eq_top_of_card_eq` and `Subgroup.eq_bot_of_card_eq` are problems of their own before
+the prime-order theorems. That every group of order `p` is isomorphic to `ZMod p` is not stated
+in the prose, which keeps no claim without a theorem; §10 proves it.
+
+The review (2026-10-27) ran three rounds, through the polya-subject skill: blind students, Sonnet
+and Haiku, one per concept, then Haiku alone on each changed concept, and an editor each round.
+Every problem passed in every round, none revealed before passing, and no double teaching was
+upheld. Round 1 found a later reference reading a student definition through its projection
+(`hp.2` of `Nat.Prime`), now `Nat.Prime.eq_one_or_self_of_dvd`; prose that handed over the
+proof in eight problems; context facts named without what they say; two concept descriptions
+claiming more than was built; wrong origins; and three statements in one problem, now
+`prime_card_cyclic` and `is_cyclic_of_prime_card`. Rounds 2 and 3 found defects the
+fixes had made (a claimed classification, a forward reference, a symbol used before it was
+introduced) and smaller wording; round 3's three fixes stand unreviewed. After the review the owner
+dropped Euclid's lemma, `prime_dvd_mul`, as number theory nothing in the subject uses
+(2026-10-27), and the lemma lists stay as the editor upheld them.
+
 ### §9. Normal Subgroups and Quotient Groups
 
 Milne 1.32–1.37, 1.41–1.44, 1.49. The Lean that is new here: `Quotient.lift₂`, in the problem
@@ -1420,9 +1470,13 @@ Milne 1.45–1.48, 1.50, 1.51, and equation (13). No new Lean.
   also `H ⊔ K = ⊤` then `H × K ≃* G` (1.50, 1.51); `ZMod m × ZMod n ≃* ZMod (m * n)` for coprime
   `m` and `n` (Milne eq. 13, by the order of `(1, 1)` and §8's primes concept), so
   `ZMod 2 × ZMod 3 ≃* ZMod 6` while `ZMod 2 × ZMod 2` is `V₄`. (4)
+- `index` (moved from §8 by the owner, 2026-10-27, since it needs `comap`): `Subgroup.comap` of
+  the inclusion `H.carrier →* G` makes `K ≤ H` a subgroup `K.subgroupOf H` of the group
+  `H.carrier`; `(G : K) = (G : H) * (H : K)` (Milne 1.31), by Lagrange three times. Exercise 1-5,
+  `g ^ H.index ∈ H` for normal `H`, is §9's. (2)
 
-Budget: 19, over by one: the two lattice examples of `correspondence_theorem` can be one
-problem.
+Budget: 21 with `index`, over by three: the two lattice examples of `correspondence_theorem`
+can be one problem, and `index` may move to `correspondence_theorem`, which builds `comap`.
 
 ### §11. Group Actions
 
@@ -1870,7 +1924,7 @@ recorded so that a session does not reopen them.
     statement uses it. Four problems fewer, and primes stay outside a subject about groups.
 
   **Recommendation: the concept in §8**, by the owner's rule, with the module as the fallback
-  if §8 outgrows its budget. **Taken as recommended, 2026-10-21.**
+  if §8 outgrows its budget. **Taken as recommended, 2026-10-21.** Euclid's lemma dropped by the owner, 2026-10-27: "If this is just number theory stuff, then drop it."
 - **6. The running examples** (the owner, 2026-10-21): "One thing that will make this subject
   really nice is a good set of examples. Permutations, ZMod, etc. … all examples should be as
   basic as possible and there should be an early section called Examples." And the same day:
@@ -1937,27 +1991,19 @@ recorded so that a session does not reopen them.
 
 ## Next step
 
-§8, Cyclic Groups and Groups of Prime Order, in a fresh session: "Do the next section in Group
-Theory, which is §8 Cyclic Groups and Groups of Prime Order". First, the student review of §7
-with `scripts/review/`, if this session did not finish it (§7's **As built** says whether it
-ran). Read §8's entry, §7's **As built** (the names as they are in Lean: `leftCoset a H` with
-`mem_leftCoset_iff`, `leftCoset_eq_iff`, `leftCoset_eq_of_mem`, `rightCoset`; `QuotientGroup.leftRel
-H`; `G ⧸ H` through `QuotientGroup.instHasQuotient`, `QuotientGroup.mk`, `QuotientGroup.eq`,
-`QuotientGroup.mk_surjective`, `QuotientGroup.out_eq'`; the named instance `QuotientGroup.fintype
-H` and `H.index`, noncomputable under `open Classical`; `leftCosetEquivSubgroup`,
-`card_eq_mul_of_equiv_prod`, `Subgroup.groupEquivQuotientProdSubgroup`,
-`Subgroup.index_mul_card`, `Subgroup.card_subgroup_dvd_card`, `card_rotations`,
-`index_rotations`; every one with its additive version), `STYLE.md` with **Learned building §7**,
-and §1–§7 in full before writing. Points for the entry. `cyclic_subgroups` counts `zpowers g`
-through `Fin (orderOf g)`; membership in `zpowers` is not decidable, so `zpowers (r 1)` in `Dₙ`
-is counted by showing it equal to `DihedralGroup.rotations n` and using `card_rotations`.
-`orderOf_dvd_card` is `card_subgroup_dvd_card` on `zpowers g` once its count is `orderOf g`, and
-a statement mixing `Fintype.card (zpowers g).carrier` with a theorem's instance needs `open
-Classical in`, as §7's did. The entry's `index` concept, `(G : K) = (G : H)(H : K)`, needs `K` as
-a subgroup of the group `H.carrier`, which is `Subgroup.comap` of the inclusion, still unbuilt
-(§6's departure 5); build the inclusion there or move the formula to §10 with `comap`. Decision 5
-(primes as a concept of §8) stands. The goal moves to §8's last concept; `FewerAxioms.lean` stays
-the root's last import and then imports §8's file.
+§9, Normal Subgroups and Quotient Groups, in a fresh session: "Do the next section in Group
+Theory, which is §9 Normal Subgroups and Quotient Groups". Read §9's entry, §8's **As built**
+(the names as they are in Lean: `zpow_mod_orderOf`, `Fintype.card_zpowers`, `orderOf_dvd_card`,
+`pow_card_eq_one`, `ZMod.addOrderOf_one`; `Nat.Prime` read through `Nat.Prime.two_le` and
+`Nat.Prime.eq_one_or_self_of_dvd`, never its projections; `Subgroup.eq_top_of_card_eq`,
+`Subgroup.eq_bot_of_card_eq`, `Subgroup.zpowers_eq_top_of_prime_card`, `isCyclic_of_prime_card`,
+`Subgroup.eq_bot_or_eq_top_of_prime_card`; every one with its additive version), `STYLE.md` with
+**Learned building §8**, and §1–§8 in full before writing. Points for the entry. A subgroup of
+index two is normal through `index_mul_card`, since the index is classical and nothing decides
+it; `⟨s⟩` not normal in `D₃` is §7's `d3FixZero`, through `mem_d3FixZero`, since `decide` cannot
+see inside a `def` subgroup. The `Group (G ⧸ N)` instance carries a name, and `G ⧸ N` already has
+its `Fintype` instance, `QuotientGroup.fintype`. The goal moves to §9's last concept;
+`FewerAxioms.lean` stays the root's last import and then imports §9's file.
 
 The previous next step, kept for the record: §7, Cosets and Lagrange's Theorem, in a fresh session: "Do the next section in Group Theory,
 which is §7 Cosets and Lagrange's Theorem". First, the student review of §6 with
