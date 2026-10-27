@@ -62,3 +62,10 @@ center_eq_top        # int_center is the additive copy AddSubgroup.center_eq_top
 zmod_reductions      # zmodSixToTwo_five and intToZMod_six_neg_one are residues computed, a decide; the homomorphisms are the lesson
 zmod_two_iso_bool  # zmodTwoIsoBool_invFun_true is a residue computed, a decide; the isomorphism is the lesson
 ker                  # mem_ker holds by definition, as mem_zpowers_iff does; the kernel as a subgroup is the lesson
+rot3                 # rot3_cube is a decide on a permutation of three points, the rotation's order computed
+zmod_two_equiv_bool  # zmodTwoEquivBool_add is a decide over the four pairs of ZMod 2; the equivalence is the lesson
+reflect3             # reflect3_mul_self, reflect3_inv and rot3_inv are decides on permutations of three points, the S₃ facts later problems use
+subgroup_group       # Subgroup.coe_inv holds by definition (rfl), as mem_ker does; the group instance on a subgroup is the lesson
+klein_not_zmod_four  # zmod_two_prod_add_self is a decide over ZMod 2 × ZMod 2, the fact the non-isomorphism turns on
+mul_left             # addLeft_one_zmod_three is a decide on a permutation of ZMod 3, Cayley's map on one element computed
+add_subgroup_of_sub_threes  # threeMultiples_eq holds by definition (rfl); the definition through the criterion is the lesson, after the goal

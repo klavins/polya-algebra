@@ -44,3 +44,16 @@ group_iso_symm: toFun, invFun
 ker_int_to_zmod: nℤ
 cayley: Sₙ
 zmod_two_iso_bool: invFun
+left_coset: aH
+right_coset: aH, Ha
+left_coset_eq_iff: bH, aH
+left_coset_eq_of_mem: xH, aH, bH
+left_rel: iseqv
+int_left_rel: nℤ
+quotient_group: aH
+left_coset_equiv: aH
+lagrange: Nat.card
+left_rel_iff: aH
+index: Nat.card
+left_ne_right_coset: toPerm3       # the pointer back to the map that matched D₃ to the vertices reflect3 names; not used in the proof
+int_left_rel: mem_intMultiples     # named to say the context does not hold it, after a student's proof reached for it

@@ -48,7 +48,7 @@ class Membership (α : Type u) (γ : Type v) where
 ```
 as Set Theory gave its sets one; the collection comes first in `mem`, so the instance's function takes `H` before `x`.
 @description
-Define the structure `Subgroup G` with the four fields as the preamble states them, and supply the instance `Subgroup.instMembership : Membership G (Subgroup G)`.
+Define the structure `Subgroup G` with the four fields as the preamble states them, and supply the `Membership` instance `Subgroup.instMembership`.
 -/
 
 structure Subgroup (G : Type u) [Group G] where
@@ -89,7 +89,7 @@ example {G : Type u} [Group G] (H : Subgroup G) (x : G) : x ∈ H ↔ x ∈ H.ca
 @preamble
 A subgroup of an additive group is a subset that contains `0`, the sum of any two of its elements and the negative of each. We write `AddSubgroup A`, with the fields `carrier`, `zero_mem'`, `add_mem'` and `neg_mem'`. It is the previous definition written additively, as `AddGroup` was `Group`. Lean is told that `AddSubgroup` is the additive version of `Subgroup`, so each theorem about subgroups below comes with its additive version, its name translated as for groups.
 @description
-Define the structure `AddSubgroup A` with the four fields named above, written as those of `Subgroup` are, and supply the instance `AddSubgroup.instMembership : Membership A (AddSubgroup A)`.
+Define the structure `AddSubgroup A` with the four fields named above, written as those of `Subgroup` are, and supply the `Membership` instance `AddSubgroup.instMembership`.
 -/
 
 structure AddSubgroup (A : Type u) [AddGroup A] where

@@ -249,7 +249,7 @@ A symmetry of the `n`-gon either keeps the orientation of the `n`-gon, as a rota
 
 A function on `DihedralGroup n` is defined by its two cases, as the inverse of the dihedral group was. A product in `DihedralGroup n` is given by the four lines of the table, so the law is a statement about each line; Lean computes a product of two symmetries written as constructors, and the value of the orientation at it.
 @description
-Define `DihedralGroup.orientation n : DihedralGroup n →* Equiv.Perm (Fin 2)`, sending each rotation to `1` and each reflection to `swap2`.
+Define the homomorphism `DihedralGroup.orientation n` from Dₙ to the permutations of `Fin 2`, sending each rotation to `1` and each reflection to `swap2`.
 -/
 
 /-- @given -/
@@ -761,7 +761,7 @@ A symmetry of the triangle moves its vertices `0`, `1` and `2`. The rotation `r 
 
 Its kernel is `⊥`: different symmetries move the vertices differently. So D₃ is isomorphic to its image. The image has six elements, and so has the symmetric group on three points, `3! = 6`, a count this subject does not make; the image is therefore the whole of it, and D₃ is S₃ under other names. On a finite type, `decide` checks that a function is injective.
 @description
-Define `DihedralGroup.toPerm3 : DihedralGroup 3 →* Equiv.Perm (Fin 3)`, sending `r i` to `rot3 ^ i.val` and `sr i` to `reflect3 * rot3 ^ i.val`, and show that its kernel is `⊥`. The context holds `GroupHom.ker_eq_bot_iff`.
+Define the homomorphism `DihedralGroup.toPerm3` from D₃ to the permutations of `Fin 3`, sending `r i` to `rot3 ^ i.val` and `sr i` to `reflect3 * rot3 ^ i.val`, and show that its kernel is `⊥`. The context holds `GroupHom.ker_eq_bot_iff`.
 -/
 
 open DihedralGroup in
@@ -787,7 +787,6 @@ theorem ker_toPerm3 : DihedralGroup.toPerm3.ker = ⊥ := by
 @concept cayley
 @title Cayley's Theorem
 @kind theorem
-@goal
 
 Every group is a group of permutations. An element acts on the group by multiplying on the left, which permutes the elements, and this gives an injective homomorphism from the group into the permutations of its elements. So the symmetric groups contain every group, each finite group inside one of finite order.
 -/

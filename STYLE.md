@@ -819,6 +819,44 @@ then re-read by a fresh reviewer. What it settled:
   of an extending structure); a notion defined and never used (the image); a preamble pairing
   each goal with its closer. Every problem passed, and no double teaching was found.
 
+## Learned building §7 (2026-10-26)
+
+- **A set defined as an image hands `intro` a beta-redex**: `(fun h => a * h) '' H.carrier`
+  gives `e : (fun h => a * h) h = x`, which `rw` cannot use. A coset is the set-builder
+  `{x | ∃ h ∈ H, a * h = x}`, whose members open into `⟨h, hh, e⟩` with `e : a * h = x`.
+- **Instance search does not look through `G ⧸ H`**: `HasQuotient.Quotient G H` is not unfolded
+  to the `Quotient` behind it, so `Quotient.fintype` is not found for it, and `Fintype (G ⧸ H)`
+  is an instance of its own, `QuotientGroup.fintype H`. The `HasQuotient` instance itself reaches
+  every later context, since every `G ⧸ H` names it.
+- **A plain definition needs no twin**: `to_additive` copies a coset, a setoid, the `HasQuotient`
+  instance, `QuotientGroup.mk`, a `Fintype` instance and the index, so the twin problems are for
+  classes, structures and recursive definitions only. A theorem with no group in it
+  (`quotient_mk_surjective`) is used inside a marked proof as it stands.
+- **The index is classical, so nothing decides it**: an index is computed through Lagrange's
+  theorem from two counts (`index_rotations` from `card_rotations`), and a count of a subgroup
+  through `Fintype.card_of_bijective`; a statement about all divisors of a fixed number is
+  `decide`'s once bounded, `∀ d ≤ 6, d ∣ 6 → …`.
+- **A docstring problem owns one declaration**: two theorems under a `/-- @problem -/` leave the
+  second unowned (the extract's warning), and `/-- @problem -/` cannot precede `open … in`; both
+  take the `/-! @problem … -/ … /-! @end -/` form.
+- **The reviewers' findings, in order of frequency**: prose that handed over the proof (the
+  witness and the plan of a non-equality, context lists in the order of the `rw` chain, a routine
+  second identity given as a chain, laws named one per goal); a claim no theorem kept ("the
+  classes are the cosets"); a context gap where the reference reproved an earlier theorem instead
+  of using it; an unstated key step of a long proof, now a theorem of the problem before; and one
+  double teaching, a new notion with two new Lean facts, split. **List context facts by origin,
+  never in the order the proof uses them.**
+- **The editor's review (2026-10-27), two rounds, found what no student did**: a false claim
+  (`%` on `ℤ` "never negative", false at `n = 0`); a claim too broad ("a numeral needs its
+  type", needed only when nothing else names the group); a title that said the wrong thing;
+  descriptions repeating the starting code (its signature, its `open Classical in`), now said
+  in words; the concept told again in a preamble; and a route the prose offered that the
+  reference did not take (`omega` in `int_left_rel`), now the reference's. **A fix makes its own
+  defects**: round 1 named three lemmas a student missed, and round 2 found them paired one to a
+  claim; round 1 trimmed a lemma list to "the laws of the second section", and a student then
+  hunted for two of them. **A preamble says why the problem is here and what the student cannot
+  guess; the description says what to do, in words; the starting code says it in Lean.**
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:
@@ -838,7 +876,8 @@ then re-read by a fresh reviewer. What it settled:
   extracted there) — the vocabulary audit of `AUDIT.md` in `polya-topology`: does each
   reference proof use only what the course has taught by that point? The baseline is
   `polya-basic`'s five subjects, and names in backticks and in fenced `lean` blocks count as taught.
-  Section 1 passed it on 2026-10-21 with 0 of 21, the six sections on 2026-10-26 with 0 of 149.
+  Section 1 passed it on 2026-10-21 with 0 of 21, the six sections on 2026-10-26 with 0 of 149,
+  and the seven sections the same day with 0 of 169.
 
 **The student review after each section** uses `scripts/review/`: `make_view.py BUNDLE OUT`
 renders the bundle answer-free (concepts, preambles, descriptions, starting code), `check.py

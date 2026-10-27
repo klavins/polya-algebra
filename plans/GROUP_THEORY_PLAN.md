@@ -1277,6 +1277,83 @@ Budget: 18. Hazard: `Quotient.out` needs choice, so the bijection is `noncomputa
 so once. The index of `nℤ` in `ℤ`, which is `n`, waits for §10's isomorphism `ℤ ⧸ nℤ ≃* ZMod n`,
 since `ℤ` is not a `Fintype`.
 
+**As built (2026-10-26).** `PolyaAlgebra/GroupTheory/Cosets.lean`: 20 problems over 4 concepts,
+in this order: `cosets` (`left_coset`, `leftCoset a H : Set G := {x | ∃ h ∈ H, a * h = x}` with
+its additive version `leftAddCoset` by the mark alone, and `mem_own_leftCoset`; `right_coset`,
+the test `mem_leftCoset_iff : x ∈ leftCoset a H ↔ a⁻¹ * x ∈ H` given and worked as a `calc`, and
+the exercise its mirror, `rightCoset H a` with `mem_rightCoset_iff`; `left_coset_eq_iff`,
+`leftCoset_eq_iff : leftCoset a H = leftCoset b H ↔ a⁻¹ * b ∈ H` with its two equations of
+expressions given; `left_coset_eq_of_mem`, two cosets with a common element are equal;
+`int_cosets`, `leftAddCoset_one_two`, the odd integers, and `leftAddCoset_three_eq_one`;
+`left_ne_right_coset`, the subgroup `d3FixZero = {r 0, sr 0}` of `D₃` given with
+`mem_d3FixZero`, and `leftCoset (r 1) d3FixZero ≠ rightCoset d3FixZero (r 1)`);
+`coset_relation` (`left_rel`, `QuotientGroup.leftRel H : Setoid G`, `a⁻¹ * b ∈ H`;
+`left_rel_iff`, `QuotientGroup.leftRel_iff_leftCoset_eq` and
+`QuotientGroup.setOf_leftRel_eq_leftCoset`; `int_left_rel`, `int_leftRel_iff :
+… ↔ a % n = b % n`, `omega` for the step `-a + b = b - a` and then core's
+`Int.dvd_iff_emod_eq_zero` and `Int.emod_eq_emod_iff_emod_sub_eq_zero`); `coset_space` (`quotient_group`, the instance
+`QuotientGroup.instHasQuotient : HasQuotient G (Subgroup G)` and `QuotientGroup.mk`, each with
+its additive version by the mark; `quotient_group_eq`, `QuotientGroup.eq`,
+`QuotientGroup.mk_surjective` through the first section's `quotient_mk_surjective`, and
+`QuotientGroup.mk_eq_mk_one_iff`; `index`, the named instance `QuotientGroup.fintype H` from
+`Quotient.fintype` and `Subgroup.index H := Fintype.card (G ⧸ H)` under `open Classical`;
+`index_bot`, `Subgroup.index_bot` through `Fintype.card_of_bijective`); and `lagrange`, with the `@goal` (`left_coset_equiv`,
+`leftCosetEquivSubgroup a H : leftCoset a H ≃ H.carrier`; `card_eq_mul_of_equiv_prod`, a type
+labelled by pairs of two finite types, through `Fintype.equivFin` and `Equiv.prodCongr`;
+`quotient_out`, `QuotientGroup.out_eq'`, `QuotientGroup.inv_out_mul_mem` and
+`QuotientGroup.mk_out_mul`;
+`group_equiv_quotient_prod`, `Subgroup.groupEquivQuotientProdSubgroup H : G ≃ (G ⧸ H) ×
+H.carrier`; `lagrange`, `Subgroup.index_mul_card : H.index * Fintype.card H.carrier =
+Fintype.card G` and `Subgroup.card_subgroup_dvd_card`; `index_rotations`, `card_rotations` and
+`index_rotations`; `lagrange_examples`, `dihedral_three_card_subgroup_ne_four` and
+`zmod_six_card_addSubgroup`). `FewerAxioms.lean` stays the root's last import and now imports
+`Cosets`. Extraction: 169 problems, 0 errors, 33 concepts in 8 sections; budgets and concept
+lengths clean, two problems under the 17-line floor (`left_coset_eq_of_mem`,
+`left_ne_right_coset`); prose names clean after their exceptions (the textbook's `aH`, `Ha`, `nℤ`,
+the field `iseqv`, and `Nat.card` in the one sentence of divergence); stub shortcuts clean; the
+vocabulary audit 0 of 169. The `leftCoset` and `rightCoset` specs were compiled against the
+reversed equation and `H.carrier` for `H`, and reject the right coset passed off as a left one;
+the `leftRel` spec rejects equality as the relation.
+
+Six departures from the entry. (1) **A coset is a set-builder, not an image**: `(a * ·) '' H`
+hands `intro ⟨h, hh, e⟩` the beta-redex `(fun h => a * h) h = x`, which `rw` cannot use (§5's
+lesson for `Set.range`). (2) **Every coset notion has its additive version by the mark alone**:
+`leftCoset`, `rightCoset`, `leftRel`, the `HasQuotient` instance, `QuotientGroup.mk`, the
+`Fintype` instance and `index` are plain definitions, so `to_additive` copies them and no twin
+problem is needed. (3) **`Fintype (G ⧸ H)` is an instance of its own, given by name**: instance
+search does not look through `HasQuotient.Quotient` to the `Quotient` behind it, so
+`Quotient.fintype` is not found for `G ⧸ H`; the instance shares the `index` problem. (4) **The
+counting chain needed a problem of its own**: §1 rehearsed it on `Fin m × Fin n` only, so
+`Fintype.equivFin` and `Equiv.prodCongr` arrive in `card_eq_mul_of_equiv_prod`, on no new
+mathematics, before Lagrange; and `Quotient.out` in `quotient_out` before the equivalence that
+uses it. (5) **The index of the rotations is computed after Lagrange**, from `card_rotations`
+(`n` elements, through `Fintype.card_of_bijective`), since the index is classical and nothing
+decides it; the cosets of the rotations in `D₃` are prose there, and `index ⊤ = 1` is not built
+(`Fintype.card_eq_one_iff` is outside the fence). (6) **Twenty problems**, against a budget of
+18: the counting problem is one extra, and the review split `index` from `index_bot`.
+
+The student review (one blind agent per concept, `scripts/review/`) ran the same day: every one
+of the 19 problems then built passed, all but one on the first attempt, and no reviewer revealed
+before passing. Double teaching was found once, in `index`, where the index, the named instance and
+`Fintype.card_of_bijective` arrived together; `index_bot` is now a problem of its own. The
+commonest finding was again prose that handed over the proof: the witness and the plan of
+`left_ne_right_coset`, context lists in the order of the `rw` chain (`left_coset_eq_iff`,
+`left_coset_eq_of_mem`, `int_left_rel`), a routine second identity given as a chain, and the
+three quotient laws named one per goal in `quotient_group_eq`; each was cut to the idea, and
+context lists now go by origin. A context gap: `QuotientGroup.mk_surjective` reproved §1's
+`quotient_mk_surjective`, so the student's direct use of it failed; the reference now uses it.
+Added for substance: `QuotientGroup.mk_eq_mk_one_iff`, `QuotientGroup.setOf_leftRel_eq_leftCoset`
+(the claim that the classes are the cosets, which the prose had made and no theorem kept),
+`QuotientGroup.mk_out_mul` (the unstated step of the equivalence's right inverse), and
+`leftAddCoset_three_eq_one` in place of a zero case that repeated the odd one. Smaller fixes:
+`%` on negative integers, `outParam` said in half a sentence, the index defined only for a finite
+group said once beside `Nat.card`, `Nat.pos_of_neZero` named again in `index_rotations`, the
+numeral gotcha `(r 1 : DihedralGroup 3)`, and the title of `right_coset`. Left for the owner:
+`Prod.ext` first appears in `group_equiv_quotient_prod`, the hardest problem of the concept (a
+reviewer proposed meeting it in §3's `prod_group`), and `Fintype.equivFin` and `Equiv.prodCongr`
+arrive together, though on no new mathematics; the checker rejects the coset relation written
+as `b⁻¹ * a ∈ H`, the same relation, which the description rules out.
+
 ### §8. Cyclic Groups and Groups of Prime Order
 
 Milne 1.16, 1.27, 1.28, 1.31, Exercise 1-5. No new Lean: `Nat.Coprime` is §1's.
@@ -1860,7 +1937,29 @@ recorded so that a session does not reopen them.
 
 ## Next step
 
-§7, Cosets and Lagrange's Theorem, in a fresh session: "Do the next section in Group Theory,
+§8, Cyclic Groups and Groups of Prime Order, in a fresh session: "Do the next section in Group
+Theory, which is §8 Cyclic Groups and Groups of Prime Order". First, the student review of §7
+with `scripts/review/`, if this session did not finish it (§7's **As built** says whether it
+ran). Read §8's entry, §7's **As built** (the names as they are in Lean: `leftCoset a H` with
+`mem_leftCoset_iff`, `leftCoset_eq_iff`, `leftCoset_eq_of_mem`, `rightCoset`; `QuotientGroup.leftRel
+H`; `G ⧸ H` through `QuotientGroup.instHasQuotient`, `QuotientGroup.mk`, `QuotientGroup.eq`,
+`QuotientGroup.mk_surjective`, `QuotientGroup.out_eq'`; the named instance `QuotientGroup.fintype
+H` and `H.index`, noncomputable under `open Classical`; `leftCosetEquivSubgroup`,
+`card_eq_mul_of_equiv_prod`, `Subgroup.groupEquivQuotientProdSubgroup`,
+`Subgroup.index_mul_card`, `Subgroup.card_subgroup_dvd_card`, `card_rotations`,
+`index_rotations`; every one with its additive version), `STYLE.md` with **Learned building §7**,
+and §1–§7 in full before writing. Points for the entry. `cyclic_subgroups` counts `zpowers g`
+through `Fin (orderOf g)`; membership in `zpowers` is not decidable, so `zpowers (r 1)` in `Dₙ`
+is counted by showing it equal to `DihedralGroup.rotations n` and using `card_rotations`.
+`orderOf_dvd_card` is `card_subgroup_dvd_card` on `zpowers g` once its count is `orderOf g`, and
+a statement mixing `Fintype.card (zpowers g).carrier` with a theorem's instance needs `open
+Classical in`, as §7's did. The entry's `index` concept, `(G : K) = (G : H)(H : K)`, needs `K` as
+a subgroup of the group `H.carrier`, which is `Subgroup.comap` of the inclusion, still unbuilt
+(§6's departure 5); build the inclusion there or move the formula to §10 with `comap`. Decision 5
+(primes as a concept of §8) stands. The goal moves to §8's last concept; `FewerAxioms.lean` stays
+the root's last import and then imports §8's file.
+
+The previous next step, kept for the record: §7, Cosets and Lagrange's Theorem, in a fresh session: "Do the next section in Group Theory,
 which is §7 Cosets and Lagrange's Theorem". First, the student review of §6 with
 `scripts/review/`, as §1–§5 had, if this session did not finish it (§6's **As built** says
 whether it ran). Read §7's entry, §6's **As built** (the names as they are in Lean: `G →* H` for
@@ -1881,44 +1980,6 @@ are. The hazard the entry names, `Quotient.out` under choice, stands; test the `
 instance at the first extract, since §5 found that only an instance a compiled term names reaches
 a later context. The goal moves to §7's last concept; `FewerAxioms.lean` stays the root's last
 import and then imports §7's file.
-
-The previous next step, kept for the record: §6, Homomorphisms, in a fresh session: "Do the next section in Group Theory, which is §6
-Homomorphisms", once the publisher change the additive refactor needs is released and repinned
-(`STYLE.md`, **Learned refactoring to additive groups**; until then `lake exe polya extract`
-fails 44 problems). Read **Spelling** under **The sections** first (from 2026-10-23: additive
-groups for `ℤ`, `ZMod n` and `Bool`, a written `@[to_additive NAME]` on every general declaration,
-a twin problem for each class and structure, `MonoidHom` with its twin `AddMonoidHom`, and the
-orientation into `Equiv.Perm (Fin 2)`) and §2–§5's second **As refactored** notes, which name
-what changed on 2026-10-23 and supersede the names in the paragraph below where they differ
-(`intMultiples n : AddSubgroup ℤ`, `zmodSixEvens : AddSubgroup (ZMod 6)`, `zmultiples`,
-`IsAddCyclic`, `center_klein`); then read §6's entry (its device note changed after §5: no `CoeFun` instance; a
-homomorphism applies through a named function, and the session chooses the spelling first),
-§5's **As built** (the names as they are in Lean: `Subgroup` with `carrier`, `one_mem'`,
-`mul_mem'`, `inv_mem'`, `x ∈ H`, `H.one_mem`, `H.mul_mem ha hb`, `H.inv_mem ha`, `Subgroup.ext`,
-`H.carrier` as the type of a subgroup with `Group H.carrier`, `Subgroup.coe_mul`, `coe_one`,
-`coe_inv`, `coe_mem`, `card_le_card_group`; `⊤`, `⊥`, `≤` with `mem_top`, `mem_bot`, `bot_le`,
-`le_top`, `le_antisymm`; `pow_mem`, `zpow_mem`; `Subgroup.center G` with `mem_center_iff`,
-`center_eq_top_iff`, `center_eq_top`, `center_int`, `d3_center`, `d4_center`; `H ⊓ K` with
-`mem_inf`, `sInf S` with `mem_sInf`, `sInf_le`, `le_sInf`; `Subgroup.closure X` with
-`mem_closure`, `subset_closure`, `closure_le`; `Subgroup.zpowers g` with `mem_zpowers_iff`,
-`mem_zpowers`, `zpowers_eq_closure`; `IsCyclic G` with `IsCyclic.mul_comm`; the examples
-`DihedralGroup.rotations n`, `intMultiples n` with `mem_intMultiples`, `zmodSixEvens` with
-`mem_zmodSixEvens`, `zmod_six_two_zpow_mem`, `int_zpow_eq_mul`, `mem_zpowers_int`,
-`zpowers_eq_intMultiples`, `isCyclic_int`, `ZMod.val_one_pow`, `isCyclic_zmod`,
-`zpowers_two_zmod_six`; and `Subgroup.ofDiv` in Extra Credit), `STYLE.md` with **Learned
-building §5** (a coercion instance never reaches a later context; a coercion equation coerces
-both factors; `by decide` on a field with implicit binders; `decide` cannot see inside a `def`
-subgroup), and §1–§5 in full before writing. The §6 examples by the running-examples table: the
-reductions `ZMod 6 →+ ZMod 2` and `ℤ →+ ZMod n` (the cheaper route for the second is
-`k ↦ k • 1` by `add_zsmul`, with `ZMod.val_nsmul_one` already built for natural multipliers),
-the orientation `Dₙ →* Equiv.Perm (Fin 2)`, `Prod.fst`; `ZMod 2 ≃+ Bool` from `zmodTwoEquivBool`
-and `zmodTwoEquivBool_add`; `DihedralGroup 3 ≃* Equiv.Perm (Fin 3)` by `decide`; `V₄` not
-isomorphic to `ZMod 4`; the kernels `⟨2⟩ = zmodSixEvens`, `nℤ = intMultiples n`, the rotations.
-The goal moves to §6's last concept;
-`FewerAxioms.lean` (formerly `ExtraCredit.lean`, the section Extra Credit) stays the root's last import and now imports `Subgroups`. After §6, run the
-student review with `scripts/review/` as §1–§5 did (the §5 review's findings are under §5's
-**As built**). Decision 3 is taken (`MonoidHom`); the owner may still overrule 3 and 5 before §6
-and §8.
 
 ## The prompts that produced this plan
 
