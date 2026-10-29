@@ -882,6 +882,45 @@ then re-read by a fresh reviewer. What it settled:
   and a sentence explaining how the context is built. The students' commonest finding was, as
   in every section, prose that handed over the proof.
 
+## Learned building §9 (2026-10-29)
+
+- **A class whose type is `Prop` is how a property becomes an instance argument.** `Subgroup.Normal`
+  is a class, so `G ⧸ N` is a group under `[N.Normal]` and Lean finds normality by itself
+  (`normal_of_comm` makes `ℤ ⧸ intMultiples n` an additive group with nothing to add); a `def` of
+  type `Prop` would need an explicit hypothesis on every instance. The instance argument is first
+  used on a one-line fact (`conj_mem'`), not in the definition's problem. The twin is written,
+  as for every class.
+- **An instance of a `Prop` class needs an authored spec**: the extract refuses an empty one, and
+  `example … : N.Normal := inferInstance` checks that the student's instance is registered.
+- **`Quotient.lift₂` applies to `G ⧸ N` as it stands**, and so do `Quotient.lift` and §7's
+  `QuotientGroup.mk_surjective`, which reduces each law of the quotient group to representatives
+  (`obtain ⟨a, ha⟩`, then `rw [← ha]`). Inside the instance the operations are the fields'
+  values (`QuotientGroup.mul p q`), so the laws rewrite with `mul_mk`; after it, with `mk_mul`
+  stated through `*`.
+- **A position word is checked again whenever the order changes.** Moving one concept ahead of
+  another left seven "of the previous section" pointing two sections back, and "the previous
+  concept" at the wrong concept; the editor found them all, no student did. Name a section by
+  its subject ("the section on cosets") when it is not the one immediately before.
+- **The reviewers' findings, in order of frequency**: prose that handed over the proof, in nine
+  of nineteen problems (a witness, a computation in words, "the same computation", a rewrite
+  route); context facts named without their statements, or listed in the order the proof uses
+  them; a title that did not cover the problem's second statement. Every problem passed in every
+  report, none revealed before passing; the one double teaching proposed was rejected.
+- **The second round's findings** (Haiku students, one per concept, and the editor):
+  - A context list with a gloss on every fact, in the order the proof uses them, is the proof.
+    List the facts by origin and give a statement only where its form matters. Keep every name:
+    "core Lean's facts on divisibility" names nothing, and the vocabulary audit flagged the
+    names that cut dropped.
+  - A display of a routine identity hands over its proof. A subtle one is shown as a chain of
+    expressions, never as the bare endpoint (`mul_normal`).
+  - A construction and its first concrete use are two problems (`lift`, `lift_int`).
+  - Text on the same line as a closing fence (`` ``` The context… ``) does not close the
+    block, so the rest of the preamble renders as code. A display ends its line.
+  - A new pattern of proof, such as reducing each law of `G ⧸ N` to representatives, is worked
+    once in the preamble (`one_mul`) before the other laws are asked.
+  - An instance of a `Prop` class may be a tactic block. Say so before the first problem that
+    is shortest that way.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:

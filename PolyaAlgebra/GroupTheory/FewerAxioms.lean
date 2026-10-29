@@ -8,7 +8,7 @@ import Mathlib.Algebra.Quotient         -- the ⧸ notation (HasQuotient)
 import Mathlib.Order.Notation           -- ⊤, ⊥, ⊓, ⊔ as classes
 import Mathlib.Data.Nat.Find            -- Nat.find
 import Mathlib.Data.Int.Init            -- Int.induction_on
-import PolyaAlgebra.GroupTheory.Cyclic
+import PolyaAlgebra.GroupTheory.Quotients
 
 /-! @section Fewer Axioms -/
 

@@ -69,3 +69,5 @@ subgroup_group       # Subgroup.coe_inv holds by definition (rfl), as mem_ker do
 klein_not_zmod_four  # zmod_two_prod_add_self is a decide over ZMod 2 × ZMod 2, the fact the non-isomorphism turns on
 mul_left             # addLeft_one_zmod_three is a decide on a permutation of ZMod 3, Cayley's map on one element computed
 add_subgroup_of_sub_threes  # threeMultiples_eq holds by definition (rfl); the definition through the criterion is the lesson, after the goal
+quotient_mul         # QuotientGroup.mul_mk and QuotientGroup.inv_mk hold by definition (rfl), the equations the quotient group's laws rewrite with; the definitions through Quotient.lift₂ and Quotient.lift are the exercise
+lift                 # QuotientGroup.lift_mk holds by definition (rfl), the equation later proofs rewrite with; the definition through Quotient.lift is the exercise

@@ -57,3 +57,8 @@ left_rel_iff: aH
 index: Nat.card
 left_ne_right_coset: toPerm3       # the pointer back to the map that matched D₃ to the vertices reflect3 names; not used in the proof
 int_left_rel: mem_intMultiples     # named to say the context does not hold it, after a student's proof reached for it
+normal: conj_mem  # the class's field, which the student writes
+add_normal: conj_mem  # the class's field, which the student writes
+normal_of_comm: nℤ  # the textbook's notation, defined at int_multiples
+lift_int: nℤ  # the textbook's notation, defined at int_multiples
+quotient_mul: s₁, s₂  # the implicit relations of core Lean's Quotient.lift₂, named in its signature shown in the preamble

@@ -1450,6 +1450,63 @@ Budget: 19. Extra credit, after the goal's path: the quaternion group `Q₈` as 
 over `ZMod 4` with Mathlib's table, its one element of order 2, and every subgroup normal
 (Exercise 1-1).
 
+**As built (2026-10-29).** `PolyaAlgebra/GroupTheory/Quotients.lean`: 21 problems over 4
+concepts, in this order: `normal_subgroups` (`normal`, the student's `class Subgroup.Normal N :
+Prop` with `conj_mem : ∀ n, n ∈ N → ∀ g : G, g * n * g⁻¹ ∈ N`, taken as `[N.Normal]`;
+`add_normal`, the twin `AddSubgroup.Normal` with `g + n + -g`, paired by `attribute [to_additive
+existing]`; `conj_mem_inv`, `Subgroup.Normal.conj_mem' : g⁻¹ * n * g ∈ N`, the warm-up on the
+instance argument, which the later references use; `normal_iff_cosets`,
+`Subgroup.normal_iff_leftCoset_eq_rightCoset` and `d3FixZero_not_normal` through §7's
+`leftCoset_ne_rightCoset`; `normal_of_comm`, the instances `Subgroup.normal_of_comm` and
+`Subgroup.center_normal`; `normal_ker`, the instances `GroupHom.normal_ker` and
+`DihedralGroup.rotations_normal` through `ker_orientation`); `products_of_subgroups` (`sup`, the
+instance `Subgroup.instMax` with `H ⊔ K := closure (H.carrier ∪ K.carrier)`, `le_sup_left`,
+`le_sup_right`, `sup_le`; `mul_normal`, `Subgroup.mulNormal H N`, the products `h * n` for normal
+`N`, with no Mathlib name; `mem_sup_of_normal`, `Subgroup.mem_sup_of_normal`; `two_sup_three`,
+`intMultiples_two_sup_three`); `quotient_groups` (`left_rel_mul`, `QuotientGroup.leftRel_mul` and
+`QuotientGroup.leftRel_inv`, the well-definedness, a problem before the device; `quotient_mul`,
+`QuotientGroup.mul` through `Quotient.lift₂` and `QuotientGroup.inv` through `Quotient.lift`,
+with `mul_mk` and `inv_mk` by `rfl`; `quotient_is_group`, the instance
+`QuotientGroup.Quotient.group N : Group (G ⧸ N)`, each law through §7's
+`QuotientGroup.mk_surjective`; `mk_hom`, `QuotientGroup.mk_mul` and `QuotientGroup.mk_one` given,
+`QuotientGroup.mk' N : G →* G ⧸ N`, `QuotientGroup.mk_pow` by induction and `QuotientGroup.ker_mk'`;
+`quotient_comm`, the instance `QuotientGroup.Quotient.commGroup`; `pow_index_mem`,
+`Subgroup.pow_index_mem`, Exercise 1-5; `int_quotient`, `addOrderOf_mk_one_int : addOrderOf
+(QuotientAddGroup.mk 1 : ℤ ⧸ intMultiples n) = n`); and `universal_property`, with the `@goal`
+(`eq_of_mem_ker`, `GroupHom.eq_of_inv_mul_mem_ker`; `lift`, `QuotientGroup.lift N f hN : G ⧸ N
+→* H` for `hN : N ≤ f.ker`, with `lift_mk`; `lift_int`, `exists_hom_int_quotient`, `intToZMod n`
+through `ℤ ⧸ nℤ` by `QuotientAddGroup.lift`; `lift_unique`, `QuotientGroup.lift_unique`). Every general definition and theorem
+carries its additive version, so `ℤ ⧸ intMultiples n` is an additive group with nothing to add:
+`AddSubgroup.normal_of_comm` finds its normality. `FewerAxioms.lean` stays the root's last import
+and now imports `Quotients`. Extraction: 204 problems, 0 errors, 40 concepts in 10 sections;
+every new problem verified at once, with no repair; budgets and concept lengths clean, six
+problems under the 17-line floor (`normal`, `mem_sup_of_normal`, `two_sup_three`, `quotient_comm`,
+`eq_of_mem_ker`, `lift_unique`); prose names
+clean after their exceptions (the field `conj_mem`, the textbook's `nℤ`, `lift₂`'s `s₁` and `s₂`), stub shortcuts clean
+after two (`mul_mk`, `inv_mk` and `lift_mk` by `rfl`); the vocabulary audit 0 of 204. The
+`Subgroup.Normal` spec was compiled against an implicit `n` and the binders in the order `∀ g,
+∀ n ∈ N`, and rejects `g * n ∈ N`; the `mulNormal` spec accepts `x = h * n` and rejects `n * h`.
+
+Five departures from the entry. (1) **Products of subgroups come before the quotient groups**,
+so that the goal, on the section's last concept, is the universal property; the concept needs
+only normality and §5's `closure`. (2) **A subgroup of index two being normal (1.36 a) is not
+built**: the rotations are normal as the kernel of the orientation, and the index-two theorem
+needs a count of the quotient's two classes that the index, being classical, does not give by
+`decide`. (3) **Milne's `gNg⁻¹ = N` (1.32) is not built**: the conjugate of a subgroup is not
+defined, and `gN = Ng` carries the same content through §7's cosets. (4) **`Fintype.card (G ⧸ N)
+= N.index` is not a problem**, since it is the index's definition; Exercise 1-5 uses it, and the
+examples `ZMod 6 ⧸ ⟨3⟩` and `D₄ ⧸ ⟨r 2⟩` are not built (the first has three elements, not the
+entry's two). The universal property's example is `intToZMod n` through `ℤ ⧸ nℤ`, which §10's
+`ℤ ⧸ nℤ ≃+ ZMod n` continues, rather than the orientation through `Dₙ ⧸ rotations`. (5) **The
+quaternion group, the entry's extra credit, is not built.** `Quotient.lift₂` arrives in
+`quotient_mul` after its well-definedness has its own problem, and the instance argument
+`[N.Normal]` in `conj_mem_inv`, on a one-line fact. The owner's calls at the gate (2026-10-29), on what three review rounds left open: the chain
+of expressions in `mul_normal`'s preamble stays (STYLE's rule for a subtle identity, though two
+students read it as the witness); `mem_sup_of_normal` is split, its `2ℤ ⊔ 3ℤ` becoming
+`two_sup_three`, while `normal_iff_cosets` (with `d3FixZero` not normal) and `lift` (with
+`lift_mk`) stay whole; `quotient_comm` and `lift_unique`, which follow `one_mul`'s worked pattern,
+stay.
+
 ### §10. The Isomorphism Theorems
 
 Milne 1.45–1.48, 1.50, 1.51, and equation (13). No new Lean.
@@ -1991,7 +2048,25 @@ recorded so that a session does not reopen them.
 
 ## Next step
 
-§9, Normal Subgroups and Quotient Groups, in a fresh session: "Do the next section in Group
+§10, The Isomorphism Theorems, in a fresh session: "Do the next section in Group Theory, which
+is §10 The Isomorphism Theorems". Read §10's entry, §9's **As built** (the names as they are in
+Lean: `Subgroup.Normal N` taken as `[N.Normal]`, `conj_mem`, `conj_mem'`,
+`normal_iff_leftCoset_eq_rightCoset`, the instances `normal_of_comm`, `center_normal`,
+`GroupHom.normal_ker`, `DihedralGroup.rotations_normal`; `H ⊔ K` through `Subgroup.instMax`,
+`le_sup_left`, `le_sup_right`, `sup_le`, `Subgroup.mulNormal`, `mem_sup_of_normal`;
+`QuotientGroup.Quotient.group N`, `mk_mul`, `mk_one`, `mk_pow`, `QuotientGroup.mk' N`, `ker_mk'`,
+`Quotient.commGroup`, `Subgroup.pow_index_mem`, `addOrderOf_mk_one_int`;
+`GroupHom.eq_of_inv_mul_mem_ker`, `QuotientGroup.lift N f hN`, `lift_mk`, `lift_unique`,
+`exists_hom_int_quotient`; every one with its additive version), `STYLE.md` with **Learned
+building §9**, and §1–§9 in full before writing. Points for the entry. Its Mathlib names
+(`quotientKerEquivRange`, `MulEquiv`'s `≃*`) are read as the student's: `≃*` is §6's `GroupIso`,
+and a new structure name is asked of the owner first. The first isomorphism theorem is
+`QuotientGroup.lift` of `f` on `ker f`, with `lift_unique` for the inverse's laws; `ℤ ⧸ nℤ ≃+
+ZMod n` continues `lift_int`, and `addOrderOf_mk_one_int` gives the index of `nℤ`. `comap` and
+`map` are not yet defined. The goal moves to §10's last concept; `FewerAxioms.lean` stays the
+root's last import and then imports §10's file.
+
+The previous next step, kept for the record: §9, Normal Subgroups and Quotient Groups, in a fresh session: "Do the next section in Group
 Theory, which is §9 Normal Subgroups and Quotient Groups". Read §9's entry, §8's **As built**
 (the names as they are in Lean: `zpow_mod_orderOf`, `Fintype.card_zpowers`, `orderOf_dvd_card`,
 `pow_card_eq_one`, `ZMod.addOrderOf_one`; `Nat.Prime` read through `Nat.Prime.two_le` and
