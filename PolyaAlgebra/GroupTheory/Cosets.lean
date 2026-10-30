@@ -568,7 +568,7 @@ G ≃ (G ⧸ H) × H.carrier
 ```
 Mathlib's name for it is `Subgroup.groupEquivQuotientProdSubgroup`. `Quotient.out` chooses from every class at once, which is the axiom of choice, so the definition is `noncomputable`.
 
-Two pairs are equal when their components are, `Prod.ext`, and two elements of `H.carrier` when their values are, `Subtype.ext` of the section on subgroups. The second component of the pair the definition builds is, by definition, the place of `g` in its coset, and `change` writes that value out before a rewrite. The context holds `QuotientGroup.inv_out_mul_mem` and `QuotientGroup.mk_out_mul` of the previous problem and the laws of the second section.
+Two pairs are equal when their components are, core Lean's `Prod.ext`, and two elements of `H.carrier` when their values are, core Lean's `Subtype.ext`. The second component of the pair the definition builds is, by definition, the place of `g` in its coset, and `change` writes that value out before a rewrite. The context holds `QuotientGroup.inv_out_mul_mem` and `QuotientGroup.mk_out_mul` of the previous problem and the laws of the second section.
 @description
 Define `Subgroup.groupEquivQuotientProdSubgroup H`, sending `g` to the pair above, keeping the `@[to_additive]` line.
 -/

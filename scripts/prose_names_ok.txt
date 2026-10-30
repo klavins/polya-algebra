@@ -62,3 +62,4 @@ add_normal: conj_mem  # the class's field, which the student writes
 normal_of_comm: nℤ  # the textbook's notation, defined at int_multiples
 lift_int: nℤ  # the textbook's notation, defined at int_multiples
 quotient_mul: s₁, s₂  # the implicit relations of core Lean's Quotient.lift₂, named in its signature shown in the preamble
+int_quotient_equiv: nℤ  # the textbook's notation, defined at int_multiples

@@ -71,3 +71,6 @@ mul_left             # addLeft_one_zmod_three is a decide on a permutation of ZM
 add_subgroup_of_sub_threes  # threeMultiples_eq holds by definition (rfl); the definition through the criterion is the lesson, after the goal
 quotient_mul         # QuotientGroup.mul_mk and QuotientGroup.inv_mk hold by definition (rfl), the equations the quotient group's laws rewrite with; the definitions through Quotient.lift₂ and Quotient.lift are the exercise
 lift                 # QuotientGroup.lift_mk holds by definition (rfl), the equation later proofs rewrite with; the definition through Quotient.lift is the exercise
+comap                # Subgroup.mem_comap holds by definition (rfl), the equation later proofs rewrite with; the subgroup's closure proofs are the exercise
+map                  # Subgroup.mem_map holds by definition (rfl), the equation later proofs rewrite with; the subgroup's closure proofs are the exercise
+subgroup_of          # Subgroup.mem_subgroupOf holds by definition (rfl), the equation later proofs rewrite with; the two definitions are the exercise

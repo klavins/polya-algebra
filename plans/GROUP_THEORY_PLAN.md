@@ -1535,6 +1535,61 @@ Milne 1.45–1.48, 1.50, 1.51, and equation (13). No new Lean.
 Budget: 21 with `index`, over by three: the two lattice examples of `correspondence_theorem`
 can be one problem, and `index` may move to `correspondence_theorem`, which builds `comap`.
 
+**As built (2026-10-29).** `PolyaAlgebra/GroupTheory/Isomorphisms.lean`: 25 problems over 5
+concepts, in this order: `first_isomorphism_theorem` (`of_bijective`, `GroupIso.ofBijective f hf`
+through Mathlib's `Equiv.ofBijective`, the Lean that is new here; `lift_injective`,
+`QuotientGroup.lift_injective (h : f.ker ≤ N)` and `QuotientGroup.lift_surjective`;
+`quotient_ker_equiv_of_surjective`, `QuotientGroup.quotientKerEquivOfSurjective f hf : G ⧸ f.ker
+≃* H`; `range_restrict`, `GroupHom.rangeRestrict f : G →* f.range.carrier` and
+`GroupHom.rangeRestrict_surjective`; `ker_range_restrict`, `GroupHom.ker_rangeRestrict`; `quotient_ker_equiv_range`,
+`QuotientGroup.quotientKerEquivRange f : G ⧸ f.ker ≃* f.range.carrier`; `int_to_zmod_surjective`,
+`intToZMod_surjective`; `int_quotient_equiv`, `intQuotientEquivZMod n : ℤ ⧸ intMultiples n ≃+
+ZMod n`; `zmod_six_quotient`, `exists_addGroupIso_zmodSix_quotient`); `correspondence_theorem`
+(`comap`, `Subgroup.comap f K` with `mem_comap`; `map`, `Subgroup.map f K` with `mem_map`;
+`map_comap_mk`, `QuotientGroup.le_comap_mk'` and `QuotientGroup.map_comap_mk'`; `comap_map_mk`,
+`QuotientGroup.comap_map_mk'`; `zmod_six_correspondence`, `comap_bot_zmodSixToTwo` and
+`map_zmodSixEvens_zmodSixToTwo`); `second_isomorphism_theorem` (`subgroup_of`,
+`Subgroup.subtype H : H.carrier →* G`, `Subgroup.subgroupOf N H := N.comap H.subtype`,
+`mem_subgroupOf`; `normal_subgroup_of`, the instance `Subgroup.normal_subgroupOf`; `ker_restrict`,
+`QuotientGroup.ker_restrict`, the kernel of `(mk' N).comp H.subtype`; `second_isomorphism`,
+`QuotientGroup.quotientSubgroupOfEquivRange H N`); `index_formula` (`card_subgroup_of`,
+`Subgroup.card_subgroupOf`; `index_eq_mul_index`, `Subgroup.index_eq_mul_index : K.index =
+H.index * (K.subgroupOf H).index` for `K ≤ H`); and `direct_products`, with the `@goal`
+(`mul_comm_of_inf_eq_bot`, `Subgroup.mul_comm_of_inf_eq_bot`; `prod_mul`, `Subgroup.prodMul H K
+hHK : H.carrier × K.carrier →* G`; `prod_mul_injective`; `prod_mul_equiv`,
+`Subgroup.prodMulEquiv H K hHK hsup`; `zmod_six_product`, with `zmodSixThrees` given,
+`zmodSixEvens_inf_threes`, `zmodSixEvens_sup_threes` and `zmodSixProdEquiv`). Every general
+definition and theorem carries its additive version. `FewerAxioms.lean` stays the root's last
+import and now imports `Isomorphisms`; the `@goal` leaves `universal_property`. Extraction: 227
+problems, 0 errors, 45 concepts in 11 sections; every new problem verified at once, with no
+repair (229 after the review's two splits: `normal_subgroup_of` from `subgroup_of` in round 1,
+`ker_range_restrict` from `quotient_ker_equiv_range` in round 2). The `comap` and `map` specs were compiled against a carrier written as a preimage and an
+equation reversed, and reject `⊤` and `f.range`.
+
+Departures from the entry. (1) **Every isomorphism to a named quotient is built from the lift,
+not from the first isomorphism theorem**: `quotientKerEquivRange f` has the type `G ⧸ f.ker`,
+and `ℤ ⧸ (intToZMod n).ker` is a different type from `ℤ ⧸ intMultiples n`. A rewrite by
+`ker_intToZMod` does carry the isomorphism across (the editor compiled it), but through a cast,
+and the result no longer sends the class of `a` to its image by definition, which the spec and
+every later use need; so `QuotientGroup.lift_injective` takes `f.ker ≤ N` and the student proves
+the inclusions. (2) **The
+first isomorphism theorem comes in two problems**, the surjective case and the image through
+`rangeRestrict`. (3) **`zmod_six_quotient` is an existence theorem**: as a `def`, its proofs of
+`NeZero 6` and of normality became auxiliary declarations that `zmod_six_product` reused, and the
+closure then pulled the `def` without what it needs (the §6 lesson of shared proofs, in a new
+form). (4) **Not built**: `G ⧸ ⊥ ≃* G` (`⊥` has no normality instance and `ker (id)` is not `⊥`
+as an expression); `Dₙ ⧸ rotations ≃* Bool`, since `Equiv.Perm (Fin 2)` has no count here to
+decide surjectivity; every group of prime order isomorphic to `ZMod p`, which needs the kernel of
+`k ↦ k • a` and a composite of isomorphisms; normality's correspondence (Milne 1.48), the third
+isomorphism theorem, and the lattices of Milne 1.49, for which `zmod_six_correspondence` stands;
+the second isomorphism theorem's image as the quotient `(H ⊔ N) ⧸ N`, said in prose; and
+`ZMod m × ZMod n ≃+ ZMod (m * n)` for coprime `m` and `n`, which needs a count of a product the
+fence lacks; `ZMod 6` as the internal product of `{0, 2, 4}` and `{0, 3}` stands in. (5) **The
+index formula has no running example.** (6) Names the subject coins where Mathlib's differ:
+`Subgroup.index_eq_mul_index` (Mathlib's `relindex_mul_index` through `relindex`, not defined
+here), `QuotientGroup.ker_restrict`, `QuotientGroup.quotientSubgroupOfEquivRange`,
+`Subgroup.prodMul` and `Subgroup.prodMulEquiv`.
+
 ### §11. Group Actions
 
 Milne 4.1–4.6, 4.10. The Lean that is new here: a class extending `SMul` (the definition), and
@@ -2048,7 +2103,22 @@ recorded so that a session does not reopen them.
 
 ## Next step
 
-§10, The Isomorphism Theorems, in a fresh session: "Do the next section in Group Theory, which
+§11, Group Actions, in a fresh session: "Do the next section in Group Theory, which is §11 Group
+Actions". Read §11's entry, §10's **As built** (the names as they are in Lean:
+`GroupIso.ofBijective`, `QuotientGroup.lift_injective`, `lift_surjective`,
+`quotientKerEquivOfSurjective`, `GroupHom.rangeRestrict`, `ker_rangeRestrict`,
+`quotientKerEquivRange`, `intQuotientEquivZMod`; `Subgroup.comap`, `Subgroup.map`, `mem_comap`,
+`mem_map`, `le_comap_mk'`, `map_comap_mk'`, `comap_map_mk'`; `Subgroup.subtype`, `subgroupOf`,
+`mem_subgroupOf`, `normal_subgroupOf`, `ker_restrict`, `quotientSubgroupOfEquivRange`;
+`card_subgroupOf`, `index_eq_mul_index`; `mul_comm_of_inf_eq_bot`, `prodMul`,
+`prodMul_injective`, `prodMulEquiv`; every one with its additive version), `STYLE.md` with
+**Learned building §10**, and §1–§10 in full before writing. Points for the entry. An
+isomorphism onto a named quotient is built from the lift with `lift_injective`, so that its value
+on a class holds by definition (a rewrite of the quotient's subgroup compiles but loses that); an example whose `def` would share an auxiliary proof with a
+later problem's `def` is stated as an existence theorem. The goal moves to §11's last concept;
+`FewerAxioms.lean` stays the root's last import and then imports §11's file.
+
+The previous next step, kept for the record: §10, The Isomorphism Theorems, in a fresh session: "Do the next section in Group Theory, which
 is §10 The Isomorphism Theorems". Read §10's entry, §9's **As built** (the names as they are in
 Lean: `Subgroup.Normal N` taken as `[N.Normal]`, `conj_mem`, `conj_mem'`,
 `normal_iff_leftCoset_eq_rightCoset`, the instances `normal_of_comm`, `center_normal`,

@@ -683,7 +683,6 @@ theorem addOrderOf_mk_one_int (n : ℕ) [NeZero n] :
 @concept universal_property
 @title The Universal Property of the Quotient
 @kind theorem
-@goal
 
 A homomorphism that sends a normal subgroup to the neutral element factors through the quotient: it defines a homomorphism on the cosets, and that is the only homomorphism agreeing with it on the coset of each element. This is how homomorphisms out of a quotient group are built.
 -/

@@ -921,6 +921,63 @@ then re-read by a fresh reviewer. What it settled:
   - An instance of a `Prop` class may be a tactic block. Say so before the first problem that
     is shortest that way.
 
+## Learned building §10 (2026-10-29)
+
+- **An isomorphism onto a named quotient is built from the lift, not by rewriting the
+  quotient's subgroup.** `rw [← ker_intToZMod n]` does carry the first isomorphism theorem's
+  `ℤ ⧸ (intToZMod n).ker ≃+ ZMod n` to `ℤ ⧸ intMultiples n`, but through a cast, and the value on
+  a class stops holding by definition, which the spec (`rfl` on `mk a`) and every later use need.
+  So `QuotientGroup.lift_injective` takes `f.ker ≤ N`, and the student proves the two inclusions.
+  The first draft said a rewrite "cannot" do it; the editor compiled the rewrite. Grade every
+  claim about Lean before it reaches the prose, including a claim that something fails.
+- **The order on subgroups is the student's `≤` and nothing more.** Mathlib's order laws
+  (`le_refl`, `le_of_eq`, `Eq.ge`) need a `Preorder`, which the student's subgroups do not have,
+  and every student reached for one. Say it once, at the first problem that proves an inclusion
+  inside a definition (`quotient_ker_equiv_of_surjective`).
+- **A `def` whose proofs Lean shares with a later problem's `def` is stated as an existence
+  theorem.** Lean saves a proof inside a definition's body (`NeZero 6`, a normality instance) as
+  an auxiliary declaration and reuses it in the next definition that needs the same proof. The
+  closure then pulls the first definition into the second's context without what it needs.
+  `zmod_six_quotient` became `∃ e, ∀ a, e.toFun (mk a) = …`, as `lift_int` was, since a
+  theorem's proofs are not shared. This is §6's lesson of shared proofs in another form.
+- **One word, one sense.** "Restriction" named both `rangeRestrict`, which cuts down the target,
+  and `(mk' N).comp H.subtype`, which cuts down the domain; the second is the textbook's sense, and
+  `rangeRestrict` is "the homomorphism onto the image". Define "quotient map" where it is first
+  used.
+- **Notation is checked as notation.** `H ∩ N` for subgroups does not elaborate (there is no
+  `Inter (Subgroup G)`); the subject's intersection of subgroups is `⊓`.
+- **The reviewers' findings, in order of frequency**: prose that handed over the proof, in
+  fifteen of twenty-three problems (an argument in words, a context list glossed in proof order,
+  the `simp only`-then-`decide` recipe told a third time); context lists that named "the additive
+  versions of this section's theorems" or ended "among them" without the names the reference
+  uses, one of them inviting a definition not in the context; a context fact named without its
+  form (`conj_mem`, `mem_sup_of_normal`) where the student applies it forwards; a claim about
+  Lean that was false; a concept description claiming a route the build does not take; titles
+  that state the wrong fact. Every problem passed in every report. One double teaching was
+  upheld: `subgroupOf` with the inclusion and the normality instance, now two problems.
+- **Round two found what round one's fixes made.** A fix that corrects a false claim can keep a
+  paragraph the student never needed (206's `rw` route, through a theorem not in the context);
+  a comparison added to the prose ("as the instances of the previous section were") must hold
+  of every instance it names. Write the replacement, then read it as a new claim.
+- **Say where a fact comes from, every time.** `Subtype.ext`, `Fin.ext`, `Prod.ext` and
+  `Nat.eq_of_mul_eq_mul_right` are core Lean's and `Fintype.card_of_bijective` is Mathlib's,
+  even where an earlier section showed them; one problem called them a section's while the next
+  said "core Lean's".
+- **A proof-only hint hides in an "it is": "each residue is the reduction of its own value"
+  is the witness; "which normality puts in both subgroups" is the case split.** Keep the
+  definition (the commutator) and cut the claim about it that the proof establishes.
+- **A field the student must name is named.** `f.map_mul'` is a structure's field, and the
+  theorem `GroupHom.map_mul` is not in every context; say which one the problem has. The same
+  for a value that holds by definition: say so ("the function of an isomorphism built by
+  `ofBijective` is its homomorphism's"), or the student looks for a lemma.
+- **Prose that mentions a theorem invites it.** "With kernel `zmodSixEvens`" sent a student to
+  `ker_zmodSixToTwo`, "the first isomorphism theorem's argument" to `quotientKerEquivRange`, a
+  display of the image's set to `GroupHom.mem_range`; none was in the context. Before naming a
+  result in passing, check the context holds it, or say it does not.
+- **A cut restatement comes back in new words.** Round 2 replaced one telling of 213's exercise
+  with another, and round 3 found it. After cutting, read the preamble's last sentence against
+  the description.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:
