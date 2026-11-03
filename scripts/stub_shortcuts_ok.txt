@@ -74,3 +74,10 @@ lift                 # QuotientGroup.lift_mk holds by definition (rfl), the equa
 comap                # Subgroup.mem_comap holds by definition (rfl), the equation later proofs rewrite with; the subgroup's closure proofs are the exercise
 map                  # Subgroup.mem_map holds by definition (rfl), the equation later proofs rewrite with; the subgroup's closure proofs are the exercise
 subgroup_of          # Subgroup.mem_subgroupOf holds by definition (rfl), the equation later proofs rewrite with; the two definitions are the exercise
+perm_action          # rot3_smul_zero is the running example's numeric check, closed by decide as STYLE.md's running-example rule asks; the two instances are the exercise
+self_action          # zmod_four_one_vadd_three is the running example's numeric check; the two instances are the exercise
+dihedral_smul        # DihedralGroup.r_smul and sr_smul hold by definition (rfl), the equations later proofs rewrite with, and d4_sr_one_smul_zero is the numeric check; the instance by cases is the exercise
+stabilizer           # MulAction.mem_stabilizer_iff holds by definition (rfl), the equation later proofs rewrite with; the subgroup's closure proofs are the exercise
+conj_action          # ConjAct.smul_def holds by definition (rfl), the equation later proofs rewrite with; the two instances are the exercise
+conj_orbit           # ConjAct.mem_orbit_iff holds by definition, as the description says, and is stated for later proofs to rewrite with; ConjAct.mem_fixedPoints_iff is the exercise
+centralizer          # Subgroup.mem_centralizer_iff holds by definition (rfl), the equation later proofs rewrite with; the subgroup's closure proofs are the exercise

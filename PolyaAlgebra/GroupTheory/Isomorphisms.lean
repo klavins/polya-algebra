@@ -721,7 +721,6 @@ theorem Subgroup.index_eq_mul_index {G : Type u} [Group G] [Fintype G] {K H : Su
 @concept direct_products
 @title Internal Direct Products
 @kind theorem
-@goal
 
 Two normal subgroups that meet only in the neutral element and together generate the group make it their product: each element is the product of one element of each, in exactly one way, and elements of the two commute. A group is then known from two smaller ones.
 -/

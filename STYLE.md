@@ -978,6 +978,49 @@ then re-read by a fresh reviewer. What it settled:
   with another, and round 3 found it. After cutting, read the preamble's last sentence against
   the description.
 
+## Learned building §11 (2026-11-03)
+
+- **An operation defined by cases or through a quotient is an `SMul` instance of its own, with
+  `rfl` equations, before its `MulAction`.** Inside a `MulAction` built with `where`, the goals
+  show `•` over the instance being built, and `rw` with an equation about the operation finds
+  nothing. A law about the dihedral table is stated for `DihedralGroup.mul`, which the table's
+  equations rewrite, as `dihedral_mul_assoc` was.
+- **An `attribute [to_additive existing …]` line stands outside every problem block**: the
+  extract refuses it inside one. A class and its twin are one problem; the attribute line follows
+  the block, and a theorem that needs it is the next problem (`is_pretransitive`,
+  `orbit_eq_univ`).
+- **A root theorem that restates a class's field takes the same binders as the field.** Inside
+  `MulAction.*` declarations `one_smul` resolves to the field, so the root `one_smul` and
+  `mul_smul` take `G` implicitly, as the fields do.
+- **A field whose type is fixed only by its hypothesis leaves that type unknown** until an
+  argument with a written type is given (`FaithfulSMul.eq_of_smul_eq_smul`, whose `X` occurs only
+  in the hypothesis). Say so in the problem that uses the field, and type the hypothesis first.
+- **A claim nothing builds, again**: "the orbits cut `X` into disjoint pieces", "points of one
+  orbit have conjugate stabilizers" (no conjugate subgroup is defined), "its closure proofs go the
+  same way" (false for `inv_mem'`), a reason for a missing additive version that holds only of
+  the subject's examples. Each sat in a title, a concept description or the subject description
+  as well as a preamble; sweep all four.
+- **A definitional `↔` stated for later rewrites is proved by `Iff.rfl` and said to hold by
+  definition**, everywhere: one proved through witnesses (`ConjAct.mem_orbit_iff`) asked for seven
+  lines with no reason, and contradicted its entry in `stub_shortcuts_ok.txt`.
+- **A membership the reference opens by definition leaves its `mem_…_iff` out of the context.**
+  `MulAction.mem_orbit_iff` was missing from four problems whose reference destructured orbit
+  members directly; the students reached for it. The reference goes through the `iff` once, so
+  the context holds it.
+- **The reviewers' findings, in order of frequency**: a missing context fact (above); claims
+  nothing builds (above); a preamble restating the iff the description asks; Lean behaviour left
+  unsaid (`decide` cannot see inside `d3FixZero`, `g • x` is `g * x` only by definition, the first
+  error `decide` gives on `ConjAct`); a wrong input abbreviation (`+\_v`, not `\+ᵥ`). Every
+  problem passed in every report.
+
+- **A fix that says Lean behaviour is graded like any claim, from the student's natural route.**
+  Round 2 added "after `Subgroup.ext` the memberships sit under `∀ g`, where `simp only` can reach
+  them": the binder is `x`, a student who writes `intro` first meets `decide`'s free-variable error
+  instead, and the sentence was the `simp only`-then-`decide` recipe told a fifth time. A recipe
+  taught in an earlier section is not told again; say the first error, not the route.
+- **A cut can leave a claim false.** Cutting '"pre" because `X` may be empty' left "transitive
+  when it has only one orbit", false on an empty set. Read the sentence that remains.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:

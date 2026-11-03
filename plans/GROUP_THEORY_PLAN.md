@@ -1615,6 +1615,64 @@ a type synonym with a copied instance (`ConjAct`), each in its own problem.
 Budget: 20, which is over by two: the `ZMod n` action and the `G ⧸ H` action can be one
 problem, and `S₃`'s classes can be prose.
 
+**As built (2026-11-03).** `PolyaAlgebra/GroupTheory/Actions.lean`: 27 problems over 4 concepts,
+in this order: `actions` (`mul_action`, the classes `MulAction G X extends SMul G X` with
+`one_smul` and `mul_smul`, every argument explicit, and the twin `AddAction A X extends VAdd A X`
+with `zero_vadd` and `add_vadd`, `+ᵥ` being Mathlib's `VAdd`, in the fence; `perm_action`,
+`Equiv.Perm.instSMul` and `Equiv.Perm.applyMulAction X`, with `rot3_smul_zero`; `self_action`,
+`Group.toSMulSelf` and `Group.toMulAction`, with `AddGroup.toVAddSelf` and `AddGroup.toAddAction`,
+so that `ZMod n` rotating `Fin n` is the additive self action, `zmod_four_one_vadd_three`;
+`dihedral_smul`, `DihedralGroup.instSMul n` with `r i • v = i + v` and `sr i • v = -(i + v)`, the
+equations `DihedralGroup.r_smul` and `DihedralGroup.sr_smul`, and `d4_sr_one_smul_zero`;
+`dihedral_action`, `dihedral_mul_smul` stated for `DihedralGroup.mul` and
+`DihedralGroup.instMulAction n`; `quotient_action`, `QuotientGroup.instSMul H`,
+`QuotientGroup.smul_mk` and `MulAction.quotient H`, for any subgroup; `inv_smul_smul`, with
+`one_smul`, `mul_smul` (group implicit, the fields' shape) and `inv_smul_smul` given, the last as a
+worked `calc`, and `smul_inv_smul`; `to_perm_hom`, `MulAction.toPerm g` and
+`MulAction.toPermHom G X : G →* Equiv.Perm X`, the latter with no additive version); `orbits`
+(`orbit`, `MulAction.orbit G x := {y | ∃ g : G, g • x = y}` with `mem_orbit_iff` and
+`mem_orbit_self`; `orbit_rel`, `MulAction.orbitRel G X`; `orbit_eq_iff`; `fixed_points`,
+`MulAction.fixedPoints G X`, `mem_fixedPoints` and `orbit_eq_singleton_iff`; `is_pretransitive`,
+the `Prop` classes `MulAction.IsPretransitive` (`exists_smul_eq`) and its twin; `orbit_eq_univ`,
+with `MulAction.exists_smul_eq G x y` given; `dihedral_transitive`, the instances
+`Group.isPretransitive_self` and `DihedralGroup.isPretransitive n`); `stabilizers`
+(`stabilizer`, `MulAction.stabilizer G x : Subgroup G` and `mem_stabilizer_iff`;
+`stabilizer_smul`, `MulAction.mem_stabilizer_smul_iff`, `h` fixes `g • x` exactly when `g⁻¹ * h *
+g` fixes `x`; `ker_to_perm_hom`, `MulAction.mem_ker_toPermHom`; `faithful_smul`, the class
+`FaithfulSMul G X` with `eq_of_smul_eq_smul g₁ g₂`, explicit, and `ker_eq_bot_of_faithful` and
+`faithful_of_ker_eq_bot`; `dihedral_stabilizer`, `stabilizer_d3_zero : stabilizer (DihedralGroup
+3) 0 = d3FixZero`; `d2_not_faithful`, its own problem after the review); and `conjugation`, with the `@goal` (`conj_act`, the
+type synonym `ConjAct G := G`, `ConjAct.instGroup` by `inferInstanceAs (Group G)`, and the plain
+functions `ConjAct.ofConjAct` and `ConjAct.toConjAct`; `conj_action`, with `ofConjAct_mul`,
+`ofConjAct_one` and `ofConjAct_toConjAct` given, `ConjAct.instSMul`, `ConjAct.smul_def` and
+`ConjAct.instMulAction`; `conj_orbit`, `ConjAct.mem_orbit_iff` by `Iff.rfl` and `ConjAct.mem_fixedPoints_iff`
+(the fixed points are `center G`); `centralizer`, `Subgroup.centralizer S` with carrier `{g | ∀ h ∈
+S, h * g = g * h}` and `mem_centralizer_iff`; `conj_stabilizer`, `ConjAct.mem_stabilizer_iff`, the
+stabilizer read through `ofConjAct` as the centralizer of `{x}`; `d4_conj_classes`, three
+two-element classes by `decide` after `ConjAct.mem_orbit_iff`, and `d4_conj_fixedPoints` through
+`d4_center`). `FewerAxioms.lean` stays the root's last import and now imports `Actions`; the
+`@goal` leaves `direct_products`.
+
+Departures from the entry. (1) **The dihedral action is `r i • v = i + v`, `sr i • v = -(i +
+v)`**, not the entry's `sr i • v = i - v`, which does not satisfy `mul_smul` with the table of §3
+(`r i * sr j = sr (j + -i)`); `sr i` is `r i` followed by `s = sr 0`, as §3 describes it. (2)
+**Every operation defined by cases or through a quotient is an `SMul` instance of its own, with
+`rfl` equations, before its `MulAction`**: inside a `MulAction` built with `where`, the goals show
+`•` over the instance being built, and `rw` with an equation about the operation finds nothing. (3)
+**The `Sₙ` action is on any `X`**, and `ZMod n` on `Fin n` by rotation is the additive self action,
+since `ZMod n` is `Fin n`. (4) **Conjugacy classes of `S₃` are not built**; `D₄`'s are, with the
+centre as its fixed points. (5) **Not built**: an action from a homomorphism `G →* Equiv.Perm X`
+(the converse of `toPermHom`), the faithful action of `Dₙ` for `n ≥ 3`, and the kernel of the
+action on `G ⧸ H` as the largest normal subgroup in `H` (4.10, extra credit in the entry). (6)
+**`FaithfulSMul` and `toPermHom` have no additive versions**, and nor does anything about
+`ConjAct`. (7) Seven problems over the entry's twenty: the classes `IsPretransitive` and
+`FaithfulSMul`, the centralizer, the two-step dihedral and quotient actions,
+`inv_smul_smul` as the worked identity, and `d2_not_faithful` apart from the stabilizer of `D₃`.
+(8) **No claim that the orbits partition `X` or that stabilizers along an orbit are conjugate
+subgroups**: neither the classes of `orbitRel` as orbits nor a conjugate subgroup `gHg⁻¹` is
+built, so the prose says only what `orbit_eq_iff` and `mem_stabilizer_smul_iff` prove; §12's
+block count, which needs the orbits as disjoint pieces, proves it there.
+
 ### §12. Counting with Actions
 
 Milne 4.7–4.8, 4.11–4.12, 4.16, 4.18, 4.19, and Lemma 5.1. The Lean that is new here:

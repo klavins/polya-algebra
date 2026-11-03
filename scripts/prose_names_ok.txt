@@ -63,3 +63,10 @@ normal_of_comm: nℤ  # the textbook's notation, defined at int_multiples
 lift_int: nℤ  # the textbook's notation, defined at int_multiples
 quotient_mul: s₁, s₂  # the implicit relations of core Lean's Quotient.lift₂, named in its signature shown in the preamble
 int_quotient_equiv: nℤ  # the textbook's notation, defined at int_multiples
+mul_action: CommGroup, one_smul, mul_smul, zero_vadd, add_vadd  # CommGroup is the section on examples' class, named as the earlier case of extends; the four laws are the fields this problem defines
+perm_action: CommGroup  # named as the earlier case of an instance that takes its parent from Lean
+dihedral_action: mul_smul  # the field of the class being instantiated
+to_perm_hom: cayley  # named to say why there is no additive version, as at cayley itself
+orbit_rel: iseqv  # the field of core Lean's Setoid, met in the first section
+is_pretransitive: Subgroup.Normal, exists_vadd_eq, exists_smul_eq  # Subgroup.Normal named as the earlier Prop class; the two fields this problem defines
+faithful_smul: eq_of_smul_eq_smul, g₁, g₂  # the field this problem defines and its arguments
