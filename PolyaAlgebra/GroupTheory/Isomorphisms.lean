@@ -37,9 +37,9 @@ An isomorphism carries an inverse function, and a homomorphism whose function is
 noncomputable def Equiv.ofBijective (f : α → β)
     (hf : Function.Bijective f) : α ≃ β
 ```
-Its function is `f`, and its inverse function picks, for each `b`, the element that `f` sends to `b`. That is a choice, so the definition is `noncomputable`, and so is every definition that uses it. The law of a homomorphism `f` is its field `f.map_mul'`.
+Its function is `f`, and its inverse function picks, for each `b`, the element that `f` sends to `b`. That is a choice, so the definition is `noncomputable`, as the equivalence `G ≃ (G ⧸ H) × H.carrier` of the section on cosets was. The law of a homomorphism `f` is its field `f.map_mul'`.
 @description
-Define `GroupIso.ofBijective f hf`, the isomorphism whose function is that of a homomorphism `f` with a bijective function. Keep the `@[to_additive]` line.
+Define `GroupIso.ofBijective f hf`, the isomorphism whose function is that of a homomorphism `f` with a bijective function.
 -/
 
 @[to_additive AddGroupIso.ofBijective]
@@ -61,7 +61,7 @@ example {G : Type u} {H : Type v} [Group G] [Group H] (f : G →* H)
 @concept first_isomorphism_theorem
 
 @preamble
-The lift `QuotientGroup.lift N f hN` of the previous section is injective when `N` is the whole kernel of `f`, and surjective when `f` is. That the kernel lies in `N` is written `f.ker ≤ N`, the order of the section on subgroups: every element of `f.ker` lies in `N`.
+The lift `QuotientGroup.lift N f hN` of the previous section is injective when `N` is the whole kernel of `f`, and surjective when `f` is. That the kernel lies in `N` is written `f.ker ≤ N`, the relation `≤` on subgroups of the section on subgroups: every element of `f.ker` lies in `N`.
 
 The context holds `QuotientGroup.lift_mk` of the previous section; `QuotientGroup.mk_surjective` and
 ```lean
@@ -107,7 +107,7 @@ G ⧸ f.ker ≃* H
 ```
 This is the *first isomorphism theorem* for a surjective homomorphism: its target is isomorphic to the quotient of its source by its kernel.
 
-The order on subgroups is the relation `≤` of the section on subgroups and nothing more, so Mathlib's laws of orders, `le_refl` among them, do not apply to it. The context holds `GroupIso.ofBijective`, `QuotientGroup.lift_injective` and `QuotientGroup.lift_surjective` of this section, and `QuotientGroup.lift` of the previous section.
+The relation `≤` on subgroups is that of the section on subgroups and nothing more, so Mathlib's laws of orders, `le_refl` among them, do not apply to it. The context holds `GroupIso.ofBijective`, `QuotientGroup.lift_injective` and `QuotientGroup.lift_surjective` of this section, and `QuotientGroup.lift` of the previous section.
 @description
 Define `QuotientGroup.quotientKerEquivOfSurjective f hf`, the isomorphism from `G ⧸ f.ker` to `H` sending the class of `a` to `f.toFun a`, for a homomorphism `f` whose function is surjective.
 -/
@@ -317,7 +317,7 @@ A homomorphism `f : G →* H` carries each subgroup `K` of `H` back to a subgrou
 ```
 We write it `K.comap f`.
 
-A membership in a set written `{x | p x}` is `p x` by definition, and `change` writes it out. The context holds `GroupHom.map_one`, `GroupHom.map_mul` and `GroupHom.map_inv` of the section on homomorphisms, written `f.map_one`, and `Subgroup.one_mem`, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, written `K.one_mem`.
+The context holds `GroupHom.map_one`, `GroupHom.map_mul` and `GroupHom.map_inv` of the section on homomorphisms, written `f.map_one`, and `Subgroup.one_mem`, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, written `K.one_mem`.
 @description
 Define `Subgroup.comap f K`, the subgroup of `G` with that carrier, and prove `Subgroup.mem_comap`, which holds by definition:
 ```lean
@@ -414,7 +414,7 @@ theorem Subgroup.mem_map {G : Type u} {H : Type v} [Group G] [Group H] {f : G �
 @concept correspondence_theorem
 
 @preamble
-Let `N` be a normal subgroup of `G`. The *quotient map* is the homomorphism `QuotientGroup.mk' N` from `G` to `G ⧸ N` of the previous section, whose function is `QuotientGroup.mk` by definition. Every subgroup of `G ⧸ N` is the image of a subgroup of `G` containing `N`.
+Let `N` be a normal subgroup of `G`. The quotient map `QuotientGroup.mk' N` of the previous section, from `G` to `G ⧸ N`, has `QuotientGroup.mk` as its function, by definition. Every subgroup of `G ⧸ N` is the image of a subgroup of `G` containing `N`.
 
 The context holds `Subgroup.mem_comap` and `Subgroup.mem_map` of this section; `QuotientGroup.ker_mk'` of the previous section; `QuotientGroup.mk_surjective` of the section on cosets; `GroupHom.mem_ker` of the section on homomorphisms; and `Subgroup.ext` and `Subgroup.one_mem` of the section on subgroups.
 @description
@@ -516,7 +516,7 @@ A subgroup and a normal subgroup give two groups: the quotient of the subgroup b
 @concept second_isomorphism_theorem
 
 @preamble
-To take a quotient of a subgroup `H`, we need subgroups of the group `H.carrier`. The *inclusion* `Subgroup.subtype H` is the homomorphism from `H.carrier` to `G` that sends each element `a` of `H` to itself, `a.1`; the product of `H.carrier` is that of `G`, by definition. The preimage of a subgroup `N` of `G` under the inclusion is `N.subgroupOf H`. Its elements are the elements of `H` that lie in `N`: it is the intersection `H ⊓ N`, seen inside `H`.
+To take a quotient of a subgroup `H`, we need subgroups of the group `H.carrier`. The *inclusion map* `Subgroup.subtype H` is the homomorphism from `H.carrier` to `G` that sends each element `a` of `H` to itself, `a.1`; the product of `H.carrier` is that of `G`, by definition. The preimage of a subgroup `N` of `G` under the inclusion map is `N.subgroupOf H`. Its elements are the elements of `H` that lie in `N`: it is the intersection `H ⊓ N`, seen inside `H`.
 
 The context holds `Subgroup.comap` of this section.
 @description
@@ -559,7 +559,7 @@ theorem Subgroup.mem_subgroupOf {G : Type u} [Group G] {N H : Subgroup G} {h : H
 @concept second_isomorphism_theorem
 
 @preamble
-When `N` is normal in `G`, the subgroup `N.subgroupOf H` is normal in `H.carrier`, since the product and the inverse of `H.carrier` are those of `G`, by definition. `Subgroup.Normal` has one field, the law `Subgroup.Normal.conj_mem` shown below, so the instance is written with `where` and that field.
+When `N` is normal in `G`, the subgroup `N.subgroupOf H` is normal in `H.carrier`, since the product and the inverse of `H.carrier` are those of `G`, by definition. `Subgroup.Normal` has one field, the law `Subgroup.Normal.conj_mem` shown below.
 
 The context holds `Subgroup.mem_subgroupOf` of the previous problem and, of the previous section,
 ```lean
@@ -616,7 +616,7 @@ theorem QuotientGroup.ker_restrict {G : Type u} [Group G] (H N : Subgroup G) [N.
 @concept second_isomorphism_theorem
 
 @preamble
-The image of the restriction consists of the classes of the elements of `H`. Textbooks write it as the quotient of `H ⊔ N` by `N`, with `H ⊔ N` the subgroup of the previous section. The quotient of `H.carrier` by the kernel of the restriction, `N.subgroupOf H`, is isomorphic to this image: the *second isomorphism theorem*. The first isomorphism theorem itself is not in this problem's context; its argument is.
+The image of the restriction consists of the classes of the elements of `H`. Textbooks write it as the quotient of `H ⊔ N` by `N`, with `H ⊔ N` the subgroup of the previous section. The quotient of `H.carrier` by the kernel of the restriction, `N.subgroupOf H`, is isomorphic to this image: the *second isomorphism theorem*. The first isomorphism theorem itself is not available here; its argument is.
 
 As for `ℤ ⧸ nℤ`, the isomorphism is to send the class of `h` to the class of `h` by definition. The context holds, of this section, `GroupIso.ofBijective`, `QuotientGroup.lift_injective`, `QuotientGroup.lift_surjective`, `GroupHom.rangeRestrict`, `GroupHom.rangeRestrict_surjective`, `GroupHom.ker_rangeRestrict` and `QuotientGroup.ker_restrict`; and `QuotientGroup.lift` of the previous section.
 @description
@@ -731,14 +731,9 @@ Two normal subgroups that meet only in the neutral element and together generate
 @concept direct_products
 
 @preamble
-A direct product needs the elements of its two factors to commute. The *commutator* of `h` and `k` is `h * k * h⁻¹ * k⁻¹`.
+A group that is to be the product of two normal subgroups needs their elements to commute. The *commutator* of `h` and `k` is `h * k * h⁻¹ * k⁻¹`.
 
-The context holds, of the previous section,
-```lean
-theorem Subgroup.Normal.conj_mem [N.Normal]
-    (n : G) (hn : n ∈ N) (g : G) : g * n * g⁻¹ ∈ N
-```
-`Subgroup.inv_mem`, `Subgroup.mem_bot`, `Subgroup.mem_inf` and `Subgroup.mul_mem` of the section on subgroups, written `H.mul_mem`; and `inv_eq_of_mul_eq_one_right`, `inv_injective`, `mul_assoc` and `mul_inv_rev` of the second section.
+The context holds `Subgroup.Normal.conj_mem` of the previous section; `Subgroup.inv_mem`, `Subgroup.mem_bot`, `Subgroup.mem_inf` and `Subgroup.mul_mem` of the section on subgroups, written `H.mul_mem`; and `inv_eq_of_mul_eq_one_right`, `inv_injective`, `mul_assoc` and `mul_inv_rev` of the second section.
 @description
 Show that `h * k = k * h` when `h ∈ H` and `k ∈ K` for normal subgroups `H` and `K` with `H ⊓ K = ⊥`, under the name `Subgroup.mul_comm_of_inf_eq_bot`.
 -/
@@ -768,7 +763,7 @@ theorem Subgroup.mul_comm_of_inf_eq_bot {G : Type u} [Group G] {H K : Subgroup G
 @concept direct_products
 
 @preamble
-For normal subgroups `H` and `K` with `H ⊓ K = ⊥`, multiplying the components of a pair is a homomorphism. It goes from the product group `H.carrier × K.carrier` of the section on examples to `G`, and sends `x` to `x.1.1 * x.2.1`, where `x.1.1` is the element of `G` in the first component. The product of pairs is componentwise and the product of `H.carrier` is that of `G`, both by definition.
+For normal subgroups `H` and `K` with `H ⊓ K = ⊥`, multiplying the components of a pair is a homomorphism. It goes from the product `H.carrier × K.carrier` of the section on examples to `G`, and sends `x` to `x.1.1 * x.2.1`, where `x.1.1` is the element of `G` in the first component. The product of pairs is componentwise and the product of `H.carrier` is that of `G`, both by definition.
 
 The context holds `Subgroup.mul_comm_of_inf_eq_bot` of the previous problem and `mul_assoc` of the second section.
 @description
@@ -834,7 +829,7 @@ H.carrier × K.carrier ≃* G
 ```
 Then `G` is the *internal direct product* of `H` and `K`.
 
-The context holds `GroupIso.ofBijective` of this section's first concept, `Subgroup.prodMul_injective` of the previous problem, `Subgroup.mem_top` of the section on subgroups, and, of the previous section,
+The context holds `GroupIso.ofBijective` of this section's first concept, `Subgroup.prodMul_injective` of the previous problem, `Subgroup.mem_top` of the section on subgroups, by which `Subgroup.mem_top x` is a proof of `x ∈ ⊤`, and, of the previous section,
 ```lean
 theorem Subgroup.mem_sup_of_normal [N.Normal] :
     x ∈ H ⊔ N ↔ ∃ h ∈ H, ∃ n ∈ N, h * n = x

@@ -41,7 +41,7 @@ The context holds `MulAction.mem_stabilizer_iff` and `mul_smul` of the previous 
 mul_inv_cancel_left (a b : G) : a * (a⁻¹ * b) = b
 ```
 @description
-Define `MulAction.ofQuotientStabilizer G x`, which sends the class of `g` to `g • x`, keeping the `@[to_additive]` line, and prove its equation, which holds by definition, under the name `MulAction.ofQuotientStabilizer_mk`.
+Define `MulAction.ofQuotientStabilizer G x`, which sends the class of `g` to `g • x`, and prove its equation, which holds by definition, under the name `MulAction.ofQuotientStabilizer_mk`.
 -/
 
 @[to_additive AddAction.ofQuotientStabilizer]
@@ -79,7 +79,7 @@ QuotientGroup.eq : (QuotientGroup.mk a : G ⧸ H) =
 ```
 of the section on cosets.
 @description
-Show that `MulAction.ofQuotientStabilizer G x` is injective, under the name `MulAction.injective_ofQuotientStabilizer`, and that each of its values lies in the orbit of `x`, under the name `MulAction.ofQuotientStabilizer_mem_orbit`. Keep the `@[to_additive]` lines.
+Show that `MulAction.ofQuotientStabilizer G x` is injective, under the name `MulAction.injective_ofQuotientStabilizer`, and that each of its values lies in the orbit of `x`, under the name `MulAction.ofQuotientStabilizer_mem_orbit`.
 -/
 
 @[to_additive AddAction.injective_ofQuotientStabilizer]
@@ -113,7 +113,7 @@ A member of the orbit as a type is a pair `⟨y, hy⟩` of a point and a proof t
 
 The context holds the two theorems of the previous problem, `MulAction.mem_orbit_iff` of the previous section, and core Lean's `Subtype.ext` and `congrArg`.
 @description
-Define the equivalence `MulAction.orbitEquivQuotientStabilizer G x` between the orbit of `x` and `G ⧸ stabilizer G x`, keeping the `@[to_additive]` line.
+Define the equivalence `MulAction.orbitEquivQuotientStabilizer G x` between the orbit of `x` and `G ⧸ stabilizer G x`.
 -/
 
 @[to_additive AddAction.orbitEquivQuotientStabilizer]
@@ -146,13 +146,13 @@ When `X` is finite, so is an orbit, a set used as a type, under `open Classical`
 
 The context holds `MulAction.orbitEquivQuotientStabilizer` of the previous problem; Mathlib's `Fintype.card_congr`, met in the first section; and, of the section on cosets,
 ```lean
-Subgroup.index_mul_card :
+theorem Subgroup.index_mul_card (H : Subgroup G) :
     H.index * Fintype.card H.carrier = Fintype.card G
 theorem Nat.dvd_mul_right (a b : ℕ) : a ∣ a * b
 ```
 the last core Lean's.
 @description
-Show that the size of the orbit of `x` is the index of its stabilizer, under the name `MulAction.card_orbit_eq_index`; that the size of the orbit times the order of the stabilizer is the order of `G`, under the name `MulAction.card_orbit_mul_card_stabilizer_eq_card_group`; and that the size of the orbit divides the order of `G`, under the name `MulAction.card_orbit_dvd_card`. Keep the `open Classical in` and `@[to_additive]` lines.
+Show that the number of points of the orbit of `x` is the index of its stabilizer, under the name `MulAction.card_orbit_eq_index`; that the number of points of the orbit times the order of the stabilizer is the order of `G`, under the name `MulAction.card_orbit_mul_card_stabilizer_eq_card_group`; and that the number of points of the orbit divides the order of `G`, under the name `MulAction.card_orbit_dvd_card`. Keep the `open Classical in` lines.
 -/
 
 open Classical in
@@ -365,7 +365,7 @@ theorem card_filter_mem_mod {α : Type u} {β : Type v} [DecidableEq β] (s t : 
 @concept block_counting
 
 @preamble
-The orbits are the classes of the setoid `MulAction.orbitRel G X` of the previous section. The quotient by it has one element for each orbit, and `Quotient.mk _` sends each point to its class, printed `⟦a⟧` as in the first section. Its block over the class of `x` is the orbit of `x`; there `a ≈ x` is `a ∈ MulAction.orbit G x` by definition. Under `open Classical`, Lean can decide whether two classes are equal. `Finset.univ` is the finite set of all the elements of a finite type, and an orbit as a type is `{y // y ∈ MulAction.orbit G x}`. Mathlib has
+The orbits are the classes of the setoid `MulAction.orbitRel G X` of the previous section. The quotient by it has one element for each orbit, and `Quotient.mk _` sends each point to its class, printed `⟦a⟧` as in the first section. Its block over the class of `x` is the orbit of `x`; there `a ≈ x` is `a ∈ MulAction.orbit G x` by definition. Under `open Classical`, Lean can decide whether two classes are equal. `Finset.univ` is the finite set of all the elements of a finite type. Lean writes the orbit as a type, whose members are the pairs `⟨y, hy⟩` met in this section, as `{y // y ∈ MulAction.orbit G x}`. Mathlib has
 ```lean
 theorem Fintype.card_of_subtype (s : Finset α)
     (H : ∀ x, x ∈ s ↔ p x) :
@@ -375,7 +375,7 @@ theorem Finset.mem_filter :
 ```
 and `Finset.mem_univ a : a ∈ Finset.univ`. The context holds core Lean's `Quotient.sound` and `Quotient.exact`, met in the first section.
 @description
-Show that the points whose orbit is the orbit of `x` are as many as the points of the orbit of `x`, under the name `MulAction.card_block_eq_card_orbit`, keeping the `@[to_additive]` line.
+Show that the points whose orbit is the orbit of `x` are as many as the points of the orbit of `x`, under the name `MulAction.card_block_eq_card_orbit`.
 -/
 
 open Classical in
@@ -406,7 +406,7 @@ To count a block by its fixed points we first see where a fixed point can lie.
 
 The context holds `MulAction.mem_orbit_iff`, `MulAction.mem_fixedPoints` and `inv_smul_smul` of the previous section.
 @description
-Show that if a fixed point `y` lies in the orbit of `x`, then `x = y`, under the name `MulAction.eq_of_mem_orbit_of_mem_fixedPoints`, keeping the `@[to_additive]` line.
+Show that if a fixed point `y` lies in the orbit of `x`, then `x = y`, under the name `MulAction.eq_of_mem_orbit_of_mem_fixedPoints`.
 -/
 @[to_additive AddAction.eq_of_mem_orbit_of_mem_fixedPoints]
 theorem MulAction.eq_of_mem_orbit_of_mem_fixedPoints {G : Type u} {X : Type v} [Group G]
@@ -436,7 +436,7 @@ theorem Finset.filter_congr
     s.filter p = s.filter q
 ```
 @description
-Show that the fixed points in the block of a fixed point `x` are its whole block, under the name `MulAction.filter_block_of_mem_fixedPoints`, and that the block of a point `x` that is not fixed holds no fixed point, under the name `MulAction.filter_block_of_notMem_fixedPoints`. Keep the `open Classical in` and `@[to_additive]` lines.
+Show that the fixed points in the block of a fixed point `x` are its whole block, under the name `MulAction.filter_block_of_mem_fixedPoints`, and that the block of a point `x` that is not fixed holds no fixed point, under the name `MulAction.filter_block_of_notMem_fixedPoints`. Keep the `open Classical in` lines.
 -/
 
 open Classical in
@@ -473,7 +473,7 @@ theorem MulAction.filter_block_of_notMem_fixedPoints {G : Type u} {X : Type v} [
 
 /-!
 @problem card_block_mod
-@title A Block Has As Many Points as Fixed Points, Modulo p
+@title A Block Has as Many Points as Fixed Points, Modulo p
 @concept block_counting
 
 @preamble
@@ -483,9 +483,9 @@ theorem Finset.filter_filter :
     (s.filter p).filter q =
       s.filter (fun a => p a ∧ q a)
 ```
-The context holds `MulAction.card_block_eq_card_orbit` and the two theorems of the previous problem, and core Lean's `Nat.zero_mod` and `Nat.mod_eq_zero_of_dvd`, met in the section on homomorphisms.
+The context holds `MulAction.card_block_eq_card_orbit` and the two theorems of the previous problem, and core Lean's `Nat.zero_mod`, met in the section on examples, and `Nat.mod_eq_zero_of_dvd`, met in the section on homomorphisms.
 @description
-Show that, when the orbit of every point that is not fixed has a multiple of `p` points, each block has as many points as fixed points modulo `p`, under the name `MulAction.card_block_mod`, keeping the `@[to_additive]` line.
+Show that, when the orbit of every point that is not fixed has a multiple of `p` points, each block has as many points as fixed points modulo `p`, under the name `MulAction.card_block_mod`.
 -/
 
 open Classical in
@@ -521,7 +521,7 @@ theorem Finset.filter_true_of_mem
 ```
 and `Fintype.card_of_subtype`, `Finset.mem_filter` and `Finset.mem_univ`, met in this concept. The context holds `card_filter_mem_mod` and `MulAction.card_block_mod` of this concept.
 @description
-Show that `X` has as many points as fixed points modulo `p` when the orbit of every point that is not fixed has a multiple of `p` points, under the name `MulAction.card_mod_eq_card_fixedPoints`, keeping the `@[to_additive]` line.
+Show that `X` has as many points as fixed points modulo `p` when the orbit of every point that is not fixed has a multiple of `p` points, under the name `MulAction.card_mod_eq_card_fixedPoints`.
 -/
 
 open Classical in
@@ -560,7 +560,7 @@ A *`p`-group* is a finite group whose order is a power of `p`, and we write `IsP
 
 The context holds `card_dihedral n` of the section on examples, by which `DihedralGroup n` has `2 * n` elements.
 @description
-Define `IsPGroup p G`, keeping the `@[to_additive]` line, and show that `DihedralGroup 4` is a `2`-group, under the name `isPGroup_dihedral_four`.
+Define `IsPGroup p G` and show that `DihedralGroup 4` is a `2`-group, under the name `isPGroup_dihedral_four`.
 -/
 
 @[to_additive IsAddPGroup]
@@ -603,7 +603,7 @@ MulAction.mem_fixedPoints :
 ```
 and core Lean's `congrArg`.
 @description
-Show that a point whose orbit has one point is a fixed point, under the name `MulAction.mem_fixedPoints_of_card_orbit_eq_one`, keeping the `@[to_additive]` line.
+Show that a point whose orbit has one point is a fixed point, under the name `MulAction.mem_fixedPoints_of_card_orbit_eq_one`.
 -/
 
 open Classical in
@@ -639,7 +639,7 @@ theorem Nat.Prime.dvd_of_dvd_pow_of_ne_one
     (h1 : m ≠ 1) : p ∣ m
 ```
 @description
-Show that when a `p`-group acts on `X`, for a prime `p`, the orbit of a point that is not fixed has a multiple of `p` points, under the name `IsPGroup.dvd_card_orbit`, and that `X` has as many points as fixed points modulo `p`, under the name `IsPGroup.card_mod_eq_card_fixedPoints`. Keep the `@[to_additive]` lines.
+Show that when a `p`-group acts on `X`, for a prime `p`, the orbit of a point that is not fixed has a multiple of `p` points, under the name `IsPGroup.dvd_card_orbit`, and that `X` has as many points as fixed points modulo `p`, under the name `IsPGroup.card_mod_eq_card_fixedPoints`.
 -/
 
 open Classical in
@@ -669,7 +669,7 @@ theorem IsPGroup.card_mod_eq_card_fixedPoints {p : ℕ} {G : Type u} {X : Type v
 @concept class_equation
 
 @preamble
-`ConjAct G` acts on `G` by conjugation, with the centre as its fixed points, by the previous section. Being `G` under a second name, it has the elements of `G`; the instance `ConjAct.instFintype` below copies the finite type, as `ConjAct.instGroup` copied the group. Conjugation has no additive version, so neither have this theorem and those that use it.
+`ConjAct G` acts on `G` by conjugation, with the centre as its fixed points, by the previous section. Being `G` under a second name, it has the elements of `G`; the instance `ConjAct.instFintype` below hands over the finite type of `G`, as `ConjAct.instGroup` handed over its group. Conjugation has no additive version, so neither have this theorem and those that use it.
 
 An equation of sets proved by `Set.ext` rewrites inside the count of the set as a type. Core Lean has `Nat.pow_one`, and
 ```lean
@@ -710,7 +710,7 @@ theorem IsPGroup.dvd_card_center {p n : ℕ} {G : Type u} [Group G] [Fintype G] 
 
 /-!
 @problem exists_ne_one_mem_center
-@title A Group of Order pⁿ, n > 0, Has Central Elements Other Than One
+@title A Group of Order pⁿ, n > 0, Has Elements of the Centre Other Than One
 @concept class_equation
 
 @preamble
@@ -748,12 +748,12 @@ theorem IsPGroup.exists_ne_one_mem_center {p n : ℕ} {G : Type u} [Group G] [Fi
 @kind theorem
 @goal
 
-Every group of order p², for a prime p, is commutative. It is the goal of the subject, the first theorem about all groups of one order that counting with actions gives.
+Every group of order p², for a prime p, is commutative. A p-group other than the trivial group has a nontrivial centre, so for order p² the quotient by the centre has order 1 or p and is cyclic, and a group cyclic modulo its centre is commutative. It is the goal of the subject, where Lagrange's theorem, quotient groups and counting with actions meet.
 -/
 
 /--
 @problem exists_zpow_mem
-@title A Class Among the Powers of a Class Has a Power as Representative
+@title A Power of a Coset Has a Power as Representative
 @concept prime_square
 
 @preamble
@@ -770,7 +770,7 @@ Subgroup.mem_zpowers_iff :
     x ∈ Subgroup.zpowers g ↔ ∃ k : ℤ, g ^ k = x
 ```
 @description
-Show that if the class of `a` lies in the subgroup generated by the class of `g`, then `(g ^ k)⁻¹ * a ∈ N` for some integer `k`, under the name `QuotientGroup.exists_zpow_mem`, keeping the `@[to_additive]` line.
+Show that if the class of `a` lies in the subgroup generated by the class of `g`, then `(g ^ k)⁻¹ * a ∈ N` for some integer `k`, under the name `QuotientGroup.exists_zpow_mem`.
 -/
 @[to_additive QuotientAddGroup.exists_zsmul_mem]
 theorem QuotientGroup.exists_zpow_mem {G : Type u} [Group G] {N : Subgroup G} [N.Normal] {g a : G}
@@ -782,7 +782,7 @@ theorem QuotientGroup.exists_zpow_mem {G : Type u} [Group G] {N : Subgroup G} [N
 
 /--
 @problem mul_comm_of_mem_center
-@title Central Factors Keep Commuting Elements Commuting
+@title Factors in the Centre Keep Commuting Elements Commuting
 @concept prime_square
 
 @preamble
@@ -797,7 +797,7 @@ Subgroup.mem_center_iff :
     z ∈ Subgroup.center G ↔ ∀ g, g * z = z * g
 ```
 @description
-Show that when `x` and `y` commute and `z` and `w` lie in the centre, `x * z` and `y * w` commute, under the name `mul_comm_of_mem_center`, keeping the `@[to_additive]` line.
+Show that when `x` and `y` commute and `z` and `w` lie in the centre, `x * z` and `y * w` commute, under the name `mul_comm_of_mem_center`.
 -/
 @[to_additive add_comm_of_mem_center]
 theorem mul_comm_of_mem_center {G : Type u} [Group G] {x y z w : G} (hxy : x * y = y * x)
@@ -815,11 +815,11 @@ theorem mul_comm_of_mem_center {G : Type u} [Group G] {x y z w : G} (hxy : x * y
 @concept prime_square
 
 @preamble
-A group is commutative when its centre is the whole group; a weaker test looks at the quotient by the centre. `G ⧸ center G` is a group since the centre is normal, by an instance of the section on quotient groups, and `IsCyclic` of the section on subgroups asks for an element `g` with every element in `Subgroup.zpowers g`.
+A cyclic group is commutative, as the section on subgroups showed, since its elements are powers of one generator; here the generator need only generate modulo the centre. `G ⧸ center G` is a group since the centre is normal, by an instance of the section on quotient groups, and `IsCyclic` of the section on subgroups asks for an element `g` with every element in `Subgroup.zpowers g`.
 
-The context holds the theorems of the previous two problems; `QuotientGroup.mk_surjective` of the section on cosets; `zpow_add` of the section on powers; `mul_inv_cancel_left` of the second section; and core Lean's `Int.add_comm : a + b = b + a`.
+The context holds the theorems of the previous two problems; `QuotientGroup.mk_surjective` of the section on cosets; `zpow_add` of the section on powers; `mul_inv_cancel_left` of the second section; and core Lean's `Int.add_comm (a b : ℤ) : a + b = b + a`.
 @description
-Show that a group whose quotient by its centre is cyclic is commutative, under the name `mul_comm_of_isCyclic_quotient_center`, keeping the `@[to_additive]` line.
+Show that a group whose quotient by its centre is cyclic is commutative, under the name `mul_comm_of_isCyclic_quotient_center`.
 -/
 @[to_additive add_comm_of_isAddCyclic_quotient_center]
 theorem mul_comm_of_isCyclic_quotient_center {G : Type u} [Group G]

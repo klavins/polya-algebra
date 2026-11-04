@@ -23,7 +23,7 @@ set_option linter.translateGenerateName false
 @title Subgroups
 @kind definition
 
-A subgroup is a subset of a group that is a group under the same operation: it contains the neutral element, and the product and the inverse of any of its elements. Centres and the subgroup an element generates are the first examples.
+A subgroup is a subset of a group that is a group under the same operation: it contains the neutral element, and the product and the inverse of any of its elements. The subject studies a group through its subgroups, whose numbers of elements Lagrange's theorem ties to the order of the group; centres and the subgroup an element generates are the first examples.
 -/
 
 /-!
@@ -134,7 +134,7 @@ attribute [to_additive existing AddSubgroup.instMembership] Subgroup.instMembers
 @preamble
 The rotations of the `n`-gon are a subgroup of Dₙ: the trivial rotation `r 0` is `1`, two rotations compose to a rotation, `r i * r j = r (i + j)`, and the inverse of a rotation is a rotation, `(r i)⁻¹ = r (-i)`. A reflection is not a rotation, since two constructors of an inductive type never agree, as in the previous section.
 
-As a set the rotations are the range of the constructor `r`, `Set.range r`, as the first section met ranges. A subgroup is built with `where`, the carrier first and then the three proofs, each a statement about members of the carrier. In a tactic proof of such a field, `intro` names the implicit elements too, while a `fun` names only the hypotheses.
+As a set the rotations are the range of the constructor `r`, `Set.range r`, as the first section met ranges. A subgroup has four fields, the carrier and three proofs, each a statement about members of the carrier. In a tactic proof of such a field, `intro` names the implicit elements too, while a `fun` names only the hypotheses.
 
 The context holds the three conditions of a subgroup `H` restated through `∈ H`, as `H.one_mem`, `H.mul_mem ha hb` and `H.inv_mem ha`, with their additive versions `AddSubgroup.zero_mem`, `AddSubgroup.add_mem` and `AddSubgroup.neg_mem`.
 @description
@@ -199,7 +199,7 @@ theorem Int.dvd_neg {a b : ℤ} : a ∣ -b ↔ a ∣ b
 ```
 `2ℤ` is the subgroup of even integers, and `1ℤ` is everything.
 @description
-Define `intMultiples n`, the additive subgroup `nℤ` of `ℤ` with carrier `{x | n ∣ x}`, and prove `mem_intMultiples`, that membership in it is divisibility by `n`; it holds by definition.
+Define `intMultiples n`, the additive subgroup `nℤ` of `ℤ` with carrier `{x | n ∣ x}`, and prove `mem_intMultiples`, that membership in it is divisibility by `n`; it holds by definition, and an `↔` that holds by definition is proved by `Iff.rfl`, as an equation is by `rfl`.
 -/
 
 def intMultiples (n : ℤ) : AddSubgroup ℤ where
@@ -620,9 +620,9 @@ theorem int_center : AddSubgroup.center ℤ = ⊤ :=
 @concept centre
 
 @preamble
-In D₃, the triangle, nothing but `1` commutes with every symmetry: its centre is `⊥`. In D₄, the square, the half turn `r 2` commutes with everything, since turning the square halfway round and then reflecting it is reflecting it and then turning it halfway round. Nothing else does but `1`: the centre is `{1, r 2}`, that is, `r 0` and `r 2`.
+In D₃, the triangle, nothing but `1` commutes with every symmetry: its centre is `⊥`. In D₄, the square, the rotation `r 2` through half a turn commutes with everything, since turning the square halfway round and then reflecting it is reflecting it and then turning it halfway round. Nothing else does but `1`: the centre is `{1, r 2}`, that is, `r 0` and `r 2`.
 
-The first two statements below are about finitely many elements, but `decide` needs the memberships written out as what they say first. The context holds `Subgroup.ext`, `Subgroup.mem_center_iff`, `Subgroup.mem_bot`, `Subgroup.center_eq_top_iff` and `d4_not_comm`.
+The first two statements below are about finitely many elements. `decide` refuses a goal about a variable that `intro` named, and cannot see inside `Subgroup.center`; `simp only` with the membership equations rewrites them under the `∀`, where `rw` cannot reach, and leaves a statement `decide` checks. The context holds `Subgroup.ext`, `Subgroup.mem_center_iff`, `Subgroup.mem_bot`, `Subgroup.center_eq_top_iff` and `d4_not_comm`.
 @description
 Show that the centre of `DihedralGroup 3` is `⊥`; that `x` is in the centre of `DihedralGroup 4` exactly when `x = r 0` or `x = r 2`; and that the centre of `DihedralGroup 4` is not `⊤`.
 -/
@@ -659,12 +659,12 @@ The intersection of two subgroups is a subgroup, and so is the intersection of a
 @concept intersections
 
 @preamble
-Two subgroups `H` and `K` meet in a subgroup: `1` is in both, a product of two elements of both is in both, and so is an inverse. We write the intersection `H ⊓ K` (typed `\glb`), for `min H K`, through the class
+Two subgroups `H` and `K` meet, that is, intersect, in a subgroup: `1` is in both, a product of two elements of both is in both, and so is an inverse. We write the intersection `H ⊓ K` (typed `\glb`), for `min H K`, through the class
 ```lean
 class Min (α : Type u) where
   min : α → α → α
 ```
-Its carrier is `H.carrier ∩ K.carrier`. The halves of `ha : x ∈ H ⊓ K` read `x ∈ H.carrier` and `x ∈ K.carrier`, and `exact` accepts them as proofs of `x ∈ H` and `x ∈ K`. It is the greatest subgroup below both, which we prove as `Subgroup.inf_le_left`, `Subgroup.inf_le_right` and `Subgroup.le_inf`. `⊓` works for additive subgroups as well. In the integers the multiples of both `2` and `3` are the multiples of `6`. The context holds `mem_intMultiples`, `AddSubgroup.ext`, and `AddSubgroup.mem_inf`, the additive version of `Subgroup.mem_inf`.
+Its carrier is `H.carrier ∩ K.carrier`. The halves of `ha : x ∈ H ⊓ K` read `x ∈ H.carrier` and `x ∈ K.carrier`, and `exact` accepts them as proofs of `x ∈ H` and `x ∈ K`. It is the greatest subgroup below both, which we prove as `Subgroup.inf_le_left`, `Subgroup.inf_le_right` and `Subgroup.le_inf`. `⊓` works for additive subgroups as well. The context holds `mem_intMultiples`, `AddSubgroup.ext`, and `AddSubgroup.mem_inf`, the additive version of `Subgroup.mem_inf`.
 @description
 Supply the instance `Min (Subgroup G)`, and prove `Subgroup.mem_inf`, that `x ∈ H ⊓ K` exactly when `x ∈ H` and `x ∈ K`, which holds by definition. Show that `H ⊓ K` lies below `H` and below `K`, and above every subgroup that lies below both, and that `2ℤ ⊓ 3ℤ = 6ℤ`. `omega`, which decides divisibility by a numeral, may be useful.
 -/
@@ -714,7 +714,7 @@ theorem intMultiples_two_inf_three : intMultiples 2 ⊓ intMultiples 3 = intMult
 @concept intersections
 
 @preamble
-The intersection of any set `S` of subgroups, not only of two, is a subgroup: an element of the intersection lies in every `H ∈ S`. We write it `sInf S`, the greatest lower bound of a set, through the class
+The intersection of any set `S` of subgroups, not only of two, is a subgroup: an element of the intersection lies in every `H ∈ S`. We write it `sInf S` through the class
 ```lean
 class InfSet (α : Type u) where
   sInf : Set α → α
@@ -908,7 +908,7 @@ theorem Subgroup.zpowers_eq_closure {G : Type u} [Group G] (g : G) :
 @concept generated_subgroups
 
 @preamble
-A group is *cyclic* when a single element generates it: some `g` with every `x` in `zpowers g`. We write `IsCyclic G`, and its additive version is `IsAddCyclic A`. A cyclic group is commutative, since any two of its elements are powers of the one generator. `IsCyclic G` is a proposition with a name, a `def` into `Prop` as `IsOfFinOrder` was, and `obtain ⟨g, hg⟩ := h` opens a hypothesis `h : IsCyclic G`. Mathlib makes `IsCyclic` a class; here it is a definition. The context holds `zpow_add`, `Subgroup.mem_zpowers_iff` and core's `Int.add_comm`.
+A group is *cyclic* when a single element generates it: some `g` with every `x` in `zpowers g`. We write `IsCyclic G`, and its additive version is `IsAddCyclic A`. A cyclic group is commutative, since any two of its elements are powers of the one generator. `IsCyclic G` is a proposition with a name, a `def` into `Prop` as `IsOfFinOrder` was, and `obtain ⟨g, hg⟩ := h` opens a hypothesis `h : IsCyclic G`. Mathlib makes `IsCyclic` a class; here it is a definition. The context holds `zpow_add`, `Subgroup.mem_zpowers_iff` and core Lean's `Int.add_comm`.
 @description
 Define `IsCyclic G` as
 ```lean
@@ -948,7 +948,7 @@ In the integers an integer multiple is a product, `k • n = k * n` for all inte
 (-↑k - 1) • n = (-↑k) • n + -n = -↑k * n + -n
   = -↑k * n - 1 * n = (-↑k - 1) * n
 ```
-The context holds `zero_zsmul`, `add_one_zsmul`, `sub_one_zsmul`, and core Lean's laws of `ℤ`, among them `Int.add_mul`, `Int.sub_mul` and `Int.sub_eq_add_neg`.
+The context holds `zero_zsmul`, `add_one_zsmul`, `sub_one_zsmul`, and core Lean's `Int.zero_mul`, `Int.one_mul`, `Int.add_mul`, `Int.sub_mul` and `Int.sub_eq_add_neg`.
 @description
 Show that `k • n = k * n` for all integers `k` and `n`.
 -/
@@ -964,7 +964,7 @@ theorem int_zsmul_eq_mul (k n : ℤ) : k • n = k * n := by
 @concept generated_subgroups
 
 @preamble
-Since a multiple in the integers is a product, the multiples of `n` in the group's sense are its multiples in the everyday sense. So `zmultiples n` is `intMultiples n`, the subgroup `nℤ` of the first concept of this section, and the subgroups `nℤ` are the cyclic subgroups of the integers. The integers themselves are cyclic, `IsAddCyclic ℤ`. The context holds `int_zsmul_eq_mul`, `AddSubgroup.mem_zmultiples_iff`, `AddSubgroup.ext`, `mem_intMultiples`, and core's `Int.mul_comm` and `Int.one_dvd`.
+Since a multiple in the integers is a product, the multiples of `n` in the group's sense are its multiples in the everyday sense. So `zmultiples n` is `intMultiples n`, the subgroup `nℤ` of the first concept of this section, and the subgroups `nℤ` are the subgroups of the integers generated by one element. The integers themselves are cyclic, `IsAddCyclic ℤ`. The context holds `int_zsmul_eq_mul`, `AddSubgroup.mem_zmultiples_iff`, `AddSubgroup.ext`, `mem_intMultiples`, and core Lean's `Int.mul_comm` and `Int.one_dvd`.
 @description
 Show that in `ℤ` the membership `x ∈ zmultiples n` is `n ∣ x`, that `zmultiples n = intMultiples n`, and that `ℤ` is cyclic.
 -/

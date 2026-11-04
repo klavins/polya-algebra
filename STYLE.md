@@ -263,8 +263,10 @@ sections do the same for their first identity of a new kind (cosets, homomorphis
 A problem's context holds every declaration its reference depends on. When the reference uses a
 theorem of an earlier section, the preamble or the description names it as available and says
 where it comes from and what it says: "The context holds `mod_add_mod_eq_add_mod`, a theorem of
-this subject's first section, which says …". Say where by position ("the first section", "the
-previous section"), never by a title that sounds like a library. Naming the fact is not a proof
+this subject's first section, which says …". Say where in one of three ways: "the first section"
+(Prerequisites) and "the second section" (Groups); "the previous section" for the one
+immediately before; and "the section on X" for every other ("the section on examples", never
+"the third section"); never by a title that sounds like a library. Naming the fact is not a proof
 route: say that it is there and what it says, not where in the proof it goes. A helper list
 that omits a needed context fact is worse than no list. Never name in prose a declaration the
 context does not hold as if the student could use it.
@@ -1068,6 +1070,40 @@ then re-read by a fresh reviewer. What it settled:
 - **A Lean claim is stated as narrowly as it is true**: "`rw` cannot rewrite inside
   `fun a => …`" is false (`rw [Finset.insert_eq]` does); what `rw` cannot reach is a term that
   mentions the bound variable.
+
+## Learned from the whole-subject passes (2026-11-04)
+
+Group Theory read whole, after every section had passed its own reviews: the checks, a
+terminology survey, a pass over every mention of Mathlib and core Lean, blind solvers (Sonnet and
+Haiku) over all 281 problems in order carrying a notebook forward, and an editor over the whole.
+Every solver passed every problem; what they found was friction a section review cannot see.
+
+- **The starting code's form is said where the answer's differs.** A structure value is written
+  with `where`, which takes the place of the starting code's `:=`: `:= where` is a parse error,
+  and solvers hit it in nine sections because eleven problems explained `where` and none said
+  the `:=` goes. Say it at the first `def` and the first `instance`, then never again.
+- **A term the prose leans on is defined once, in the problem that first uses it**, and the
+  sweep for one is by grep over the whole subject: "context" (197 problems), "representative",
+  "quotient map", "cyclic subgroup", "direct product", "bijection" were each used before the
+  problem that said what they are.
+- **One word, one sense, across sections.** "Equivalence" is `≃` only (an `↔` is "an `↔`"; an
+  equivalence relation is called so); "kernel" is the subgroup of a homomorphism, never the
+  relation `f a = f b`; "identity" is the identity map or an equation, never the neutral element;
+  "order" is of a group or an element, and `≤` on subgroups is "the relation `≤`"; "coset"
+  alone means left coset; a count is "the number of elements", "order" only for a group.
+- **A section's opening says why the subject turns to it now**, in its concept description or
+  its first preamble; and the goal's route is said before its last concept, in the goal concept
+  and the subject description.
+- **A recurring clause fades like any help.** "keeping the `@[to_additive]` line" in thirty
+  descriptions of §11–§12, "membership in `{x | p x}` is `p x` by definition" in eleven, the
+  `decide`-over-a-group recipe told three ways: once in full, then a name, then nothing.
+- **Credit the library by the toolchain's source**: `Function.Injective`, `Surjective`,
+  `LeftInverse`, `RightInverse`, `Classical.not_forall` and `Classical.not_imp` are core Lean's
+  (`Init/`), `Function.Bijective` is Mathlib's. Look it up; do not infer it from the import.
+- **A context list names what the problem's reference uses.** "The laws of the second section"
+  named nothing in eight problems, and both solvers failed on the adjacent cancellations, which
+  look alike: show the four once (`left_coset_eq_iff`), then name them, and say
+  that a context holds only those its proof needs.
 
 ## Checks over a bundle
 

@@ -36,11 +36,11 @@ The *left coset* of `H` by `a` is the set of products of `a` with the elements o
 ```lean
 {x | ∃ h ∈ H, a * h = x}
 ```
-Textbooks write it `aH`.
+Textbooks write it `aH`. From here on *coset* means left coset, and right cosets are always called so.
 
 We write `leftCoset a H`, a set of elements of `G`; Mathlib writes it `a • (H : Set G)`. Its additive version `leftAddCoset a H` is the set `a + H` of sums. A membership `x ∈ leftCoset a H` is, by definition, the statement that some `h ∈ H` has `a * h = x`.
 @description
-Define `leftCoset a H` as the set above, keeping the `@[to_additive]` line, and show that `a ∈ leftCoset a H`, under the name `mem_own_leftCoset`.
+Define `leftCoset a H` as the set above, and show that `a ∈ leftCoset a H`, under the name `mem_own_leftCoset`.
 -/
 
 @[to_additive leftAddCoset]
@@ -73,7 +73,7 @@ A test for membership in a coset avoids the existence statement: `x` lies in `aH
 
 The *right coset* `Ha` is the set of products `h * a`, and its test multiplies by `a⁻¹` on the right.
 @description
-Define `rightCoset H a`, the set of products `h * a` with `h ∈ H`, keeping the `@[to_additive]` line. Show that `x ∈ rightCoset H a` exactly when `x * a⁻¹ ∈ H`, under the name `mem_rightCoset_iff`. The context holds the right cancellations of the second section, `mul_inv_cancel_right` and `inv_mul_cancel_right`.
+Define `rightCoset H a`, the set of products `h * a` with `h ∈ H`. Show that `x ∈ rightCoset H a` exactly when `x * a⁻¹ ∈ H`, under the name `mem_rightCoset_iff`. The context holds the right cancellations of the second section, `mul_inv_cancel_right` and `inv_mul_cancel_right`.
 -/
 
 /-- @given -/
@@ -126,7 +126,14 @@ A coset has many names: `aH = bH` exactly when `a⁻¹ * b ∈ H`. One direction
 ```lean
 b⁻¹ * x = (a⁻¹ * b)⁻¹ * (a⁻¹ * x)
 ```
-and the other on an identity of the same kind. The context holds `mem_leftCoset_iff` and `mem_own_leftCoset` of this section, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, and the laws of the second section.
+and the other on an identity of the same kind. The second section proved four cancellations of adjacent factors, which look alike; a problem's context holds those its proof needs:
+```lean
+theorem inv_mul_cancel_left (a b : G) : a⁻¹ * (a * b) = b
+theorem mul_inv_cancel_left (a b : G) : a * (a⁻¹ * b) = b
+theorem mul_inv_cancel_right (a b : G) : a * b * b⁻¹ = a
+theorem inv_mul_cancel_right (a b : G) : a * b⁻¹ * b = a
+```
+The context holds `mem_leftCoset_iff` and `mem_own_leftCoset` of this section; Mathlib's `Set.ext`, met in the first section; `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups; and `inv_inv`, `mul_assoc`, `mul_inv_cancel_left` and `mul_inv_rev` of the second section.
 @description
 Show that the left cosets of `H` by `a` and by `b` are equal exactly when `a⁻¹ * b ∈ H`, under the name `leftCoset_eq_iff`.
 -/
@@ -157,7 +164,7 @@ theorem leftCoset_eq_iff {G : Type u} [Group G] {a b : G} {H : Subgroup G} :
 @concept cosets
 
 @preamble
-The context holds `leftCoset_eq_iff` and `mem_leftCoset_iff`, and the laws of the previous problem.
+The context holds `leftCoset_eq_iff` and `mem_leftCoset_iff`, and `inv_inv`, `mul_assoc`, `mul_inv_cancel_left` and `mul_inv_rev` of the second section.
 @description
 Show that two left cosets of `H` with a common element `x` are equal, under the name `leftCoset_eq_of_mem`.
 -/
@@ -181,7 +188,7 @@ The subgroup `2ℤ` of the integers has two cosets: the even integers and the od
 ```lean
 theorem mem_leftAddCoset_iff : x ∈ leftAddCoset a H ↔ -a + x ∈ H
 ```
-A membership in `{x | x % 2 = 1}` is, by definition, the property `x % 2 = 1`, and `change` restates a goal as that property. On `ℤ`, `%` is `Int.emod`, whose remainder is never negative when the divisor is not `0`: `x % 2` is `0` or `1`, and `-3 % 2 = 1`. `omega` knows it. The context holds `mem_leftAddCoset_iff`, `leftAddCoset_eq_iff` and `mem_intMultiples`.
+On `ℤ`, `%` is `Int.emod`, whose remainder is never negative when the divisor is not `0`: `x % 2` is `0` or `1`, and `-3 % 2 = 1`. `omega` knows it. The context holds `mem_leftAddCoset_iff`, `leftAddCoset_eq_iff` and `mem_intMultiples`.
 @description
 Show that the coset `1 + 2ℤ` is the set of integers with remainder `1` on division by `2`, and that `3 + 2ℤ = 1 + 2ℤ`.
 -/
@@ -204,7 +211,7 @@ theorem leftAddCoset_three_eq_one : leftAddCoset 3 (intMultiples 2) = leftAddCos
 @concept cosets
 
 @preamble
-In a commutative group `aH = Ha`, but not in general. In D₃ the identity `r 0` and the reflection `sr 0` form a subgroup, `d3FixZero`, with carrier `{r 0, sr 0}`. The previous section's `toPerm3` sends `sr 0` to the reflection through the vertex `0`, hence the name. The starting code checks its closure conditions by `decide`. `mem_d3FixZero` says that `x ∈ d3FixZero` exactly when `x = r 0 ∨ x = sr 0`.
+In a commutative group `aH = Ha`, but not in general. In D₃ the neutral element `r 0` and the reflection `sr 0` form a subgroup, `d3FixZero`, with carrier `{r 0, sr 0}`. The previous section's `toPerm3` sends `sr 0` to the reflection through the vertex `0`, hence the name. The starting code checks its closure conditions by `decide`. `mem_d3FixZero` says that `x ∈ d3FixZero` exactly when `x = r 0 ∨ x = sr 0`.
 
 Its left and right cosets by the rotation `r 1` both contain `r 1`, but they are not the same set. `decide` cannot test membership in a coset directly. A statement in which nothing else names D₃, such as `r 1 * sr 0 = sr 2`, needs the type written: `(r 1 : DihedralGroup 3)`.
 @description
@@ -248,9 +255,9 @@ Two elements lie in the same left coset of a subgroup exactly when the inverse o
 @concept coset_relation
 
 @preamble
-We make the relation `a⁻¹ * b ∈ H` a setoid, as the congruence `modSetoid n` was in the first section, and call it `QuotientGroup.leftRel H`, Mathlib's name. Its additive version `QuotientAddGroup.leftRel H` relates `a` and `b` when `-a + b ∈ H`. In the proof of `iseqv`, a goal stating the relation shows as the membership it is. The context holds `Subgroup.one_mem`, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, and the laws of the second section.
+We make the relation `a⁻¹ * b ∈ H` a setoid, as the congruence `modSetoid n` was in the first section, and call it `QuotientGroup.leftRel H`, Mathlib's name. Its additive version `QuotientAddGroup.leftRel H` relates `a` and `b` when `-a + b ∈ H`. In the proof of `iseqv`, a goal stating the relation shows as the membership it is. The context holds `Subgroup.one_mem`, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, and `inv_inv`, `inv_mul_cancel`, `mul_assoc`, `mul_inv_cancel_left` and `mul_inv_rev` of the second section.
 @description
-Define `QuotientGroup.leftRel H`, the setoid on `G` whose relation holds of `a` and `b` when `a⁻¹ * b ∈ H`, keeping the `@[to_additive]` line.
+Define `QuotientGroup.leftRel H`, the setoid on `G` whose relation holds of `a` and `b` when `a⁻¹ * b ∈ H`.
 -/
 
 @[to_additive QuotientAddGroup.leftRel]
@@ -306,7 +313,7 @@ theorem QuotientGroup.setOf_leftRel_eq_leftCoset {G : Type u} [Group G] {H : Sub
 @concept coset_relation
 
 @preamble
-Two integers lie in the same coset of `nℤ` exactly when they leave the same remainder on division by `n`, as the even and the odd integers did for `n = 2`. The coset relation of the additive subgroup `intMultiples n` holds of `a` and `b` when `n ∣ -a + b`, by definition, and `change` restates it so. The remainder `Int.emod` of the integers' cosets is never negative when `n ≠ 0`, and `a % 0` is `a`. Core Lean relates divisibility to it:
+Two integers lie in the same coset of `nℤ` exactly when they leave the same remainder on division by `n`, as the even and the odd integers did for `n = 2`. The coset relation of the additive subgroup `intMultiples n` holds of `a` and `b` when `n ∣ -a + b`. The remainder `Int.emod` of the integers' cosets is never negative when `n ≠ 0`, and `a % 0` is `a`. Core Lean relates divisibility to it:
 ```lean
 theorem Int.dvd_iff_emod_eq_zero {a b : ℤ} :
     a ∣ b ↔ b % a = 0
@@ -334,7 +341,7 @@ The left cosets of a subgroup, taken as the elements of a new type, form the cos
 
 /-!
 @problem quotient_group
-@title The Coset Space G ⧸ H
+@title The Quotient G ⧸ H
 @concept coset_space
 
 @preamble
@@ -345,7 +352,7 @@ class HasQuotient (A : outParam (Type u)) (B : Type v) where
 ```
 `outParam` lets Lean find `G` from `H`. The instance for subgroups sends each `H` to the type of its cosets. The class of `a` is the coset `aH` as one element of `G ⧸ H`; we write it `QuotientGroup.mk a`. For an additive subgroup the quotient is written `A ⧸ H` too, through the additive instance, and the class of `a` is `QuotientAddGroup.mk a`.
 @description
-Supply the instance `QuotientGroup.instHasQuotient`, which sends a subgroup `H` to the quotient of `G` by its coset relation, and define `QuotientGroup.mk a`, the class of `a` in `G ⧸ H`, keeping the `@[to_additive]` lines.
+Supply the instance `QuotientGroup.instHasQuotient`, which sends a subgroup `H` to the quotient of `G` by its coset relation, and define `QuotientGroup.mk a`, the class of `a` in `G ⧸ H`.
 -/
 
 @[to_additive QuotientAddGroup.instHasQuotient]
@@ -364,13 +371,13 @@ example {G : Type u} [Group G] (H : Subgroup G) (a : G) :
 
 /-!
 @problem quotient_group_eq
-@title Equal Cosets in the Coset Space
+@title Equal Cosets in the Quotient G ⧸ H
 @concept coset_space
 
 @preamble
 Two elements of `G ⧸ H` are equal exactly when their representatives are related: the classes of `a` and `b` are equal exactly when `a⁻¹ * b ∈ H`. And every element of `G ⧸ H` is the coset of some element of `G`. Both are laws of a quotient from the first section, since `QuotientGroup.mk a` is a class of the coset relation: `Quotient.sound`, `Quotient.exact` and `quotient_mk_surjective`.
 
-The coset of `a` is the coset of `1`, which is `H` itself, exactly when `a ∈ H`. The context holds `Subgroup.inv_mem` of the section on subgroups and the laws of the second section.
+The coset of `a` is the coset of `1`, which is `H` itself, exactly when `a ∈ H`. The context holds `Subgroup.inv_mem` of the section on subgroups and `inv_inv` and `mul_one` of the second section.
 @description
 Show that the classes of `a` and `b` in `G ⧸ H` are equal exactly when `a⁻¹ * b ∈ H`, under the name `QuotientGroup.eq`, and that every element of `G ⧸ H` is the class of an element of `G`, under the name `QuotientGroup.mk_surjective`. Then show that the class of `a` is the class of `1` exactly when `a ∈ H`, under the name `QuotientGroup.mk_eq_mk_one_iff`.
 -/
@@ -411,7 +418,7 @@ The number of left cosets of `H` is its *index*. When `G` is finite, so is `G �
 
 We define `H.index`, for `Subgroup.index H`, as the number of elements of `G ⧸ H`, for a finite group only; Mathlib's index counts with `Nat.card` and is defined for every group.
 @description
-Supply the instance `QuotientGroup.fintype H`, which makes `G ⧸ H` finite when `G` is finite, and define `Subgroup.index H`, the number of elements of `G ⧸ H`. Keep the `open Classical in` and `@[to_additive]` lines.
+Supply the instance `QuotientGroup.fintype H`, which makes `G ⧸ H` finite when `G` is finite, and define `Subgroup.index H`, the number of elements of `G ⧸ H`. Keep the `open Classical in` lines.
 -/
 
 open Classical in
@@ -444,7 +451,7 @@ theorem Fintype.card_of_bijective {f : α → β}
     (hf : Function.Bijective f) :
     Fintype.card α = Fintype.card β
 ```
-The context holds `QuotientGroup.eq` and `QuotientGroup.mk_surjective` of this section, `Subgroup.mem_bot` of the section on subgroups, and the laws of the second section.
+The context holds `QuotientGroup.eq` and `QuotientGroup.mk_surjective` of this section, `Subgroup.mem_bot` of the section on subgroups, and `mul_inv_cancel_left` and `mul_one` of the second section.
 @description
 Show that the index of the trivial subgroup is the order of `G`, under the name `Subgroup.index_bot`.
 -/
@@ -468,7 +475,7 @@ theorem Subgroup.index_bot {G : Type u} [Group G] [Fintype G] :
 @title Lagrange's Theorem
 @kind theorem
 
-In a finite group, the number of elements is the index of a subgroup times the number of elements of the subgroup. So the order of a subgroup divides the order of the group, which rules out subgroups of most sizes before any is looked for.
+In a finite group, the number of elements is the index of a subgroup times the number of elements of the subgroup. So the number of elements of a subgroup divides the order of the group, which rules out subgroups of most sizes before any is looked for.
 -/
 
 /-!
@@ -479,9 +486,9 @@ In a finite group, the number of elements is the index of a subgroup times the n
 @preamble
 Every left coset of `H` has as many elements as `H`: the function `h ↦ a * h` matches `H` with `aH`. So the cosets cut `G` into pieces of equal size, which is the heart of Lagrange's theorem.
 
-As an equivalence, the coset is the type of its members, a set used as a type as in the first section, whose elements are the pairs `⟨x, hx⟩`. Mathlib's name for the equivalence is `leftCosetEquivSubgroup`. The context holds `mem_leftCoset_iff` of this section, `Subtype.ext`, and the laws of the second section.
+As an equivalence, the coset is the type of its members, a set used as a type as in the first section, whose elements are the pairs `⟨x, hx⟩`. The context holds `mem_leftCoset_iff` of this section, core Lean's `Subtype.ext`, and `inv_mul_cancel_left` and `mul_inv_cancel_left` of the second section.
 @description
-Define `leftCosetEquivSubgroup a H`, the equivalence that sends a member `x` of the coset `aH`, as a type, to `a⁻¹ * x` in `H.carrier`, keeping the `@[to_additive]` line.
+Define `leftCosetEquivSubgroup a H`, the equivalence that sends a member `x` of the coset `aH`, as a type, to `a⁻¹ * x` in `H.carrier`.
 -/
 
 @[to_additive leftAddCosetEquivAddSubgroup]
@@ -531,7 +538,7 @@ Lagrange's theorem labels each element of `G` by its coset and by its place insi
 ```lean
 theorem Quotient.out_eq (q : Quotient s) : ⟦q.out⟧ = q
 ```
-For a coset `q = gH`, the representative `Quotient.out q` and `g` lie in the same coset, so they are related; and multiplying the representative by an element of `H` stays in `q`. The context holds `QuotientGroup.eq` of this section and the laws of the second section.
+For a coset `q = gH`, the representative `Quotient.out q` and `g` lie in the same coset, so they are related; and multiplying the representative by an element of `H` stays in `q`. The context holds `QuotientGroup.eq` of this section and `inv_mul_cancel_left` of the second section.
 @description
 Show that the class of the representative of `q` is `q`, under the name `QuotientGroup.out_eq'`; that `g` is related to the representative of its own class, under the name `QuotientGroup.inv_out_mul_mem`; and that the representative of `q` times an element of `H` lies in `q`, under the name `QuotientGroup.mk_out_mul`.
 -/
@@ -566,11 +573,11 @@ Each element `g` is labelled by a pair: its coset `q = gH`, and its place in the
 ```lean
 G ≃ (G ⧸ H) × H.carrier
 ```
-Mathlib's name for it is `Subgroup.groupEquivQuotientProdSubgroup`. `Quotient.out` chooses from every class at once, which is the axiom of choice, so the definition is `noncomputable`.
+Mathlib's name for it is `Subgroup.groupEquivQuotientProdSubgroup`. `Quotient.out` makes an arbitrary choice from each class, so the definition is `noncomputable`.
 
-Two pairs are equal when their components are, core Lean's `Prod.ext`, and two elements of `H.carrier` when their values are, core Lean's `Subtype.ext`. The second component of the pair the definition builds is, by definition, the place of `g` in its coset, and `change` writes that value out before a rewrite. The context holds `QuotientGroup.inv_out_mul_mem` and `QuotientGroup.mk_out_mul` of the previous problem and the laws of the second section.
+Two pairs are equal when their components are, core Lean's `Prod.ext`, and two elements of `H.carrier` when their values are, core Lean's `Subtype.ext`. The second component of the pair the definition builds is, by definition, the place of `g` in its coset, and `change` writes that value out before a rewrite. The context holds `QuotientGroup.inv_out_mul_mem` and `QuotientGroup.mk_out_mul` of the previous problem and `inv_mul_cancel_left` and `mul_inv_cancel_left` of the second section.
 @description
-Define `Subgroup.groupEquivQuotientProdSubgroup H`, sending `g` to the pair above, keeping the `@[to_additive]` line.
+Define `Subgroup.groupEquivQuotientProdSubgroup H`, sending `g` to the pair above.
 -/
 
 @[to_additive AddSubgroup.addGroupEquivQuotientProdAddSubgroup]
@@ -604,7 +611,7 @@ example {G : Type u} [Group G] (H : Subgroup G) (g : G) (q : G ⧸ H) (h : H.car
 @concept lagrange
 
 @preamble
-The labelling of the previous problem counts `G` as pairs of a coset and an element of `H`. The index is the number of elements of `G ⧸ H` by definition. Mathlib states the theorem with `Nat.card`, a count for every type, finite or not. Core Lean has
+The labelling of the previous problem counts `G` as pairs of a coset and an element of `H`. The index is the number of elements of `G ⧸ H` by definition, and the order of `H` is the order of the group `H.carrier`. Mathlib states the theorem with `Nat.card`, a count for every type, finite or not. Core Lean has
 ```lean
 theorem Nat.dvd_mul_left (a b : ℕ) : a ∣ b * a
 ```

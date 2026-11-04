@@ -111,7 +111,10 @@ theorem GroupHom.map_one (f : G →* H) : f.toFun 1 = 1 := by
 ```
 Here `f.map_mul` is the law `map_mul'` restated. For inverses, the uniqueness of inverses does the work: to show that an element is the inverse of `f a`, it is enough to multiply it by `f a`. The additive versions are `AddGroupHom.map_zero` and `AddGroupHom.map_neg`.
 @description
-Show that the value `f.toFun a⁻¹` at `a⁻¹` is `(f.toFun a)⁻¹`, for every homomorphism `f`, under the name `GroupHom.map_inv`. The context holds `GroupHom.map_one`, `GroupHom.map_mul`, `inv_eq_of_mul_eq_one_right` and `mul_inv_cancel`.
+Show that the value `f.toFun a⁻¹` at `a⁻¹` is `(f.toFun a)⁻¹`, for every homomorphism `f`, under the name `GroupHom.map_inv`. The context holds `GroupHom.map_one`, `GroupHom.map_mul` and `mul_inv_cancel`, and the uniqueness of inverses with the inverse on the left of its conclusion:
+```lean
+theorem inv_eq_of_mul_eq_one_right {a b : G} (h : a * b = 1) : a⁻¹ = b
+```
 -/
 
 /-- @given -/
@@ -167,13 +170,13 @@ theorem GroupHom.map_zpow {G : Type u} {H : Type v} [Group G] [Group H] (f : G �
 
 /-!
 @problem comp
-@title The Standard Homomorphisms
+@title Composites, the Identity and the Projection
 @concept homomorphisms
 
 @preamble
-Some homomorphisms exist for every group. Two homomorphisms `f : G →* H` and `g : H →* K` compose to `g.comp f : G →* K`, which applies `f` first, as the composite `g ∘ f` of two functions does: `f` carries a product to a product, and `g` carries that one on. The identity function of `G` is a homomorphism, `GroupHom.id G`. The projection of a product onto its first factor is one too, `GroupHom.fst G H : G × H →* G`, since the first component of a product of pairs is the product of the first components, which holds by definition. A definition whose value is a structure is written with `where`, one line per field, as the subgroups were.
+Some homomorphisms exist for every group. Two homomorphisms `f : G →* H` and `g : H →* K` compose to `g.comp f : G →* K`, which applies `f` first, as the composite `g ∘ f` of two functions does: `f` carries a product to a product, and `g` carries that one on. The identity function of `G` is a homomorphism, `GroupHom.id G`. The projection of a product onto its first factor is one too, `GroupHom.fst G H : G × H →* G`, since the first component of a product of pairs is the product of the first components, which holds by definition.
 @description
-Define `GroupHom.comp g f`, `GroupHom.id G` and `GroupHom.fst G H`, keeping the `@[to_additive]` lines.
+Define `GroupHom.comp g f`, `GroupHom.id G` and `GroupHom.fst G H`.
 -/
 
 @[to_additive AddGroupHom.comp]
@@ -301,7 +304,7 @@ An isomorphism is a homomorphism that is a bijection, and its inverse is a homom
 @concept isomorphisms
 
 @preamble
-An *isomorphism* from `G` to `H` is a homomorphism that is a bijection. It matches the elements of `G` with those of `H` so that the two tables agree, as the matching of `ZMod 2` with `Bool` did in the third section.
+An *isomorphism* from `G` to `H` is a homomorphism that is a bijection. It matches the elements of `G` with those of `H` so that the two tables agree, as the matching of `ZMod 2` with `Bool` did in the section on examples.
 
 The first section packaged a bijection with its inverse as an equivalence `G ≃ H`, with the fields `toFun`, `invFun`, `left_inv` and `right_inv`. An isomorphism is an equivalence with one more field, `map_mul'`, as a commutative group was a group with one more law. So the structure extends the structure of equivalences:
 ```lean
@@ -375,7 +378,7 @@ attribute [to_additive existing AddGroupIso.toEquiv] GroupIso.toEquiv
 @concept isomorphisms
 
 @preamble
-The first isomorphism is already half built. The third section matched `ZMod 2` with `Bool` by the equivalence `zmodTwoEquivBool`, which sends `0` to `false` and `1` to `true`, and proved that it carries the addition of the one to the addition of the other, as `zmodTwoEquivBool_add`. Together the two are an isomorphism `ZMod 2 ≃+ Bool`: the two groups of order two are one group under two sets of names. Its inverse function `invFun` renames the Booleans back as residues.
+The first isomorphism is already half built. The section on examples matched `ZMod 2` with `Bool` by the equivalence `zmodTwoEquivBool`, which sends `0` to `false` and `1` to `true`, and proved that it carries the addition of the one to the addition of the other, as `zmodTwoEquivBool_add`. Together the two are an isomorphism `ZMod 2 ≃+ Bool`: the two groups of order two are one group under two sets of names. Its inverse function `invFun` renames the Booleans back as residues.
 
 A value of a structure that extends another is written with `where` and a line for the structure it extends, `toEquiv := …`, beside the new field.
 @description
@@ -408,7 +411,7 @@ e.right_inv y : e.toFun (e.invFun y) = y
 ```
 and `rw` uses them as equations. The additive versions are `AddGroupIso.toAddGroupHom` and `AddGroupIso.symm`.
 @description
-Define `GroupIso.toGroupHom e` and `GroupIso.symm e`, keeping the `@[to_additive]` lines.
+Define `GroupIso.toGroupHom e` and `GroupIso.symm e`.
 -/
 
 @[to_additive AddGroupIso.toAddGroupHom]
@@ -463,7 +466,7 @@ theorem GroupIso.mul_comm {G : Type u} {H : Type v} [Group G] [Group H] (e : G �
 @concept isomorphisms
 
 @preamble
-`ZMod 2 × ZMod 2` and `ZMod 4` both have four elements, but they are not isomorphic. In the first, every element added to itself gives `0`. In the second, `1 + 1 = 2`. An isomorphism would carry the first property to the second group. The first group is isomorphic to the Klein four-group of the third section, written additively.
+`ZMod 2 × ZMod 2` and `ZMod 4` both have four elements, but they are not isomorphic. In the first, every element added to itself gives `0`. In the second, `1 + 1 = 2`. An isomorphism would carry the first property to the second group. The first group is isomorphic to the Klein four-group of the section on examples, written additively.
 
 We write that no isomorphism exists as
 ```lean
@@ -645,7 +648,7 @@ theorem GroupHom.ker_eq_bot_iff {G : Type u} {H : Type v} [Group G] [Group H] (f
 @preamble
 The reduction `zmodSixToTwo` sends a residue modulo `6` to `0` exactly when it is even, so its kernel is the subgroup `zmodSixEvens` of the previous section. The orientation of Dₙ sends a symmetry to `1` exactly when it keeps the orientation, so its kernel is the subgroup of rotations. The image of `zmodSixToTwo` is the whole of `ZMod 2`, since `1` is the residue of `1`.
 
-A statement about membership in the kernel of a map of `ZMod 6` is a statement about finitely many residues once the memberships are written out as what they say, as for the centres of D₃ and D₄: `decide` refuses a goal about a variable named by `intro`, and `simp only` rewrites the memberships under the `∀` instead. The context holds `AddGroupHom.range_eq_top`, `AddSubgroup.ext`, `Subgroup.ext`, `AddGroupHom.mem_ker`, `GroupHom.mem_ker`, `mem_zmodSixEvens`, `r_mem_rotations`, `sr_not_mem_rotations` and `swap2_ne_one`.
+A statement about membership in the kernel of a map of `ZMod 6` is a statement about finitely many residues once the memberships are written out as what they say, as for the centres of D₃ and D₄. The context holds `AddGroupHom.range_eq_top`, `AddSubgroup.ext`, `Subgroup.ext`, `AddGroupHom.mem_ker`, `GroupHom.mem_ker`, `mem_zmodSixEvens`, `r_mem_rotations`, `sr_not_mem_rotations` and `swap2_ne_one`.
 @description
 Show that the kernel of `zmodSixToTwo` is `zmodSixEvens` and its image is `⊤`, and that the kernel of `DihedralGroup.orientation n` is `DihedralGroup.rotations n`.
 -/
@@ -691,7 +694,7 @@ An integer reduces to `0` modulo `n` exactly when `n` divides it. For a natural 
 theorem Nat.dvd_of_mod_eq_zero {m n : ℕ} (h : n % m = 0) : m ∣ n
 theorem Nat.mod_eq_zero_of_dvd {m n : ℕ} (h : m ∣ n) : n % m = 0
 ```
-The context holds `AddGroupHom.mem_ker`, `ZMod.val_zero` and `Fin.ext`.
+The context holds `AddGroupHom.mem_ker`, `ZMod.val_zero`, `Fin.ext`, and core Lean's `Nat.zero_mod`, met in the section on examples.
 @description
 Show that `(m : ℤ) ∈ (intToZMod n).ker` exactly when `n ∣ m`, for every natural number `m`.
 -/
@@ -723,8 +726,9 @@ The kernel of reduction modulo `n` is `nℤ`, the subgroup `intMultiples n` of t
 theorem Int.negSucc_eq (n : ℕ) : Int.negSucc n = -(↑n + 1)
 theorem Int.natCast_add_one (n : ℕ) : ((n + 1 : ℕ) : ℤ) = ↑n + 1
 theorem Int.natCast_dvd_natCast {m n : ℕ} : (↑m ∣ ↑n) ↔ m ∣ n
+theorem Int.ofNat_eq_natCast (n : ℕ) : Int.ofNat n = ↑n
 ```
-and `Int.ofNat_eq_natCast : Int.ofNat m = ↑m`. The context holds `intToZMod_natCast_mem_ker`, `mem_intMultiples`, `AddSubgroup.ext`, `Subgroup.inv_mem`, `neg_neg` and `inv_inv`.
+The context holds `intToZMod_natCast_mem_ker`, `mem_intMultiples`, `AddSubgroup.ext`, `Subgroup.inv_mem`, `neg_neg` and `inv_inv`.
 @description
 Show that `x⁻¹ ∈ H` exactly when `x ∈ H`, for a subgroup `H`, under the name `Subgroup.inv_mem_iff`, and that the kernel of `intToZMod n` is `intMultiples n`.
 -/
@@ -759,7 +763,7 @@ theorem ker_intToZMod (n : ℕ) [NeZero n] : (intToZMod n).ker = intMultiples n 
 @preamble
 A symmetry of the triangle moves its vertices `0`, `1` and `2`. The rotation `r i` turns them `i` steps, `rot3 ^ i.val`; the reflection `sr i` turns them `i` steps and then reflects through the vertex `0`, `reflect3 * rot3 ^ i.val`, with the right factor acting first. This is a homomorphism from D₃ to the symmetric group on three points, and its law is a statement about the thirty-six pairs of symmetries.
 
-Its kernel is `⊥`: different symmetries move the vertices differently. So D₃ is isomorphic to its image. The image has six elements, and so has the symmetric group on three points, `3! = 6`, a count this subject does not make; the image is therefore the whole of it, and D₃ is S₃ under other names. On a finite type, `decide` checks that a function is injective.
+Its kernel is `⊥`: different symmetries move the vertices differently. So D₃ is isomorphic to its image. The image has six elements, and so has the symmetric group on three points, `3 * 2 * 1 = 6`, a count this subject does not make; the image is therefore the whole of it, and D₃ is S₃ under other names. On a finite type, `decide` checks that a function is injective.
 @description
 Define the homomorphism `DihedralGroup.toPerm3` from D₃ to the permutations of `Fin 3`, sending `r i` to `rot3 ^ i.val` and `sr i` to `reflect3 * rot3 ^ i.val`, and show that its kernel is `⊥`. The context holds `GroupHom.ker_eq_bot_iff`.
 -/
@@ -803,7 +807,7 @@ theorem inv_mul_cancel_left (a b : G) : a⁻¹ * (a * b) = b
 theorem mul_inv_cancel_left (a b : G) : a * (a⁻¹ * b) = b
 ```
 @description
-Define `Equiv.mulLeft g`, keeping the `@[to_additive]` line, and show that `Equiv.addLeft (1 : ZMod 3) = rot3`.
+Define `Equiv.mulLeft g`, and show that `Equiv.addLeft (1 : ZMod 3) = rot3`.
 -/
 
 @[to_additive Equiv.addLeft]

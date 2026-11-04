@@ -69,9 +69,9 @@ theorem op_e_of_left_axioms {G : Type u} (op : G → G → G) (e : G) (inv : G �
 @concept one_sided_axioms
 
 @preamble
-With the two missing laws proved, the three left laws determine a group: a construction takes the data and the three laws, as plain arguments as in the previous problem, and returns the instance. It is an `abbrev`, as Lean expects of a definition whose value is an instance of a class. A definition that returns an instance of a class is built like an instance, with `where` and a line per field. The context holds the previous problem's two theorems. The construction comes with its additive version, `AddGroup.ofLeftAxioms`.
+With the two missing laws proved, the three left laws determine a group: a construction takes the data and the three laws, as plain arguments as in the previous problem, and returns the instance. It is an `abbrev`, as Lean expects of a definition whose value is an instance of a class. The context holds the previous problem's two theorems. The construction comes with its additive version, `AddGroup.ofLeftAxioms`.
 @description
-Define `Group.ofLeftAxioms`, keeping the `@[to_additive]` line, which builds the instance `Group G` from `op`, `e`, `inv` and the three left laws.
+Define `Group.ofLeftAxioms`, which builds the instance `Group G` from `op`, `e`, `inv` and the three left laws.
 -/
 
 @[to_additive AddGroup.ofLeftAxioms]
@@ -136,7 +136,7 @@ A subset is a subgroup as soon as it is nonempty and contains, with any two of i
 @concept subgroup_criterion
 
 @preamble
-A nonempty subset `s` of `G` that contains `a * b⁻¹` whenever it contains `a` and `b` is a subgroup. We name the construction `Subgroup.ofDiv`, reading `a * b⁻¹` as the quotient of `a` by `b`, and its additive version is `AddSubgroup.ofSub`. The context holds `inv_inv`, `mul_inv_cancel` and `one_mul` of the second section.
+A nonempty subset `s` of `G` that contains `a * b⁻¹` whenever it contains `a` and `b` is a subgroup. We name the construction `Subgroup.ofDiv`, reading `a * b⁻¹` as `a` divided by `b`, and its additive version is `AddSubgroup.ofSub`. The context holds `inv_inv`, `mul_inv_cancel` and `one_mul` of the second section.
 @description
 Show from the two hypotheses that `1 ∈ s`, and that `a⁻¹ ∈ s` for every `a ∈ s`; then define `Subgroup.ofDiv s hne hs`, the subgroup with carrier `s`.
 -/
@@ -179,7 +179,7 @@ example {G : Type u} [Group G] (s : Set G) (hne : ∃ x, x ∈ s)
 @concept subgroup_criterion
 
 @preamble
-What the criterion saves shows on the multiples of `3` in the integers, the subgroup `intMultiples 3` of the previous section, built from three closure conditions. The additive version `AddSubgroup.ofSub` asks for one element of the set and for the one condition, which written additively reads `a + -b ∈ s`: there is no subtraction in the condition, only a sum with a negative. Core Lean provides `Int.dvd_zero`, `Int.dvd_add` and `Int.dvd_neg`, which you may find useful. A membership `a ∈ {x | 3 ∣ x}` is the statement `3 ∣ a` by definition; `exact` accepts the one for the other, but `omega` does not. The context holds `intMultiples` with `mem_intMultiples`, the additive version `AddSubgroup.ext`, and the instance `AddGroup ℤ` of the second section.
+What the criterion saves shows on the multiples of `3` in the integers, the subgroup `intMultiples 3` of the section on subgroups, built from three closure conditions. The additive version `AddSubgroup.ofSub` asks for one element of the set and for the one condition, which written additively reads `a + -b ∈ s`: there is no subtraction in the condition, only a sum with a negative. Core Lean provides `Int.dvd_zero`, `Int.dvd_add` and `Int.dvd_neg`, which you may find useful. A membership `a ∈ {x | 3 ∣ x}` is the statement `3 ∣ a` by definition; `exact` accepts the one for the other, but `omega` does not. The context holds `intMultiples` with `mem_intMultiples`, the additive version `AddSubgroup.ext`, and the instance `AddGroup ℤ` of the second section.
 @description
 Define `threeMultiples : AddSubgroup ℤ` by `AddSubgroup.ofSub`, with carrier `{x | 3 ∣ x}`, and show that it is `intMultiples 3`.
 -/

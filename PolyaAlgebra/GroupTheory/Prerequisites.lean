@@ -135,7 +135,7 @@ A function is injective when distinct inputs have distinct values, and surjectiv
 @concept functions
 
 @preamble
-Set Theory called a function injective when it sends distinct elements to distinct values, and The Natural Numbers wrote the property in Lean's form, to show that `succ` has it. Mathlib's two definitions are
+Set Theory called a function injective when it sends distinct elements to distinct values, and The Natural Numbers wrote the property in Lean's form, to show that `succ` has it. Lean's two definitions are
 ```lean
 def Function.Injective (f : α → β) : Prop :=
   ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂
@@ -171,7 +171,7 @@ theorem surjective_comp {α : Type u} {β : Type v} {γ : Type w} {f : α → β
 @concept functions
 
 @preamble
-A function is often shown injective or surjective not from the definition but from a second function that undoes it, in one direction or the other. A *left inverse* of `f : α → β` is a function `g : β → α` with `g (f x) = x` for every `x`; a *right inverse* is a `g` with `f (g y) = y` for every `y`. A function may have one without the other: doubling on `ℕ` has a left inverse, halving, and no right inverse. Mathlib names the two conditions, with the inverse written first:
+A function is often shown injective or surjective not from the definition but from a second function that undoes it, in one direction or the other. A *left inverse* of `f : α → β` is a function `g : β → α` with `g (f x) = x` for every `x`; a *right inverse* is a `g` with `f (g y) = y` for every `y`. A function may have one without the other: doubling on `ℕ` has a left inverse, halving, and no right inverse. Lean names the two conditions, with the inverse written first:
 ```lean
 def Function.LeftInverse (g : β → α) (f : α → β) : Prop := ∀ x, g (f x) = x
 def Function.RightInverse (g : β → α) (f : α → β) : Prop := Function.LeftInverse f g
@@ -207,7 +207,7 @@ A bijection between two types, packaged with its inverse, is an equivalence. Two
 @concept bijections
 
 @preamble
-An equivalence between `α` and `β` is a function in each direction, with the two laws saying that they undo each other:
+A *bijection* is a function both injective and surjective. An equivalence between `α` and `β` is a function in each direction, with the two laws saying that they undo each other:
 ```lean
 structure Equiv (α : Type u) (β : Type v) where
   toFun : α → β
@@ -217,9 +217,9 @@ structure Equiv (α : Type u) (β : Type v) where
 ```
 We write `α ≃ β` for the type of equivalences, and `e x` for `e.toFun x`, by coercion.
 
-A structure is built with the brace notation of Programming in Lean. Lean also accepts the same fields without braces and commas, one `field := …` per line after `def e : α ≃ β where`.
+A structure is built with the brace notation of Programming in Lean. Lean also accepts the same fields without braces and commas, one `field := …` per line, after `where`, which takes the place of `:=`: `def notEquiv : Bool ≃ Bool := sorry` becomes `def notEquiv : Bool ≃ Bool where` followed by the fields.
 
-`decide` proves a statement about every element of a type with finitely many elements, such as `Bool`, by checking each one, so it settles the two inverse laws here.
+`decide` proves a statement about every element of a finite type such as `Bool` by checking each one, so it settles the two inverse laws.
 @description
 Define `notEquiv : Bool ≃ Bool`, the equivalence that negates a Boolean, with `not` in both directions.
 -/
@@ -270,14 +270,14 @@ We write `e.symm : β ≃ α` for the inverse of an equivalence `e : α ≃ β`.
 theorem Equiv.symm_apply_apply (e : α ≃ β) (x : α) : e.symm (e x) = x
 theorem Equiv.apply_symm_apply (e : α ≃ β) (y : β) : e (e.symm y) = y
 ```
-A function is *bijective* when it is both injective and surjective, and Mathlib's definition is the conjunction:
+Mathlib's definition of a bijective function is the conjunction:
 ```lean
 def Function.Bijective (f : α → β) : Prop :=
   Function.Injective f ∧ Function.Surjective f
 ```
 `hf.1` and `hf.2` are the halves of `hf : Function.Bijective f`.
 @description
-Show that the function of an equivalence is a bijection. The context holds `injective_of_left_inverse` and `surjective_of_right_inverse` of the previous problem.
+Show that the function of an equivalence is a bijection. Each problem comes with the earlier results it may use; we call them its *context*. The context of this problem holds `injective_of_left_inverse` and `surjective_of_right_inverse` of the previous problem.
 -/
 theorem equiv_bijective {α : Type u} {β : Type v} (e : α ≃ β) : Function.Bijective e := by
   constructor
@@ -341,7 +341,7 @@ theorem rot3_flip3 : rot3.trans flip3 ≠ flip3.trans rot3 := by
 @title Finite Types and Counting
 @kind theorem
 
-A type is finite when its elements can be listed, and the number of its elements is the length of the list. Every finite group has an order and every subgroup a size, so the subject counts. On a finite type a statement about every element can be checked by running through the list.
+A type is finite when its elements can be listed, and the number of its elements is the length of the list. Every finite group has an order and every subgroup a number of elements, so the subject counts. On a finite type a statement about every element can be checked by running through the list.
 -/
 
 /-!
@@ -350,7 +350,7 @@ A type is finite when its elements can be listed, and the number of its elements
 @concept finite_types
 
 @preamble
-Mathlib's class of finite types holds the list of all the elements, as a `Finset α`, Mathlib's type of finite sets of elements of `α`, and a proof that every element is in it:
+Mathlib's `Fintype` holds the list of all the elements, as a `Finset α`, Mathlib's type of finite sets of elements of `α`, and a proof that every element is in it:
 ```lean
 class Fintype (α : Type u) where
   elems : Finset α
@@ -385,7 +385,7 @@ Two finite types in bijection have the same number of elements, and pairs of num
 theorem Fintype.card_congr (e : α ≃ β) : Fintype.card α = Fintype.card β
 def finProdFinEquiv : Fin m × Fin n ≃ Fin (m * n)
 ```
-We count a type labelled by pairs through single numbers.
+A `Fintype` instance for a product is not available in this subject, so the count goes through `Fin (m * n)`.
 @description
 Let `α` be a finite type whose elements are labelled by pairs, through an equivalence `e : α ≃ Fin m × Fin n`. Show that `α` has `m * n` elements.
 -/
@@ -424,14 +424,14 @@ theorem double_bijective : Function.Bijective (fun x : Fin 5 => x + x) := by
 @concept finite_types
 
 @preamble
-A function from a larger finite type to a smaller one sends two elements to one value: the pigeonhole principle. Its contrapositive, that an injective function does not increase cardinality, is Mathlib's
+A function from a larger finite type to a smaller one sends two elements to one value: the pigeonhole principle. Its contrapositive, that an injective function does not increase the number of elements, is Mathlib's
 ```lean
 theorem Fintype.card_le_of_injective (f : α → β) (hf : Function.Injective f) :
     Fintype.card α ≤ Fintype.card β
 ```
 This problem produces the two elements. A function that is not injective fails the definition at some `a` and `b`, and extracting them from the negated statement is logic; `not_forall` applies to the binders `⦃a b⦄` of `Function.Injective` as to any `∀`.
 @description
-Let `f : α → β` be a function between finite types with `Fintype.card β < Fintype.card α`. Show that there are `a ≠ b` with `f a = f b`. Mathlib provides these laws, the first of which Logic proved:
+Let `f : α → β` be a function between finite types with `Fintype.card β < Fintype.card α`. Show that there are `a ≠ b` with `f a = f b`. Core Lean provides these laws, and Mathlib makes the first available without its prefix:
 ```lean
 theorem not_forall : (¬∀ x, p x) ↔ ∃ x, ¬p x
 theorem Classical.not_imp : ¬(a → b) ↔ a ∧ ¬b
@@ -606,7 +606,7 @@ theorem find_sqrt_fifty : Nat.find (p := fun k => 50 < k * k) ⟨8, by decide⟩
 @concept integers_and_remainders
 
 @preamble
-A prime is a number whose only divisors are `1` and itself, so a prime that does not divide `m` has no common divisor with `m` but `1`: the two are *coprime*.
+A prime is a number at least `2` whose only divisors are `1` and itself, so a prime that does not divide `m` has no common divisor with `m` but `1`: the two are *coprime*.
 
 `a ∣ b`, "`a` divides `b`", means that `b = a * c` for some `c`, on `ℕ` as on the naturals of The Natural Numbers. `Nat.gcd a b` is the greatest common divisor, computed by Euclid's algorithm. Two numbers are coprime when their greatest common divisor is `1`: `Nat.Coprime a b` is `Nat.gcd a b = 1`, so `decide` settles it for numerals.
 
@@ -649,7 +649,7 @@ structure Equivalence (r : α → α → Prop) : Prop where
 ```
 The elements in `symm` and `trans` are implicit, so in a term the last two fields are functions of the hypotheses alone. In tactic form, `constructor` leaves one goal per field, and `intro x y h` names the implicit elements as well.
 
-Equality is the basic equivalence relation, and every function `f` carries it back to its domain: two elements are related when `f` takes the same value at them. This relation is called the *kernel* of `f`.
+Equality is the basic equivalence relation, and every function `f` carries it back to its domain: two elements are related when `f` takes the same value at them.
 @description
 Let `f : α → β`. Show that the relation "`f a = f b`" is an equivalence relation on `α`.
 -/
@@ -701,13 +701,13 @@ theorem near_not_equivalence :
 @concept relations
 
 @preamble
-Lean bundles a relation together with the proof that it is an equivalence, as a class:
+Lean bundles a relation together with the proof that it is an equivalence relation, as a class:
 ```lean
 class Setoid (α : Sort u) where
   r : α → α → Prop
   iseqv : Equivalence r
 ```
-A setoid `s` is applied like its relation, `s a b`, and a quotient is formed from a setoid. Since `ℕ` has a congruence for every `n`, `modSetoid n` is an ordinary `def`, not an instance, built by `where` with its two fields and passed by name. A field that is a function may take its arguments before `:=`, as `r a b := …`.
+A setoid `s` is applied like its relation, `s a b`, and a quotient is formed from a setoid. Since `ℕ` has a congruence for every `n`, `modSetoid n` is an ordinary `def`, not an instance, built by `where` with its two fields, and passed by name. A field that is a function may take its arguments before `:=`, as `r a b := …`.
 @description
 Define `modSetoid n`, the setoid on `ℕ` whose relation is congruence modulo `n`: `a` is related to `b` when `a % n = b % n`.
 -/
@@ -742,12 +742,12 @@ The class of an element under an equivalence relation is the set of elements rel
 @concept equivalence_classes
 
 @preamble
-For a setoid `s` on `α`, `Quotient s` is the type of equivalence classes, and `Quotient.mk s a` is the class of `a`, which Lean prints as `⟦a⟧`. A class is an element of a new type, standing for the set of elements related to `a` without being that set. Two classes are equal exactly when their representatives are related, and these two laws are all there is to say about it:
+For a setoid `s` on `α`, `Quotient s` is the type of equivalence classes, and `Quotient.mk s a` is the class of `a`, which Lean prints as `⟦a⟧`. A class is an element of a new type, standing for the set of elements related to `a` without being that set. An element whose class is `q` is a *representative* of `q`, as `a` is of `⟦a⟧`. Two classes are equal exactly when their representatives are related, and these two laws are all there is to say about it:
 ```lean
 theorem Quotient.sound : a ≈ b → ⟦a⟧ = ⟦b⟧
 theorem Quotient.exact : ⟦a⟧ = ⟦b⟧ → a ≈ b
 ```
-Here `a ≈ b` means `s a b`, so for the classes modulo `n` it is `a % n = b % n` by definition, and `exact` accepts the one for the other.
+Here `a ≈ b` means `s a b`, so for the classes modulo `n` it is `a % n = b % n` by definition, and `exact` accepts the one for the other. The symbol `≈` can be written only for a setoid that is an instance; for `modSetoid n`, passed by name, the relation is written `modSetoid n a b`.
 @description
 Show that the classes of `a` and `b` modulo `n` are equal exactly when `a` and `b` have the same remainder.
 -/
@@ -848,7 +848,7 @@ theorem quotient_mk_surjective {α : Type u} (s : Setoid α) :
 @concept equivalence_classes
 
 @preamble
-The residue map is a bijection: a class is determined by its remainder, and every remainder occurs. Statements about classes are reduced to representatives, as in the previous problem.
+The residue map is a bijection: a class is determined by its remainder, and every remainder occurs. Statements about classes are reduced to representatives by `Quotient.inductionOn`, as in the previous problem.
 @description
 Show that `residue n` is a bijection between the classes modulo `n` and `Fin n`. The context holds `quotient_eq_iff_mod`, this concept's first problem, which says that two classes modulo `n` are equal exactly when the remainders agree. `Fin.ext_iff`, which turns an equation in `Fin n` into an equation of values, and `Nat.mod_eq_of_lt`, met earlier in this section, may be useful.
 -/
@@ -872,7 +872,7 @@ A finite type has finitely many classes, and no more than it has elements. Mathl
 
 Lean cannot decide an arbitrary setoid's relation by itself. `open Classical` makes every proposition decidable, through the law of the excluded middle, at the price that nothing so decided can be computed. Writing `open Classical in` before a declaration opens it for that declaration alone.
 
-An onto map does not increase cardinality:
+An onto map does not increase the number of elements:
 ```lean
 theorem Fintype.card_le_of_surjective (f : α → β) (h : Function.Surjective f) :
     Fintype.card β ≤ Fintype.card α

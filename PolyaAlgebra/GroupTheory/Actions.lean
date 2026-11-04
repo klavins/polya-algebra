@@ -97,7 +97,7 @@ attribute [to_additive existing AddAction.toVAdd] MulAction.toSMul
 @preamble
 The permutations of a type `X` act on `X`: a permutation `f` sends the point `x` to `f x`. Both laws hold by definition, since the neutral permutation is the identity and `f * g` applies `g` first, by the instance making `Equiv.Perm X` a group in the section on examples.
 
-When `•` already has an instance, an instance of `MulAction` needs only its two laws, written with `where`; Lean finds the operation, as it found the group of an instance of `CommGroup`.
+When `•` already has an instance, an instance of `MulAction` needs only its two laws; Lean finds the operation, as it found the group of an instance of `CommGroup`.
 @description
 Supply the instance `Equiv.Perm.instSMul`, the operation `f • x = f x` of a permutation on a point, and the instance `Equiv.Perm.applyMulAction X`, which makes it an action. Then check that the rotation `rot3` of the first section moves the point `0` of `Fin 3` to `1`.
 -/
@@ -126,7 +126,7 @@ Every group acts on itself by multiplication on the left, `g • x = g * x`, and
 
 The context holds `one_mul` and `mul_assoc` of the second section.
 @description
-Supply the instances `Group.toSMulSelf`, with `g • x = g * x`, and `Group.toMulAction`, keeping their `@[to_additive]` lines. Then check that in `ZMod 4` the rotation `1` carries the vertex `3` to `0`.
+Supply the instances `Group.toSMulSelf`, with `g • x = g * x`, and `Group.toMulAction`. Then check that in `ZMod 4` the rotation `1` carries the vertex `3` to `0`.
 -/
 
 @[to_additive AddGroup.toVAddSelf]
@@ -187,9 +187,16 @@ theorem d4_sr_one_smul_zero : (sr 1 : DihedralGroup 4) • (0 : ZMod 4) = 3 := b
 @concept actions
 
 @preamble
-The two rules make an action. Its law `mul_smul` reduces, through the table, to equations in `ZMod n`. The table's equations rewrite `DihedralGroup.mul`, not `*`, so the law is proved for `DihedralGroup.mul`, as `dihedral_mul_assoc` was in the section on examples. The instance takes it as it stands, since `g * h` is `DihedralGroup.mul g h` by definition. The neutral element is `r 0`, by definition.
+The table's equations rewrite `DihedralGroup.mul`, not `*`, so the law `mul_smul` is proved for `DihedralGroup.mul`, as `dihedral_mul_assoc` was in the section on examples; the instance takes it as it stands, since `g * h` is `DihedralGroup.mul g h` by definition. The neutral element is `r 0`, by definition.
 
-The context holds `DihedralGroup.r_smul` and `DihedralGroup.sr_smul` of the previous problem; the four equations of the table, `DihedralGroup.r_mul_r` and its companions, of the section on examples; and the additive versions `zero_add`, `add_assoc`, `neg_add_rev` and `neg_neg` of laws of the second section and `add_left_comm` and `add_right_comm` of the section on examples.
+The context holds `DihedralGroup.r_smul` and `DihedralGroup.sr_smul` of the previous problem; the table of the section on examples, shown without the namespace and the explicit `i j`,
+```lean
+r_mul_r : mul (r i) (r j) = r (i + j)
+r_mul_sr : mul (r i) (sr j) = sr (j + -i)
+sr_mul_r : mul (sr i) (r j) = sr (i + j)
+sr_mul_sr : mul (sr i) (sr j) = r (j + -i)
+```
+and the additive versions `zero_add`, `add_assoc`, `neg_add_rev` and `neg_neg` of the second section and `add_left_comm` and `add_right_comm` of the section on examples.
 @description
 Show that the action respects the table, under the name `dihedral_mul_smul`, and supply the instance `DihedralGroup.instMulAction n`, which makes the operation an action.
 -/
@@ -235,7 +242,7 @@ QuotientGroup.eq : (QuotientGroup.mk a : G ⧸ H) =
 ```
 of the section on cosets, and `inv_mul_cancel_left`, `mul_assoc`, `mul_inv_rev` and `one_mul` of the second section.
 @description
-Supply the instance `QuotientGroup.instSMul H`, the operation of `G` on `G ⧸ H` that carries `g` and the class of `a` to the class of `g * a`; prove that equation, which holds by definition, under the name `QuotientGroup.smul_mk`; and supply the instance `MulAction.quotient H`, which makes the operation an action. Keep the `@[to_additive]` lines.
+Supply the instance `QuotientGroup.instSMul H`, the operation of `G` on `G ⧸ H` that carries `g` and the class of `a` to the class of `g * a`; prove that equation, which holds by definition, under the name `QuotientGroup.smul_mk`; and supply the instance `MulAction.quotient H`, which makes the operation an action.
 -/
 
 @[to_additive QuotientAddGroup.instVAdd]
@@ -288,7 +295,7 @@ rw [← mul_smul, inv_mul_cancel, one_smul]
 ```
 with `mul_smul` read from right to left: the two actions are combined into one, the product cancels, and the neutral element is removed.
 @description
-Show the mirror image, that acting by `g⁻¹` and then by `g` returns every point to its place, under the name `smul_inv_smul`, keeping the `@[to_additive]` line. The context holds `mul_inv_cancel` of the second section.
+Show the mirror image, that acting by `g⁻¹` and then by `g` returns every point to its place, under the name `smul_inv_smul`. The context holds `mul_inv_cancel` of the second section.
 -/
 
 /-- @given -/
@@ -327,7 +334,7 @@ Each element `g` permutes `X`: the function `x ↦ g • x` has the inverse `x �
 
 The context holds `inv_smul_smul` and `smul_inv_smul` of the previous problem, `mul_smul`, and Mathlib's `Equiv.ext`, shown in the section on examples.
 @description
-Define the permutation `MulAction.toPerm g`, keeping its `@[to_additive]` line, and the homomorphism `MulAction.toPermHom G X` that sends `g` to it.
+Define the permutation `MulAction.toPerm g` and the homomorphism `MulAction.toPermHom G X` that sends `g` to it.
 -/
 
 @[to_additive AddAction.toPerm]
@@ -375,7 +382,7 @@ We write it `MulAction.orbit G x`. A member of an orbit opens into `⟨g, hg⟩`
 
 The context holds `one_smul`.
 @description
-Define `MulAction.orbit G x`, keeping the `@[to_additive]` line; prove `MulAction.mem_orbit_iff`, which holds by definition,
+Define `MulAction.orbit G x`; prove `MulAction.mem_orbit_iff`, which holds by definition,
 ```lean
 y ∈ MulAction.orbit G x ↔ ∃ g : G, g • x = y
 ```
@@ -409,7 +416,7 @@ theorem MulAction.mem_orbit_self {G : Type u} {X : Type v} [Group G] [MulAction 
 
 /-!
 @problem orbit_rel
-@title Lying in One Orbit Is an Equivalence
+@title Lying in One Orbit Is an Equivalence Relation
 @concept orbits
 
 @preamble
@@ -417,7 +424,7 @@ Being in the orbit of another point is an equivalence relation on `X`. We make i
 
 The context holds `MulAction.mem_orbit_iff` and `MulAction.mem_orbit_self` of the previous problem, and `inv_smul_smul` and `mul_smul` of the previous concept.
 @description
-Define `MulAction.orbitRel G X`, the setoid on `X` relating `x` and `y` when `x` lies in the orbit of `y`, keeping the `@[to_additive]` line.
+Define `MulAction.orbitRel G X`, the setoid on `X` relating `x` and `y` when `x` lies in the orbit of `y`.
 -/
 
 @[to_additive AddAction.orbitRel]
@@ -483,7 +490,7 @@ A point that every element of the group leaves in its place, `g • x = x` for e
 
 The context holds `MulAction.mem_orbit_iff` and `MulAction.mem_orbit_self` of this concept's first problem, and Mathlib's `Set.ext`, met in the first section, and `Set.mem_singleton_iff`, met in the section on subgroups.
 @description
-Define `MulAction.fixedPoints G X`, keeping the `@[to_additive]` line, and prove `MulAction.mem_fixedPoints`, which holds by definition,
+Define `MulAction.fixedPoints G X` and prove `MulAction.mem_fixedPoints`, which holds by definition,
 ```lean
 x ∈ MulAction.fixedPoints G X ↔ ∀ g : G, g • x = x
 ```
@@ -608,11 +615,11 @@ theorem MulAction.orbit_eq_univ (G : Type u) {X : Type v} [Group G] [MulAction G
 @concept orbits
 
 @preamble
-A group acting on itself is transitive, and so is the dihedral group acting on the vertices of the polygon: every vertex can be carried to every other. An instance of a class of type `Prop` with one field is written with `where` and that field, as the normality of a subgroup was. For a group acting on itself, `g • x` is `g * x` only by definition: `rw` finds no product in it, while a term whose type is the equation with `*` is accepted as it stands.
+A group acting on itself is transitive, and so is the dihedral group acting on the vertices of the polygon: every vertex can be carried to every other. For a group acting on itself, `g • x` is `g * x` only by definition: `rw` finds no product in it, while a term whose type is the equation with `*` is accepted as it stands.
 
-The context holds `DihedralGroup.r_smul` of the previous concept; `inv_mul_cancel_right` of the second section; and the additive versions `add_assoc`, `add_zero` and `neg_add_cancel` of laws of the second section.
+The context holds `DihedralGroup.r_smul` of the previous concept; `inv_mul_cancel_right` of the second section; and the additive versions `add_assoc`, `add_zero` and `neg_add_cancel` of the second section.
 @description
-Supply the instance `Group.isPretransitive_self`, which makes the action of a group on itself transitive, keeping its `@[to_additive]` line, and the instance `DihedralGroup.isPretransitive n`, which makes the action of `DihedralGroup n` on `ZMod n` transitive.
+Supply the instance `Group.isPretransitive_self`, which makes the action of a group on itself transitive, and the instance `DihedralGroup.isPretransitive n`, which makes the action of `DihedralGroup n` on `ZMod n` transitive.
 -/
 
 @[to_additive AddGroup.isPretransitive_self]
@@ -650,11 +657,11 @@ The *stabilizer* of a point `x` is the set of the elements that leave `x` in its
 ```lean
 {g | g • x = x}
 ```
-and it is a subgroup of `G`, Mathlib's `MulAction.stabilizer G x`. A membership in a set written `{g | p g}` is `p g` by definition, and `change` writes it out.
+and it is a subgroup of `G`, Mathlib's `MulAction.stabilizer G x`.
 
 The context holds `one_smul`, `mul_smul` and `inv_smul_smul` of the first concept.
 @description
-Define the subgroup `MulAction.stabilizer G x` with that carrier, keeping the `@[to_additive]` line, and prove `MulAction.mem_stabilizer_iff`, which holds by definition:
+Define the subgroup `MulAction.stabilizer G x` with that carrier and prove `MulAction.mem_stabilizer_iff`, which holds by definition:
 ```lean
 g ∈ MulAction.stabilizer G x ↔ g • x = x
 ```
@@ -724,9 +731,9 @@ theorem MulAction.mem_stabilizer_smul_iff {G : Type u} {X : Type v} [Group G] [M
 @concept stabilizers
 
 @preamble
-The *kernel* of an action is the kernel of `MulAction.toPermHom G X`, the elements whose permutation is the identity. The neutral element of `Equiv.Perm X` is the identity, by definition.
+The *kernel* of an action is the kernel of `MulAction.toPermHom G X`, the elements whose permutation moves no point. The neutral element of `Equiv.Perm X` is `Equiv.refl X`, which sends each point to itself, by definition.
 
-The context holds `GroupHom.mem_ker` of the section on homomorphisms, Mathlib's `Equiv.ext`, met in the section on examples, and core Lean's `congrArg`, met in the section on homomorphisms.
+The context holds `GroupHom.mem_ker` of the section on homomorphisms; Mathlib's `Equiv.ext`, met in the section on examples; and core Lean's `congrArg`, met in the section on homomorphisms.
 @description
 Show that `g` lies in the kernel of `MulAction.toPermHom G X` exactly when `g • x = x` for every `x`, under the name `MulAction.mem_ker_toPermHom`.
 -/
@@ -746,11 +753,9 @@ theorem MulAction.mem_ker_toPermHom {G : Type u} {X : Type v} [Group G] [MulActi
 @concept stabilizers
 
 @preamble
-An action is *faithful* when different elements act differently: if `g₁ • x = g₂ • x` at every point `x`, then `g₁ = g₂`. Mathlib's name is the class `FaithfulSMul G X`, of type `Prop`, with the field `eq_of_smul_eq_smul`; its `g₁` and `g₂` are explicit here and implicit in Mathlib. The class and its theorems have no additive version here; the theorems go through `MulAction.toPermHom`, which has none.
+An action is *faithful* when different elements act differently: if `g₁ • x = g₂ • x` at every point `x`, then `g₁ = g₂`. Mathlib's name is the class `FaithfulSMul G X`, of type `Prop`, with the field `eq_of_smul_eq_smul`; its `g₁` and `g₂` are explicit here and implicit in Mathlib. The class and its theorems have no additive version: the theorems go through `MulAction.toPermHom`, which has none.
 
-`X` occurs only in the field's hypothesis: when `apply` leaves that hypothesis as a goal, `X` stays unknown and Lean reports a stuck instance problem. A hypothesis whose type names `X` fixes it.
-
-The context holds `MulAction.mem_ker_toPermHom` of the previous problem; `one_smul`, `mul_smul` and `inv_smul_smul` of the first concept; `Subgroup.ext` and `Subgroup.mem_bot` of the section on subgroups; and `mul_inv_cancel_left` and `mul_one` of the second section.
+`X` occurs only in the field's hypothesis: when `apply` leaves it as a goal, `X` stays unknown and Lean reports that the instance problem is stuck. A hypothesis whose type names `X` fixes it, as does naming the argument, `(X := X)`. The context holds `MulAction.mem_ker_toPermHom` of the previous problem; `one_smul`, `mul_smul` and `inv_smul_smul` of the first concept; `Subgroup.ext` and `Subgroup.mem_bot` of the section on subgroups; and `mul_inv_cancel_left` and `mul_one` of the second section.
 @description
 Define the class `FaithfulSMul G X`, for an operation `•` of `G` on `X`. Then show that a faithful action has kernel `⊥`, under the name `MulAction.ker_eq_bot_of_faithful`, and that an action with kernel `⊥` is faithful, under the name `MulAction.faithful_of_ker_eq_bot`.
 -/
@@ -819,7 +824,7 @@ theorem stabilizer_d3_zero :
 @concept stabilizers
 
 @preamble
-`DihedralGroup 2` acts on `ZMod 2`, the two ends of a segment, and some symmetry other than the identity moves neither end.
+`DihedralGroup 2` acts on `ZMod 2`, the two ends of a segment, and some symmetry other than the neutral element moves neither end.
 
 The context holds `MulAction.mem_ker_toPermHom` and `MulAction.ker_eq_bot_of_faithful` of this concept; `sr_ne_one` of the section on powers; and `Subgroup.mem_bot` of the section on subgroups.
 @description
@@ -851,9 +856,9 @@ A group acts on itself by conjugation. The orbits of this action are the conjuga
 @concept conjugation
 
 @preamble
-A group acts on itself a second way, by *conjugation*: `g` carries `x` to `g * x * g⁻¹`. But `g • x` already means `g * x` for `g x : G`, by an instance of this section's first concept, and a second instance of `SMul G G` would give one symbol two meanings. Lean tells the two actions apart through a *type synonym*, `ConjAct G`, defined to be `G`: a new name for the same type, on which instances are looked up afresh. The group structure of `ConjAct G` is that of `G`, copied: `inferInstanceAs (Group G)` finds the instance `Group G` and hands it over as an instance for the synonym. Two functions, `ConjAct.ofConjAct` from `ConjAct G` to `G` and `ConjAct.toConjAct` back, send each element to itself. Conjugation has no additive version here: every additive group the subject builds is commutative, and in a commutative group conjugation moves nothing.
+A group acts on itself a second way, by *conjugation*: `g` carries `x` to `g * x * g⁻¹`. But `g • x` already means `g * x` for `g x : G`, by an instance of this section's first concept, and a second instance of `SMul G G` would give one symbol two meanings. Lean tells the two actions apart through a *type synonym*, `ConjAct G`, defined to be `G`: a new name for the same type, on which instances are looked up afresh. The group structure of `ConjAct G` is that of `G`: `inferInstanceAs (Group G)` finds the instance `Group G` and hands it over as an instance for the synonym. Two functions, `ConjAct.ofConjAct` from `ConjAct G` to `G` and `ConjAct.toConjAct` back, send each element to itself. Conjugation has no additive version in this subject, and neither have the theorems built on it.
 @description
-Define `ConjAct G` as `G`, the instance `ConjAct.instGroup` copying the group of `G`, and the functions `ConjAct.ofConjAct` and `ConjAct.toConjAct`.
+Define `ConjAct G` as `G`, the instance `ConjAct.instGroup` taking the group of `G`, and the functions `ConjAct.ofConjAct` and `ConjAct.toConjAct`.
 -/
 
 def ConjAct (G : Type u) : Type u := G
@@ -973,7 +978,7 @@ The centre of the section on subgroups is the same construction with every eleme
 
 The context holds `inv_mul_cancel_left`, `mul_assoc`, `mul_inv_cancel_right`, `mul_one` and `one_mul` of the second section.
 @description
-Define the subgroup `Subgroup.centralizer S` with that carrier, keeping the `@[to_additive]` line, and prove `Subgroup.mem_centralizer_iff`, which holds by definition:
+Define the subgroup `Subgroup.centralizer S` with that carrier and prove `Subgroup.mem_centralizer_iff`, which holds by definition:
 ```lean
 g ∈ Subgroup.centralizer S ↔ ∀ h ∈ S, h * g = g * h
 ```

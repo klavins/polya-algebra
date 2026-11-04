@@ -23,7 +23,7 @@ set_option linter.translateGenerateName false
 @title Natural Powers
 @kind definition
 
-The `n`th power of an element is the product of `n` copies of it, and in an additive group the `n`th multiple is the sum of `n` copies. In every group, exponents add when powers are multiplied, and multiply when a power is raised to a power. Powers are defined by recursion, and the laws are proved from the definition.
+The `n`th power of an element is the product of `n` copies of it, and in an additive group the `n`th multiple is the sum of `n` copies. In every group, exponents add when powers are multiplied, and multiply when a power is raised to a power. The order of an element and the subgroup it generates are both defined through its powers.
 -/
 
 /-!
@@ -171,7 +171,7 @@ theorem pow_succ' {G : Type u} [Group G] (g : G) (n : ℕ) : g ^ (n + 1) = g * g
 @concept natural_powers
 
 @preamble
-A product of `m` copies of `g` followed by `n` copies is `m + n` copies, and `n` blocks of `m` copies make `m * n` copies. These are the laws of exponents, `pow_add` and `pow_mul`:
+A product of `m` copies of `g` followed by `n` copies is `m + n` copies, and `n` groups of `m` copies make `m * n` copies. These are the laws of exponents, `pow_add` and `pow_mul`:
 ```lean
 g ^ (m + n) = g ^ m * g ^ n
 g ^ (m * n) = (g ^ m) ^ n
@@ -330,7 +330,7 @@ theorem zpow_one {G : Type u} [Group G] (g : G) : g ^ (1 : ℤ) = g := by
 @concept integer_powers
 
 @preamble
-A negative exponent inverts: `g ^ (-n) = (g ^ n)⁻¹` for every integer `n`. Negation exchanges the two forms of an integer by definition. The context holds `inv_one` and `inv_inv`.
+A negative exponent inverts: `g ^ (-n) = (g ^ n)⁻¹` for every integer `n`. Negation exchanges the two forms of an integer by definition. The context holds `zpow_zero` of the previous problem, `inv_one` and `inv_inv`.
 @description
 Show that `g ^ (-n) = (g ^ n)⁻¹` for every integer `n`.
 -/
@@ -341,8 +341,8 @@ theorem zpow_neg {G : Type u} [Group G] (g : G) (n : ℤ) : g ^ (-n) = (g ^ n)�
   | ofNat k =>
     cases k with
     | zero =>
-      change (1 : G) = 1⁻¹
-      rw [inv_one]
+      change g ^ (0 : ℤ) = (g ^ (0 : ℤ))⁻¹
+      rw [zpow_zero, inv_one]
     | succ k => rfl
   | negSucc k =>
     change g ^ (k + 1) = (g ^ (k + 1))⁻¹⁻¹
@@ -447,7 +447,7 @@ theorem zpow_sub {G : Type u} [Group G] (g : G) (m n : ℤ) : g ^ (m - n) = g ^ 
 @preamble
 An earlier problem showed that `k • 1 = k` in `ℤ` for a natural number `k`. The same holds for every integer `k`, so every integer is a multiple of `1`. As with natural multiples, `omega` treats a multiple it has not expanded as an unknown number.
 @description
-Show that `k • 1 = k` in `ℤ` for every integer `k`. The context holds the additive versions of the two laws of adding and subtracting one in the exponent:
+Show that `k • 1 = k` in `ℤ` for every integer `k`. The context holds `zero_zsmul` of this section and the additive versions of the two laws of adding and subtracting one in the exponent:
 ```lean
 add_one_zsmul : (n + 1) • a = n • a + a
 sub_one_zsmul : (n - 1) • a = n • a + -a
@@ -455,7 +455,7 @@ sub_one_zsmul : (n - 1) • a = n • a + -a
 -/
 theorem int_zsmul_one (k : ℤ) : k • (1 : ℤ) = k := by
   induction k with
-  | zero => rfl
+  | zero => rw [zero_zsmul]
   | succ k ih => rw [add_one_zsmul, ih]
   | pred k ih =>
     rw [sub_one_zsmul, ih]
@@ -466,7 +466,7 @@ theorem int_zsmul_one (k : ℤ) : k • (1 : ℤ) = k := by
 @title The Order of an Element
 @kind definition
 
-The order of an element is the least positive exponent that gives the neutral element, and `0` when there is none, so an element has infinite order exactly when its order is `0`. The powers of an element repeat with this period, and an exponent gives the neutral element exactly when the order divides it.
+The order of an element is the least positive exponent that gives the neutral element, and `0` when there is none, so an element has infinite order exactly when its order is `0`. An exponent matters only through its remainder on division by the order, and it gives the neutral element exactly when the order divides it.
 -/
 
 /-!
@@ -479,7 +479,7 @@ A positive power of `rot3` is `1`: `rot3 ^ 3 = 1`, since three turns of the tria
 
 `IsOfFinOrder g` is a `def` whose type is `Prop`, a proposition with a name, as a set in Set Theory was a function into `Prop` with a name. A proof of it is a witness with its two facts, `⟨n, _, _⟩`. The context holds `int_nsmul_one`, and `s3_pow_check` of the definition of a power, whose first half is `rot3 ^ 3 = 1`.
 @description
-Define `IsOfFinOrder g` as `∃ n, 0 < n ∧ g ^ n = 1`, keeping the `@[to_additive]` line; show that `rot3` has finite order, and that `1` in `ℤ` does not, `¬IsOfFinAddOrder (1 : ℤ)`.
+Define `IsOfFinOrder g` as `∃ n, 0 < n ∧ g ^ n = 1`; show that `rot3` has finite order, and that `1` in `ℤ` does not, `¬IsOfFinAddOrder (1 : ℤ)`.
 -/
 
 @[to_additive IsOfFinAddOrder]
@@ -500,7 +500,7 @@ theorem int_one_not_isOfFinAddOrder : ¬ IsOfFinAddOrder (1 : ℤ) := by
 
 /-!
 @problem to_fin_or_zero
-@title A Definition That Uses Its Condition
+@title A Dependent If
 @concept order_of_element
 
 @preamble
@@ -532,11 +532,11 @@ theorem toFinOrZero_check : toFinOrZero 4 3 = 3 ∧ toFinOrZero 4 7 = 0 := by
 @concept order_of_element
 
 @preamble
-The *order* of an element `g` is the least `n > 0` with `g ^ n = 1`, when there is one. We write it `orderOf g`, and set it to `0` when there is none. The least such `n` is `Nat.find h` for a proof `h : IsOfFinOrder g`, as in the first section. The definition is a dependent `if`, as in the previous problem, on whether such a proof exists.
+The *order* of an element `g`, a second sense of the word beside the order of a group, is the least `n > 0` with `g ^ n = 1`, when there is one. We write it `orderOf g`, and set it to `0` when there is none. The least such `n` is `Nat.find h` for a proof `h : IsOfFinOrder g`, as in the first section. The definition is a dependent `if`, as in the previous problem, on whether such a proof exists.
 
 Whether an element has finite order is not a question Lean can settle by computation, so the definition opens `Classical`, as the first section did to count a quotient, and is a `noncomputable def`. The keyword records the price the first section named: Lean will reason about `orderOf g` but never compute it.
 @description
-Define `orderOf g` as `Nat.find h` when there is a proof `h` that `g` has finite order, and as `0` otherwise, keeping the `@[to_additive]` line. Its additive version is `addOrderOf a`.
+Define `orderOf g` as `Nat.find h` when there is a proof `h` that `g` has finite order, and as `0` otherwise. Its additive version is `addOrderOf a`.
 -/
 
 open Classical in
@@ -638,7 +638,7 @@ theorem orderOf_pos_iff {G : Type u} [Group G] {g : G} : 0 < orderOf g ↔ IsOfF
 @concept order_of_element
 
 @preamble
-To show that the order of `g` is `n`, for a positive `n`, it is enough to check that `g ^ n = 1` and that no smaller positive exponent gives `1`. This is `orderOf_eq_iff`, an equivalence under the hypothesis `0 < n`. It follows from the three facts of the previous problem, which the context holds, without returning to the definition.
+To show that the order of `g` is `n`, for a positive `n`, it is enough to check that `g ^ n = 1` and that no smaller positive exponent gives `1`. This is `orderOf_eq_iff`, an `↔` under the hypothesis `0 < n`. It follows from the three facts of the previous problem, which the context holds, without returning to the definition.
 
 In `ZMod 6`, `2 + 2 = 4` and `2 + 2 + 2 = 0`, so `2` has order `3`. `decide` cannot evaluate `addOrderOf 2`, as it could not evaluate `Nat.find` in the first section, but it can check a statement about the finitely many numbers below `3`.
 @description
@@ -675,7 +675,7 @@ theorem addOrderOf_zmod_six_two : addOrderOf (2 : ZMod 6) = 3 := by
 @concept order_of_element
 
 @preamble
-The powers of `g` repeat with the order as their period: `g ^ (n % d) = g ^ n` for the order `d`, which is `pow_mod_orderOf`. The argument is division of `n` by `d`, through the first section's
+An exponent of `g` matters only through its remainder on division by the order: `g ^ (n % d) = g ^ n` for the order `d`, which is `pow_mod_orderOf`. The argument is division of `n` by `d`, through core Lean's law, met in the first section,
 ```lean
 theorem Nat.mod_add_div (n d : ℕ) : n % d + d * (n / d) = n
 ```
@@ -700,7 +700,7 @@ theorem pow_mod_orderOf {G : Type u} [Group G] (g : G) (n : ℕ) :
 @concept order_of_element
 
 @preamble
-An exponent `n` gives `1` exactly when the order divides `n`. By the previous problem, `g ^ n = 1` gives `g ^ (n % orderOf g) = 1`, and a nonzero remainder below the order cannot do that. We name the hard direction `orderOf_dvd_of_pow_eq_one` and the equivalence `orderOf_dvd_iff_pow_eq_one`. On `ℕ`, `a ∣ b` is `∃ c, b = a * c`, which `intro ⟨k, hk⟩` opens. Core Lean has `Nat.mod_lt`, `Nat.pos_of_ne_zero` and
+An exponent `n` gives `1` exactly when the order divides `n`. By the previous problem, `g ^ n = 1` gives `g ^ (n % orderOf g) = 1`, and a nonzero remainder below the order cannot do that. We name the hard direction `orderOf_dvd_of_pow_eq_one` and the `↔` form `orderOf_dvd_iff_pow_eq_one`. On `ℕ`, `a ∣ b` is `∃ c, b = a * c`, which `intro ⟨k, hk⟩` opens. Core Lean has `Nat.mod_lt`, `Nat.pos_of_ne_zero` and
 ```lean
 theorem Nat.dvd_of_mod_eq_zero {m n : ℕ} (h : n % m = 0) : m ∣ n
 ```

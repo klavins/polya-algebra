@@ -121,7 +121,7 @@ theorem mem_rightCoset_iff :
 ```
 A hypothesis `hN : N.Normal` gives the law as `hN.conj_mem`. To prove `N.Normal`, `constructor` leaves its one field to prove, as for a structure.
 
-From the section on cosets, `leftCoset_ne_rightCoset` says that the left and right cosets of the subgroup `d3FixZero` of D₃ by `r 1` differ. The context also holds `Subgroup.Normal.conj_mem'`, `Set.ext`, and the laws of the second section, `mul_assoc`, `inv_inv`, `mul_inv_cancel_left` (`a * (a⁻¹ * b) = b`) and `inv_mul_cancel_right` (`a * b⁻¹ * b = a`) among them.
+From the section on cosets, `leftCoset_ne_rightCoset` says that the left and right cosets of the subgroup `d3FixZero` of D₃ by `r 1` differ. The context also holds `Subgroup.Normal.conj_mem'`; Mathlib's `Set.ext`, met in the first section; and `mul_assoc`, `mul_inv_cancel_left` and `inv_mul_cancel_right` of the second section.
 @description
 Show that `N` is normal exactly when its left coset by every `g` is its right coset by `g`, under the name `Subgroup.normal_iff_leftCoset_eq_rightCoset`, and that `d3FixZero` is not normal.
 -/
@@ -167,7 +167,7 @@ theorem d3FixZero_not_normal : ¬ d3FixZero.Normal := by
 @preamble
 In a commutative group the conjugate `g * n * g⁻¹` is `n`, so every subgroup is normal, in the integers and in each `ZMod m` among them. The centre of any group is normal too, since its elements commute with every `g`.
 
-We make both facts instances, so that Lean finds them whenever a subgroup of a commutative group, or a centre, needs to be normal. An instance of a class whose type is `Prop` is written with `where` and its field, as the instances of `CommGroup` in the section on examples were. The context holds `mul_comm` of the section on examples, `mul_inv_cancel_right` of the second section, and `Subgroup.mem_center_iff` of the section on subgroups, which says that `z` is in the centre exactly when `g * z = z * g` for every `g`.
+We make both facts instances, so that Lean finds them whenever a subgroup of a commutative group, or a centre, needs to be normal. The context holds `mul_comm` of the section on examples, `mul_inv_cancel_right` of the second section, and `Subgroup.mem_center_iff` of the section on subgroups, which says that `z` is in the centre exactly when `g * z = z * g` for every `g`.
 @description
 Supply the instance `Subgroup.normal_of_comm`, which makes every subgroup of a commutative group normal, and the instance `Subgroup.center_normal`, which makes the centre of every group normal.
 -/
@@ -203,7 +203,7 @@ example {G : Type u} [Group G] : (Subgroup.center G).Normal := inferInstance
 @preamble
 The kernel of every homomorphism is normal, since a homomorphism carries conjugates to conjugates. The rotations of Dₙ are normal for that reason, being a kernel.
 
-An instance of a class whose type is `Prop` is a proof, so it may also be given by a tactic block, `:= by …`, which can use an instance already supplied. The context holds the laws of the second section and, from the section on homomorphisms, `GroupHom.mem_ker`, `GroupHom.map_mul`, `GroupHom.map_inv` and, outside the namespace `DihedralGroup`,
+An instance of a class whose type is `Prop` is a proof, so it may also be given by a tactic proof, `:= by …`, which can use an instance already supplied. The context holds `mul_one` and `mul_inv_cancel` of the second section and, from the section on homomorphisms, `GroupHom.mem_ker`, `GroupHom.map_mul`, `GroupHom.map_inv` and, outside the namespace `DihedralGroup`,
 ```lean
 theorem ker_orientation (n : ℕ) [NeZero n] :
     (DihedralGroup.orientation n).ker =
@@ -300,7 +300,7 @@ h * n * (h' * n')
   = h * (h' * h'⁻¹) * n * (h' * n')
   = h * h' * (h'⁻¹ * n * h' * n')
 ```
-and an inverse `(h * n)⁻¹` is treated the same way. A member of `Subgroup.mulNormal H N` opens into `⟨h, hh, n, hn, e⟩` with `e : h * n = x`, as a member of a coset did. The context holds `Subgroup.Normal.conj_mem` and `Subgroup.Normal.conj_mem'` of this section, `Subgroup.one_mem`, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, and the laws of the second section, `mul_assoc`, `mul_inv_rev`, `mul_inv_cancel_left` (`a * (a⁻¹ * b) = b`) and `inv_mul_cancel_left` (`a⁻¹ * (a * b) = b`) among them.
+and an inverse `(h * n)⁻¹` is treated the same way. A member of `Subgroup.mulNormal H N` opens into `⟨h, hh, n, hn, e⟩` with `e : h * n = x`, as a member of a coset did. The context holds `Subgroup.Normal.conj_mem` and `Subgroup.Normal.conj_mem'` of this section, `Subgroup.one_mem`, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, and `mul_one`, `mul_assoc`, `mul_inv_rev`, `mul_inv_cancel_left` and `inv_mul_cancel_left` of the second section.
 @description
 Define `Subgroup.mulNormal H N` for a normal subgroup `N`, the subgroup whose carrier is the set of products, proving its three closure conditions:
 ```lean
@@ -344,7 +344,7 @@ example {G : Type u} [Group G] (H N : Subgroup G) [N.Normal] (x : G) :
 @preamble
 The subgroup generated by `H` and a normal subgroup `N` is the subgroup of products of the previous problem: it contains `H` and `N`, so every product, and it lies inside every subgroup containing them.
 
-The context holds `Subgroup.mulNormal` of the previous problem, the three theorems on `⊔` of the problem that defined it, and `Subgroup.one_mem` and `Subgroup.mul_mem` of the section on subgroups; `Subgroup.mul_mem` takes the subgroup first, as in `K.mul_mem`.
+The context holds `Subgroup.mulNormal` of the previous problem, the three theorems on `⊔` of the problem that defined it, and `Subgroup.one_mem` and `Subgroup.mul_mem` of the section on subgroups; `Subgroup.mul_mem` takes the subgroup first, as in `K.mul_mem`. It also holds `mul_one` and `one_mul` of the second section.
 @description
 Show that, for a normal subgroup `N`, an element lies in `H ⊔ N` exactly when it is a product `h * n` with `h ∈ H` and `n ∈ N`, under the name `Subgroup.mem_sup_of_normal`.
 -/
@@ -375,7 +375,7 @@ theorem Subgroup.mem_sup_of_normal {G : Type u} [Group G] {H N : Subgroup G} [N.
 @preamble
 In the integers, written additively, the multiples of `2` and of `3` generate the whole group: `intMultiples 2` is `2ℤ` and `intMultiples 3` is `3ℤ`. Every subgroup of `ℤ` is normal, by the instance `AddSubgroup.normal_of_comm`, so the additive version of the previous problem, `AddSubgroup.mem_sup_of_normal`, says what the members of `2ℤ ⊔ 3ℤ` are.
 
-The context also holds, of the section on subgroups, `AddSubgroup.ext`, `AddSubgroup.mem_top` and `mem_intMultiples`. `omega` decides divisibility by a numeral.
+The context also holds, of the section on subgroups, `AddSubgroup.ext`, `mem_intMultiples` and `AddSubgroup.mem_top`, by which `AddSubgroup.mem_top x` is a proof of `x ∈ ⊤`. `omega` decides divisibility by a numeral.
 @description
 Show that `2ℤ ⊔ 3ℤ` is the whole of `ℤ`.
 -/
@@ -410,7 +410,7 @@ The cosets of a normal subgroup form a group, the quotient group, in which the p
 @preamble
 We want to multiply the cosets of a normal subgroup `N` through representatives, the coset of `a` times the coset of `b` being the coset of `a * b`. For that to define anything, other representatives `a'` and `b'` of the same cosets must give the same coset for `a' * b'`. Two elements lie in the same coset when `a⁻¹ * a' ∈ N`, the coset relation of the section on cosets, so the condition is that `(a * b)⁻¹ * (a' * b')` lies in `N`. Inverses respect cosets too: the relation between `a⁻¹` and `a'⁻¹` is `a⁻¹⁻¹ * a'⁻¹ ∈ N`. In each case the element is regrouped so that `a⁻¹ * a'` appears inside a conjugate, which `N` contains because it is normal.
 
-The context holds `Subgroup.Normal.conj_mem` and `Subgroup.Normal.conj_mem'` of this section, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, and the laws of the second section, `mul_assoc`, `mul_inv_rev`, `inv_inv`, `mul_inv_cancel`, `mul_inv_cancel_left` (`a * (a⁻¹ * b) = b`) and `mul_inv_cancel_right` (`a * b * b⁻¹ = a`) among them.
+The context holds `Subgroup.Normal.conj_mem` and `Subgroup.Normal.conj_mem'` of this section, `Subgroup.mul_mem` and `Subgroup.inv_mem` of the section on subgroups, and `mul_assoc`, `mul_inv_rev`, `inv_inv`, `mul_inv_cancel_left` and `mul_inv_cancel_right` of the second section.
 @description
 Show that if `a⁻¹ * a'` and `b⁻¹ * b'` lie in a normal subgroup `N`, so does `(a * b)⁻¹ * (a' * b')`, under the name `QuotientGroup.leftRel_mul`. Then show that if `a⁻¹ * a'` lies in `N`, so does `a⁻¹⁻¹ * a'⁻¹`, under the name `QuotientGroup.leftRel_inv`.
 -/
@@ -493,7 +493,7 @@ With these operations the cosets of a normal subgroup form a group, the *quotien
     obtain ⟨a, ha⟩ := QuotientGroup.mk_surjective p
     rw [← ha, QuotientGroup.mul_mk, one_mul]
 ```
-The additive version of the instance gives `A ⧸ N` an addition. The context holds `QuotientGroup.mul_mk` and `QuotientGroup.inv_mk` of the previous problem and the laws of the second section.
+The additive version of the instance gives `A ⧸ N` an addition. The context holds `QuotientGroup.mul_mk` and `QuotientGroup.inv_mk` of the previous problem and `mul_assoc`, `one_mul`, `mul_one`, `inv_mul_cancel` and `mul_inv_cancel` of the second section.
 @description
 Supply the instance `QuotientGroup.Quotient.group N`, which makes `G ⧸ N` a group for a normal subgroup `N`, with the product and the inverse of the previous problem and the class of `1` as its neutral element.
 -/
@@ -543,7 +543,7 @@ example {G : Type u} [Group G] (N : Subgroup G) [N.Normal] (a b : G) :
 @concept quotient_groups
 
 @preamble
-The map sending each element to its class, `a ↦ aN`, is a homomorphism `G →* G ⧸ N`, which we call `QuotientGroup.mk' N`. The class of a product is the product of the classes, `QuotientGroup.mk_mul`, and the class of `1` is the neutral element, `QuotientGroup.mk_one`; both hold by definition, and the starting code states them.
+The map sending each element to its class, `a ↦ aN`, is a homomorphism `G →* G ⧸ N`, the *quotient map*, which we call `QuotientGroup.mk' N`. The class of a product is the product of the classes, `QuotientGroup.mk_mul`, and the class of `1` is the neutral element, `QuotientGroup.mk_one`; both hold by definition, and the starting code states them.
 
 Its kernel is `N`. The function of `QuotientGroup.mk' N` is `QuotientGroup.mk` by definition. The context also holds `pow_zero` and `pow_succ` of the section on powers, `QuotientGroup.mk_eq_mk_one_iff` of the section on cosets, which says that the class of `a` is the class of `1` exactly when `a ∈ N`, `GroupHom.mem_ker` of the section on homomorphisms and `Subgroup.ext` of the section on subgroups.
 @description
@@ -753,7 +753,7 @@ theorem QuotientGroup.lift_mk {G : Type u} {H : Type v} [Group G] [Group H] {N :
 @preamble
 The reduction `intToZMod n` of the section on homomorphisms sends every multiple of `n` to `0`, so it factors through the quotient `ℤ ⧸ nℤ`. The additive version of the lift, `QuotientAddGroup.lift`, with `QuotientAddGroup.lift_mk`, does this for additive groups.
 
-Its hypothesis is an inclusion of subgroups, and `H ≤ K` says that every element of `H` lies in `K`, as the order on subgroups was defined. The section on homomorphisms proved
+Its hypothesis is an inclusion of subgroups: `H ≤ K`, the relation `≤` on subgroups, says that every element of `H` lies in `K`. The section on homomorphisms proved
 ```lean
 theorem ker_intToZMod (n : ℕ) [NeZero n] :
     (intToZMod n).ker = intMultiples n

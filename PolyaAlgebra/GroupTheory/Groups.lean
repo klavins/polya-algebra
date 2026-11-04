@@ -23,7 +23,7 @@ set_option linter.translateGenerateName false
 @title The Group Axioms
 @kind definition
 
-A group is a set with an operation that is associative, has a neutral element, and gives every element an inverse. Everything the subject proves follows from these three conditions. They are stated twice, for an operation written as multiplication and for one written as addition.
+A group is a set with an operation that is associative, has a neutral element, and gives every element an inverse. Everything the subject proves follows from these axioms. They are stated twice, for an operation written as multiplication and for one written as addition.
 -/
 
 /-!
@@ -32,7 +32,7 @@ A group is a set with an operation that is associative, has a neutral element, a
 @concept group_axioms
 
 @preamble
-A group is a set `G` with a way of combining two elements into a third, written `a * b`, that satisfies three conditions: the operation is associative, `(a * b) * c = a * (b * c)`; there is a neutral element `1`, with `1 * a = a` and `a * 1 = a`; and every `a` has an inverse `a⁻¹`, with `a⁻¹ * a = 1` and `a * a⁻¹ = 1`. What the operation is differs from group to group, and `*` stands for whichever it is, as `1` stands for whichever element is neutral.
+A group is a set `G` with a way of combining two elements into a third, written `a * b`, that satisfies the *group axioms*: the operation is associative, `(a * b) * c = a * (b * c)`; there is a neutral element `1`, with `1 * a = a` and `a * 1 = a`; and every `a` has an inverse `a⁻¹`, with `a⁻¹ * a = 1` and `a * a⁻¹ = 1`. What the operation is differs from group to group, and `*` stands for whichever it is, as `1` stands for whichever element is neutral.
 
 We make the definition a class, declared as a structure is but with `class` for `structure`; `Add` in Programming in Lean is one. Its data are the fields `mul`, `one` and `inv`. Its laws are five more fields whose types are propositions, each a statement about every element. Mathlib's class asks only for `inv_mul_cancel` and derives `mul_inv_cancel`; this one asks for both.
 @description
@@ -118,7 +118,7 @@ example {G : Type u} [Group G] (a b : G) :
 @preamble
 The smallest group has one element, which is then the neutral element, and the operation and the inverse have only one value to take. Lean's type `Unit` has the one element `()`, and a statement about every element of `Unit` is settled by `decide`, as one about `Fin 4` was.
 
-An instance of a class with several fields is built with `where`, one field per line, as an equivalence was in the first section. A function field takes its arguments before the `:=`, as `r a b := …` did for a setoid.
+An instance of a class with several fields is built with `where` in place of `:=`, as an equivalence was in the first section. A function field takes its arguments before the `:=`, as `r a b := …` did for a setoid.
 @description
 Supply the instance `Group Unit`, the trivial group.
 -/
@@ -148,7 +148,7 @@ The integers under addition are a group, but `ℤ` should not carry an instance 
 
 A group whose operation is an addition is written as the textbooks write the integers, with `a + b`, `0` and `-a`. We make that a second class, `AddGroup`: the definition of a group under additive names. The data are `add`, `zero` and `neg` in place of `mul`, `one` and `inv`, and the laws are `add_assoc`, `zero_add`, `add_zero`, `neg_add_cancel` and `add_neg_cancel`. The symbols come from `Add`, `Zero` and `Neg` through three instances, as before.
 @description
-Define the class `AddGroup A`, the additive version of `Group`, with the data `add`, `zero` and `neg` and the five laws named above, written as the laws of `Group` are; and supply the instances `AddGroup.toAdd : Add A`, `AddGroup.toZero : Zero A` and `AddGroup.toNeg : Neg A`.
+Define the class `AddGroup A`, the additive version of `Group`, with the additive names: the data `add`, `zero` and `neg` and the five laws named above, written as the laws of `Group` are; and supply the instances `AddGroup.toAdd : Add A`, `AddGroup.toZero : Zero A` and `AddGroup.toNeg : Neg A`.
 -/
 
 class AddGroup (A : Type u) where
@@ -285,7 +285,7 @@ The axioms ask for a neutral element and for inverses; they do not say that thes
 
 /-!
 @problem first_identity
-@title Proving an Identity
+@title Cancelling an Inverse Against Its Element
 @concept consequences
 
 @preamble
@@ -300,7 +300,7 @@ As one rewrite it is the following, the `←` turning `mul_assoc` around:
 ```lean
 rw [← mul_assoc, inv_mul_cancel, one_mul]
 ```
-Most identities go the same way: regroup, cancel, tidy up. A line such as `@[to_additive add_assoc]` above a theorem also makes its additive version, under the name given; leave these lines in place.
+Most identities go the same way: regroup, cancel, tidy up. A line such as `@[to_additive add_assoc]` above a theorem also makes its additive version, under the name given. Every such line in the starting code stays, here and in later problems.
 @description
 Show that `a * (a⁻¹ * b) = b`, with the element and its inverse exchanged, as a `calc` chain or as one `rw`. The context holds the laws and `inv_mul_cancel_left`.
 -/
@@ -402,7 +402,7 @@ The axioms say that there is a neutral element; they do not say that there is on
 ```lean
 b = a⁻¹ * (a * b) = a⁻¹ * a = 1
 ```
-We state these facts as equivalences:
+We state these facts as `↔` statements:
 ```lean
 mul_eq_left : a * b = a ↔ b = 1
 mul_eq_right : a * b = b ↔ a = 1
@@ -547,9 +547,9 @@ In a group an equal factor on the same side of two equal products can be cancell
 @concept cancellation
 
 @preamble
-Two products with the same left factor are equal only when their right factors are: from `a * b = a * c` follows `b = c`. Multiply both sides by `a⁻¹` on the left, and the adjacent inverse cancels, as in the uniqueness of the neutral element. The converse is immediate, so the law is also an equivalence.
+Two products with the same left factor are equal only when their right factors are: from `a * b = a * c` follows `b = c`. Multiply both sides by `a⁻¹` on the left, and the adjacent inverse cancels, as in the uniqueness of the neutral element. The converse is immediate, so the law is also an `↔`.
 @description
-Show that `a * b = a * c` implies `b = c`, and prove the equivalence `mul_left_cancel_iff`. The context holds `inv_mul_cancel_left`.
+Show that `a * b = a * c` implies `b = c`, and prove the `↔` form, `mul_left_cancel_iff`. The context holds `inv_mul_cancel_left`.
 -/
 
 @[to_additive add_left_cancel]
@@ -570,7 +570,7 @@ theorem mul_left_cancel_iff {G : Type u} [Group G] {a b c : G} : a * b = a * c �
 @preamble
 The mirror image: two products with the same right factor are equal only when their left factors are, so from `a * b = c * b` follows `a = c`. Since the operation need not be commutative, this is not the previous law in disguise; it is proved the same way, with the inverse multiplied on the other side.
 @description
-Show that `a * b = c * b` implies `a = c`, and prove the equivalence `mul_right_cancel_iff`. The context holds `mul_inv_cancel_right`.
+Show that `a * b = c * b` implies `a = c`, and prove the `↔` form, `mul_right_cancel_iff`. The context holds `mul_inv_cancel_right`.
 -/
 
 @[to_additive add_right_cancel]
@@ -589,7 +589,7 @@ theorem mul_right_cancel_iff {G : Type u} [Group G] {a b c : G} : a * b = c * b 
 @concept cancellation
 
 @preamble
-In a group the equation `a * x = c` has exactly one solution, `a⁻¹ * c`: an element `b` solves it exactly when `b = a⁻¹ * c`. On the integers it is the rule that `3 + x = 7` has the solution `x = -3 + 7`, which is `4`. `rw` takes an equivalence as it takes an equation, replacing one side by the other.
+In a group the equation `a * x = c` has exactly one solution, `a⁻¹ * c`: an element `b` solves it exactly when `b = a⁻¹ * c`. On the integers it is the rule that `3 + x = 7` has the solution `x = -3 + 7`, which is `4`. `rw` takes an `↔` as it takes an equation, replacing one side by the other.
 @description
 Show that `b = a⁻¹ * c` exactly when `a * b = c`, and conclude from its additive version, `eq_neg_add_iff_add_eq`, that in `ℤ` the equation `3 + x = 7` holds exactly when `x = -3 + 7`. The context holds `mul_left_cancel`, the adjacent cancellations and the instance `AddGroup ℤ`.
 -/

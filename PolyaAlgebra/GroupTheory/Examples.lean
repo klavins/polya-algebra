@@ -40,7 +40,7 @@ structure Fin (n : ℕ) where
 -- a + b is ⟨(a.val + b.val) % n, _⟩, and -a is ⟨(n - a.val) % n, _⟩
 -- a numeral k is ⟨k % n, _⟩, which needs n ≠ 0
 ```
-so `fin_four_add_neg` of the first section was already arithmetic modulo `4`. The integers modulo `n` are `Fin n` under Mathlib's name for them, `ZMod n`; Mathlib's `ZMod 0` is `ℤ`, and here `n` is always positive. An `abbrev` is a definition that Lean treats as its body when it looks for instances, so `ZMod n` has the numerals, `+`, `-`, decidable equality and count of `Fin n`. The equations that read the values back hold by definition.
+so `fin_four_add_neg` of the first section was already arithmetic modulo `4`. The integers modulo `n` are `Fin n` under Mathlib's name for them, `ZMod n`; Mathlib's `ZMod 0` is `ℤ`, and here `n` is always positive. An element of `ZMod n` is a *residue*, as the remainder of a class was in the first section. An `abbrev` is a definition that Lean treats as its body when it looks for instances, so `ZMod n` has the numerals, `+`, `-`, decidable equality and count of `Fin n`. The equations that read the values back hold by definition.
 @description
 Define `ZMod n` as `Fin n` by an `abbrev`; prove `ZMod.val_add`, `ZMod.val_neg` and `ZMod.val_zero`; and show that `ZMod n` has `n` elements and that `(7 : ZMod 5) = 2`. Mathlib provides `Fintype.card_fin`.
 -/
@@ -156,7 +156,7 @@ theorem zmod_neg_add_rev {n : ℕ} [NeZero n] (a b : ZMod n) : -(a + b) = -b + -
 @concept integers_mod_n
 
 @preamble
-`ZMod 2` has two elements, `0` and `1`, with `1 + 1 = 0`. The group of order two of the previous section, `Bool` under `xor`, also has two, with `true + true = false`. The two are the same group under different names: the renaming `0 ↦ false`, `1 ↦ true` is a bijection `e` that carries the one table to the other,
+`ZMod 2` has two elements, `0` and `1`, with `1 + 1 = 0`. The group of order two of the previous section, `Bool` under `xor`, also has two, with `true + true = false`. The two are the same group under different names: the renaming `0 ↦ false`, `1 ↦ true` is a bijection `e` that carries the addition of the one to the addition of the other,
 ```lean
 e (a + b) = e a + e b
 ```
@@ -194,7 +194,7 @@ The permutations of a set form a group under composition, the symmetric group of
 @concept symmetric_groups
 
 @preamble
-The first section met the permutations of a type `X`, the bijections from `X` to itself that form `Equiv.Perm X`, and composed them: `g` and then `f` is `g.trans f`. We take `f * g` to be `g.trans f`, the permutation that applies `g` first, so that `(f * g) x = f (g x)`, as for functions; the identity `Equiv.refl X` is neutral, and the inverse of `f` is `f.symm`. Associativity and the two laws of the identity hold by definition.
+The first section met the permutations of a type `X`, the bijections from `X` to itself that form `Equiv.Perm X`, and composed them: `g` and then `f` is `g.trans f`. We take `f * g` to be `g.trans f`, the permutation that applies `g` first, so that `(f * g) x = f (g x)`, as for functions; `Equiv.refl X`, which moves nothing, is neutral, and the inverse of `f` is `f.symm`. Associativity and the two laws of the neutral element hold by definition.
 
 Under this convention `f⁻¹ * f` is `f` followed by `f.symm`, and `f * f⁻¹` is `f.symm` followed by `f`. Two equivalences that agree at every point are equal:
 ```lean
@@ -233,7 +233,7 @@ example (X : Type u) (f g : Equiv.Perm X) (x : X) :
 @concept symmetric_groups
 
 @preamble
-The symmetric group on three points, `Equiv.Perm (Fin 3)`, is the group of symmetries of a triangle with vertices `0`, `1` and `2`. The rotation `rot3` of the first section, `i ↦ i + 1`, turns it, and is an element of this group as it stands. The reflection through the vertex `0` fixes `0` and exchanges `1` and `2`, which is `i ↦ -i`, since `-1 = 2` and `-2 = 1` in `Fin 3`. A reflection undoes itself, so applied twice it is the identity and it is its own inverse; a third of a turn is undone by two more thirds.
+The symmetric group on three points, `Equiv.Perm (Fin 3)`, is the group of permutations of the vertices `0`, `1` and `2` of a triangle. The rotation `rot3` of the first section, `i ↦ i + 1`, turns it, and is an element of this group as it stands. The reflection through the vertex `0` fixes `0` and exchanges `1` and `2`, which is `i ↦ -i`, since `-1 = 2` and `-2 = 1` in `Fin 3`. A reflection undoes itself, so applied twice it is the identity and it is its own inverse; a third of a turn is undone by two more thirds.
 @description
 Define `reflect3 : Equiv.Perm (Fin 3)`, the permutation sending `i` to `-i`, and show that
 ```lean
@@ -465,7 +465,7 @@ The product of two groups `G` and `H` is the set of pairs `(g, h)` with each com
 ```lean
 (g, h) * (g', h') = (g * g', h * h')
 ```
-The neutral element is `(1, 1)` and the inverse of `(g, h)` is `(g⁻¹, h⁻¹)`. The elements of `G × H` are Lean's pairs, with `a.1` and `a.2` the components of `a`. Each law is an equation between two pairs whose components are the same law in `G` and in `H`. A goal may show a component as the first component of a pair of products; that is the product itself, and `rw` finds it there. The instance carries `@[to_additive]`, so the product of two additive groups is an additive group, added componentwise.
+The neutral element is `(1, 1)` and the inverse of `(g, h)` is `(g⁻¹, h⁻¹)`. The elements of `G × H` are Lean's pairs, with `a.1` and `a.2` the components of `a`. Each law is an equation between two pairs whose components are the same law in `G` and in `H`. Two pairs are equal when their components are, by core Lean's `Prod.ext`. A goal may show a component as the first component of a pair of products; that is the product itself, and `rw` finds it there. The instance carries `@[to_additive]`, so the product of two additive groups is an additive group, added componentwise.
 @description
 Supply the instance `Group (G × H)`, and prove `prod_mul_def`, the equation
 ```lean
@@ -510,7 +510,7 @@ theorem zmod_two_three_neg_add_cancel (a : ZMod 2 × ZMod 3) : -a + a = 0 :=
 @concept product_groups
 
 @preamble
-`ZMod 2 × ZMod 3` is finite, with as many elements as there are pairs, `2 * 3 = 6`. A `Fintype` instance for a product is not available in this subject, so we build this one from a labelling by `Fin 6`, as the first section counted pairs with `finProdFinEquiv`. Lean cannot work out from `6` alone that the factors have sizes `2` and `3`, so the sizes are given to `finProdFinEquiv` by name, as `Nat.find` was given its `p`. `Fintype.ofEquiv α e` counts `β` from a counted type `α` and an equivalence `e : α ≃ β`, with `α` given explicitly.
+`ZMod 2 × ZMod 3` is finite, with as many elements as there are pairs, `2 * 3 = 6`. We build its `Fintype` instance from a labelling by `Fin 6`, as the first section counted pairs with `finProdFinEquiv`. Lean cannot work out from `6` alone that the factors have sizes `2` and `3`, so the sizes are given to `finProdFinEquiv` by name, as `Nat.find` was given its `p`. `Fintype.ofEquiv α e` counts `β` from a counted type `α` and an equivalence `e : α ≃ β`, with `α` given explicitly.
 @description
 Define the equivalence `finSixEquivZModTwoThree` from `Fin 6` to `ZMod 2 × ZMod 3`, supply the instance `Fintype (ZMod 2 × ZMod 3)`, and show that it has six elements. Mathlib provides `finProdFinEquiv`, `Fintype.ofEquiv`, `Fintype.card_congr` and `Fintype.card_fin`.
 -/
