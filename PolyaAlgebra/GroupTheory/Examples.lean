@@ -725,9 +725,9 @@ theorem d4_not_comm : (r 1 : DihedralGroup 4) * sr 0 ≠ sr 0 * r 1 := by
 @concept dihedral_groups
 
 @preamble
-Dₙ has `2n` elements, `n` of each kind, and the count is by labelling, as in the first section. An element is a kind, `0` for a rotation and `1` for a reflection, together with a residue, so `DihedralGroup n` is in bijection with `Fin 2 × ZMod n`. A function out of `Fin 2 × ZMod n` may be defined by matching on the pair, `| (0, k) => …` and `| (1, k) => …`, and no third case is needed, since `Fin 2` has only `0` and `1`. The type needs a `Fintype` instance before it can be counted.
+Dₙ has `2n` elements, `n` of each kind, and the count is by labelling, as in the first section. An element is a kind, `0` for a rotation and `1` for a reflection, together with a residue, so `DihedralGroup n` is in bijection with `Fin 2 × ZMod n`. A function out of `Fin 2 × ZMod n` may be defined by matching on the pair, `| (0, k) => …` and `| (1, k) => …`, and no third case is needed, since `Fin 2` has only `0` and `1`. The instance `Fintype (DihedralGroup n)` is given: it counts the group through the equivalence, as "Counting a Product" counted `ZMod 2 × ZMod 3`.
 @description
-Define the equivalence `DihedralGroup.equivProd n` from `DihedralGroup n` to `Fin 2 × ZMod n`, supply the instance `Fintype (DihedralGroup n)`, and show that `DihedralGroup n` has `2 * n` elements. The context holds `card_of_equiv_prod` of the first section, which counts a type in bijection with `Fin m × Fin n` as `m * n`.
+Define the equivalence `DihedralGroup.equivProd n` from `DihedralGroup n` to `Fin 2 × ZMod n`, and show that `DihedralGroup n` has `2 * n` elements. The context holds `card_of_equiv_prod` of the first section, which counts a type in bijection with `Fin m × Fin n` as `m * n`.
 -/
 
 def DihedralGroup.equivProd (n : ℕ) : DihedralGroup n ≃ Fin 2 × ZMod n where
@@ -751,6 +751,7 @@ example (n : ℕ) (i : ZMod n) :
     DihedralGroup.equivProd n (DihedralGroup.r i) = (0, i) ∧
     DihedralGroup.equivProd n (DihedralGroup.sr i) = (1, i) := ⟨rfl, rfl⟩
 
+/-- @given -/
 instance (n : ℕ) : Fintype (DihedralGroup n) :=
   Fintype.ofEquiv (Fin (2 * n)) ((DihedralGroup.equivProd n).trans finProdFinEquiv).symm
 
