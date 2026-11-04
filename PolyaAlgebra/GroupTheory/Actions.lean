@@ -226,7 +226,7 @@ example {n : ℕ} [NeZero n] (g h : DihedralGroup n) (v : ZMod n) : (g * h) • 
 @concept actions
 
 @preamble
-A group acts on the left cosets of any subgroup `H`, normal or not, by multiplication on the left: `g` carries the class of `a` in `G ⧸ H` to the class of `g * a`. The operation is defined on representatives through `Quotient.lift` of the first section, which applies to `G ⧸ H` for any subgroup `H`. Representatives related by `a ≈ b`, which is `a⁻¹ * b ∈ H` by definition, must give the same class. The laws are then proved on representatives, as the laws of the quotient group were.
+A group acts on the left cosets of any subgroup `H`, normal or not, by multiplication on the left: `g` carries the class of `a` in `G ⧸ H` to the class of `g * a`. The operation is defined on representatives through core Lean's `Quotient.lift`, met in the first section, which applies to `G ⧸ H` for any subgroup `H`. Representatives related by `a ≈ b`, which is `a⁻¹ * b ∈ H` by definition, must give the same class. The laws are then proved on representatives, as the laws of the quotient group were.
 
 The context holds `QuotientGroup.mk_surjective` and
 ```lean
@@ -451,7 +451,7 @@ example (G : Type u) (X : Type v) [Group G] [MulAction G X] (x y : X) :
 @preamble
 An orbit is the orbit of each of its points.
 
-The context holds `MulAction.mem_orbit_iff` and `MulAction.mem_orbit_self` of this concept's first problem; `inv_smul_smul` and `mul_smul` of the previous concept; and Mathlib's `Set.ext` of the first section.
+The context holds `MulAction.mem_orbit_iff` and `MulAction.mem_orbit_self` of this concept's first problem; `inv_smul_smul` and `mul_smul` of the previous concept; and Mathlib's `Set.ext`, met in the first section.
 @description
 Show that the orbits of `x` and `y` are equal exactly when `x` lies in the orbit of `y`, under the name `MulAction.orbit_eq_iff`.
 -/
@@ -481,7 +481,7 @@ theorem MulAction.orbit_eq_iff {G : Type u} {X : Type v} [Group G] [MulAction G 
 @preamble
 A point that every element of the group leaves in its place, `g • x = x` for every `g`, is a *fixed point* of the action. We write `MulAction.fixedPoints G X` for the set of them.
 
-The context holds `MulAction.mem_orbit_iff` and `MulAction.mem_orbit_self` of this concept's first problem, and Mathlib's `Set.ext` of the first section and `Set.mem_singleton_iff` of the section on subgroups.
+The context holds `MulAction.mem_orbit_iff` and `MulAction.mem_orbit_self` of this concept's first problem, and Mathlib's `Set.ext`, met in the first section, and `Set.mem_singleton_iff`, met in the section on subgroups.
 @description
 Define `MulAction.fixedPoints G X`, keeping the `@[to_additive]` line, and prove `MulAction.mem_fixedPoints`, which holds by definition,
 ```lean
@@ -578,7 +578,7 @@ attribute [to_additive existing AddAction.IsPretransitive] MulAction.IsPretransi
 @preamble
 The theorem `MulAction.exists_smul_eq G x y`, given below, restates the field of a transitive action with the group explicit and the instance found by Lean. In a transitive action the orbit of every point is the whole of `X`, which Mathlib writes `Set.univ`.
 
-The context holds `MulAction.mem_orbit_iff` of this concept's first problem, and Mathlib's `Set.ext` of the first section and `Set.mem_univ` of the section on subgroups.
+The context holds `MulAction.mem_orbit_iff` of this concept's first problem, and Mathlib's `Set.ext`, met in the first section, and `Set.mem_univ`, met in the section on subgroups.
 @description
 Show that every orbit of a transitive action is `Set.univ`, under the name `MulAction.orbit_eq_univ`.
 -/
@@ -726,7 +726,7 @@ theorem MulAction.mem_stabilizer_smul_iff {G : Type u} {X : Type v} [Group G] [M
 @preamble
 The *kernel* of an action is the kernel of `MulAction.toPermHom G X`, the elements whose permutation is the identity. The neutral element of `Equiv.Perm X` is the identity, by definition.
 
-The context holds `GroupHom.mem_ker` of the section on homomorphisms, Mathlib's `Equiv.ext` of the section on examples, and core Lean's `congrArg`, met in the section on homomorphisms.
+The context holds `GroupHom.mem_ker` of the section on homomorphisms, Mathlib's `Equiv.ext`, met in the section on examples, and core Lean's `congrArg`, met in the section on homomorphisms.
 @description
 Show that `g` lies in the kernel of `MulAction.toPermHom G X` exactly when `g • x = x` for every `x`, under the name `MulAction.mem_ker_toPermHom`.
 -/
@@ -841,7 +841,6 @@ theorem d2_not_faithful : ¬ FaithfulSMul (DihedralGroup 2) (ZMod 2) := by
 @concept conjugation
 @title Conjugation
 @kind definition
-@goal
 
 A group acts on itself by conjugation. The orbits of this action are the conjugacy classes, its stabilizers are centralizers, the elements that commute with a given one, and its fixed points are the centre. It is the action through which a group is studied by means of itself.
 -/
@@ -1021,7 +1020,7 @@ theorem Subgroup.mem_centralizer_iff {G : Type u} [Group G] {S : Set G} {g : G} 
 @preamble
 A stabilizer under conjugation is a subgroup of `ConjAct G`, and a centralizer is a subgroup of `G`; `ConjAct.ofConjAct` passes from the one to the other.
 
-The context holds `ConjAct.smul_def` of this concept; `MulAction.mem_stabilizer_iff` of the concept on stabilizers; `Subgroup.mem_centralizer_iff` of the previous problem; Mathlib's `Set.mem_singleton` and `Set.mem_singleton_iff` of the section on subgroups; and `inv_mul_cancel_right` and `mul_inv_cancel_right` of the second section.
+The context holds `ConjAct.smul_def` of this concept; `MulAction.mem_stabilizer_iff` of the concept on stabilizers; `Subgroup.mem_centralizer_iff` of the previous problem; Mathlib's `Set.mem_singleton` and `Set.mem_singleton_iff`, met in the section on subgroups; and `inv_mul_cancel_right` and `mul_inv_cancel_right` of the second section.
 @description
 Show that `g` lies in the stabilizer of `x` under conjugation exactly when `ConjAct.ofConjAct g` lies in the centralizer of `{x}`, under the name `ConjAct.mem_stabilizer_iff`.
 -/

@@ -832,7 +832,7 @@ In a finite group every element has finite order: by the pigeonhole principle tw
 @preamble
 In a group with `n` elements the `n + 1` powers `g ^ 0, …, g ^ n` cannot all differ: by the pigeonhole principle two of them coincide. The hypothesis is `[Finite G]`, and the pigeonhole principle is stated for a function between two `Fintype`s, which `Fin (n + 1)` and `Fin n` are.
 @description
-Show that in a finite group there are `i ≠ j` with `g ^ i = g ^ j`. The context holds `Fintype.exists_ne_map_eq_of_card_lt` and `Finite.exists_injective_fin` of the first section, which also met `Fintype.card_fin` and `Fin.ext`.
+Show that in a finite group there are `i ≠ j` with `g ^ i = g ^ j`. The context holds `Fintype.exists_ne_map_eq_of_card_lt` and `Finite.exists_injective_fin` of the first section, and Mathlib's `Fintype.card_fin` and core Lean's `Fin.ext`, met there.
 -/
 @[to_additive exists_nsmul_eq_of_finite]
 theorem exists_pow_eq_of_finite {G : Type u} [Group G] [Finite G] (g : G) :

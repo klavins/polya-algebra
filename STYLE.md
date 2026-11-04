@@ -1021,6 +1021,54 @@ then re-read by a fresh reviewer. What it settled:
 - **A cut can leave a claim false.** Cutting '"pre" because `X` may be empty' left "transitive
   when it has only one orbit", false on an empty set. Read the sentence that remains.
 
+## Learned building §12 (2026-11-04)
+
+- **`/-- @problem -/` cannot stand above `open Classical in`**, again: the docstring owns the
+  next declaration, and `open … in` is not one. Six problems broke this way. A problem whose
+  declaration needs `open Classical in` is a `/-! @problem … -/` block, always.
+- **`[DecidableEq β]` and `open Classical` do not mix in one statement's instances.** Stating a
+  block lemma fully classically made its instances differ from those a caller's
+  `[DecidableEq β]` produces, and nothing unified. The lemma takes `[DecidableEq β]` for the
+  values and `open Classical in` for the rest.
+- **`omega` treats `k * (m + 1)` as an atom**, unrelated to `k * m`; `Nat.mul_add_one` first, and
+  say so where the student meets it.
+- **A statement over the classes of a quotient is stated for a class `b`, not for the class of a
+  named point**, when a later theorem quantifies over the classes: `card_block_mod` for every `b`
+  through `Quotient.inductionOn` let the count of the whole set apply it directly, with no `?_`
+  and in eleven lines instead of seventeen.
+- **A core Lean or Mathlib fact is credited to its library, with the section that showed it
+  after**: "core Lean's `Quotient.sound`, met in the first section", never "`Quotient.sound` of the
+  first section". The review found 6 instances in §12, and the sweep found 11 more in §4 and
+  §6–§11.
+- **A concept description and the subject description are held to the hypotheses of the
+  theorems**: "the orbits count a set by its fixed points modulo `p`" dropped the hypothesis on
+  the orbits, and "a `p`-group's centre has a multiple of `p` elements" forgot the trivial group.
+  An example named in a description is one the subject builds and the theorem reaches
+  (`ZMod p × ZMod p` has no `Fintype` here, and `ZMod 4` is additive).
+- **A theorem with no additive version says why in the problem that first lacks one** ("conjugation
+  has no additive version"), and the README's claim follows.
+- **The reviewers' findings, in order of frequency**: the prose handing over the proof (results
+  stated in the preamble, a lemma list in proof order, the term `.symm`); a context fact applied
+  forwards without its binders; wrong origins (above); claims false as stated (above); a device
+  and a count in one problem (`Finset.induction_on`, now a problem of its own on empty blocks);
+  titles that state no fact. Every problem passed in every report.
+- **An opening written to say why the problem is here is held to every other rule.** Round 1's
+  openings brought back a forward reference in four problems, a false claim in three (272 spoke of
+  a generator its statement does not have), the trivial group in a concept description, and an
+  aside from author to agent ("this subject's definition is its own … is not used"). When nothing
+  true can be said that looks back, the preamble starts with its facts.
+- **An origin sweep is checked name by name**: replacing "of the first section" mechanically
+  credited the student's own `Finite.exists_injective_fin` to Mathlib and the subject's
+  `GroupHom.map_mul` to core Lean. Look up each name before writing its library. Round 3 found a
+  third instance in the very sentence round 2 fixed (`Fintype.exists_ne_map_eq_of_card_lt` is the
+  student's §1 `pigeonhole`).
+- **A statement moved inline keeps its explicit arguments**: `Nat.dvd_mul_right : a ∣ a * b`
+  read as a closed term, and a student writing `exact Nat.dvd_mul_right` fails. A fact shown in
+  a sentence to save a line is shown as Lean states it, binders and all, or put back in a block.
+- **A Lean claim is stated as narrowly as it is true**: "`rw` cannot rewrite inside
+  `fun a => …`" is false (`rw [Finset.insert_eq]` does); what `rw` cannot reach is a term that
+  mentions the bound variable.
+
 ## Checks over a bundle
 
 `scripts/` holds the mechanical checks, run after `lake exe polya extract grouptheory`:

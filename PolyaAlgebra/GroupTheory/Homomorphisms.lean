@@ -440,7 +440,7 @@ example {G : Type u} {H : Type v} [Group G] [Group H] (e : G ≃* H) (x : G) (y 
 @concept isomorphisms
 
 @preamble
-Isomorphic groups differ only in the names of their elements, so whatever is said through the operation holds in both. Isomorphic finite groups have the same number of elements, since an equivalence matches their elements one for one, as `Fintype.card_congr` of the first section counts. And a group isomorphic to a commutative group is commutative: two elements `x` and `y` of `H` are the images of `e.invFun x` and `e.invFun y`, and those commute in `G`. The additive versions are `AddGroupIso.card_eq` and `AddGroupIso.add_comm`.
+Isomorphic groups differ only in the names of their elements, so whatever is said through the operation holds in both. Isomorphic finite groups have the same number of elements, since an equivalence matches their elements one for one, as Mathlib's `Fintype.card_congr`, met in the first section, counts. And a group isomorphic to a commutative group is commutative: two elements `x` and `y` of `H` are the images of `e.invFun x` and `e.invFun y`, and those commute in `G`. The additive versions are `AddGroupIso.card_eq` and `AddGroupIso.add_comm`.
 @description
 Show that isomorphic finite groups have the same number of elements, under the name `GroupIso.card_eq`, and that if `a * b = b * a` for all `a` and `b` in `G`, then `x * y = y * x` for all `x` and `y` in `H`, under the name `GroupIso.mul_comm`.
 -/

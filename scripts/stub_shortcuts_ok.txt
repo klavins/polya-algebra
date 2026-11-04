@@ -81,3 +81,5 @@ stabilizer           # MulAction.mem_stabilizer_iff holds by definition (rfl), t
 conj_action          # ConjAct.smul_def holds by definition (rfl), the equation later proofs rewrite with; the two instances are the exercise
 conj_orbit           # ConjAct.mem_orbit_iff holds by definition, as the description says, and is stated for later proofs to rewrite with; ConjAct.mem_fixedPoints_iff is the exercise
 centralizer          # Subgroup.mem_centralizer_iff holds by definition (rfl), the equation later proofs rewrite with; the subgroup's closure proofs are the exercise
+of_quotient_stabilizer  # MulAction.ofQuotientStabilizer_mk holds by definition (rfl), the equation later proofs rewrite with; the definition through Quotient.lift is the exercise
+order_four_and_eight  # dihedral_four_not_comm is the running example's numeric check, closed by decide as STYLE.md's running-example rule asks; applying the goal to order four is the exercise

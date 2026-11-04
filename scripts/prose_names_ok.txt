@@ -70,3 +70,4 @@ to_perm_hom: cayley  # named to say why there is no additive version, as at cayl
 orbit_rel: iseqv  # the field of core Lean's Setoid, met in the first section
 is_pretransitive: Subgroup.Normal, exists_vadd_eq, exists_smul_eq  # Subgroup.Normal named as the earlier Prop class; the two fields this problem defines
 faithful_smul: eq_of_smul_eq_smul, g₁, g₂  # the field this problem defines and its arguments
+card_filter_mem_eq_zero: ih  # the induction hypothesis named in the displayed `induction … with` form

@@ -1702,6 +1702,64 @@ whose `Fintype` and decidable equality are classical (`open Classical` again), a
 of `X → Quotient` are the orbits (`Equiv.sigmaFiberEquiv` is in the fence if a bijection is
 wanted instead of an induction).
 
+**As built (2026-11-04).** `PolyaAlgebra/GroupTheory/Counting.lean`: 25 problems over 4 concepts,
+in this order: `orbit_stabilizer` (`of_quotient_stabilizer`, `MulAction.ofQuotientStabilizer G x :
+G ⧸ stabilizer G x → X` through `Quotient.lift`, with `ofQuotientStabilizer_mk` by `rfl`;
+`injective_of_quotient_stabilizer`, `MulAction.injective_ofQuotientStabilizer G x` and
+`ofQuotientStabilizer_mem_orbit`; `orbit_equiv_quotient_stabilizer`,
+`MulAction.orbitEquivQuotientStabilizer G x : orbit G x ≃ G ⧸ stabilizer G x`, the inverse of
+`Equiv.ofBijective` of the map into the orbit, with a spec of type `Nonempty (… ≃ …)` that takes
+any equivalence; `card_orbit`, `MulAction.card_orbit_eq_index`,
+`card_orbit_mul_card_stabilizer_eq_card_group G x` and `card_orbit_dvd_card G x`, the group
+explicit, under `[Fintype G] [Fintype X]`; `card_stabilizer_dihedral`, `card_orbit_dihedral n` and
+`card_stabilizer_dihedral n`, the stabilizer of the vertex `0` of two elements by cancelling `n`);
+`block_counting` (`card_filter_mem_insert`, with `filter_mem_empty` given, the block
+`s.filter (fun a => f a = b)` and `s.filter (fun a => f a ∈ S)` under `[DecidableEq β]` and `open
+Classical in` for `α`; `card_filter_mem_eq_zero`, `Finset.induction_on` alone, on empty blocks;
+`card_filter_mem_eq_mul`, the same induction with `Nat.mul_add_one`; `card_filter_mem_mod`, with
+`Nat.add_mod`; `card_block_eq_card_orbit`, the
+block of `Quotient.mk (orbitRel G X)` over the class of `x` as large as the orbit, through
+`Fintype.card_of_subtype`; `eq_of_mem_orbit_of_mem_fixed_points`; `filter_block_fixed_points`,
+`MulAction.filter_block_of_mem_fixedPoints` and `filter_block_of_notMem_fixedPoints`;
+`card_block_mod`, stated for every class `b` of the quotient through `Quotient.inductionOn`;
+`card_mod_eq_card_fixed_points`, `MulAction.card_mod_eq_card_fixedPoints`:
+`Fintype.card X % p = Fintype.card (fixedPoints G X) % p` when every orbit of a point that is not
+fixed has a multiple of `p` points); `class_equation` (`is_p_group`, `IsPGroup p G := ∃ n,
+Fintype.card G = p ^ n` with `isPGroup_dihedral_four`; `mem_fixed_points_of_card_orbit_eq_one`, by
+`Fintype.card_eq_one_iff` as `eq_bot_of_card_eq` was; `is_p_group_card_mod`,
+`IsPGroup.dvd_card_orbit` and `IsPGroup.card_mod_eq_card_fixedPoints`; `dvd_card_center`, with the
+instance `ConjAct.instFintype` and `ConjAct.card` given, `IsPGroup.dvd_card_center hp hG hn : p ∣
+Fintype.card (center G).carrier` for `Fintype.card G = p ^ n`, `0 < n`;
+`exists_ne_one_mem_center`, `IsPGroup.exists_ne_one_mem_center`; these and the theorems after
+them that use conjugation have no additive version, since `ConjAct` has none); and `prime_square`, with the
+`@goal` (`exists_zpow_mem`, `QuotientGroup.exists_zpow_mem`; `mul_comm_of_mem_center`, a subtle
+identity given as its chain of expressions, with `add_comm_of_mem_center`;
+`mul_comm_of_is_cyclic_quotient_center`, `mul_comm_of_isCyclic_quotient_center` with
+`add_comm_of_isAddCyclic_quotient_center`; `index_center_of_card_eq_prime_sq`, the index `1` or `p`;
+`mul_comm_of_card_eq_prime_sq`, `IsPGroup.mul_comm_of_card_eq_prime_sq hp hG a b`, the goal's
+theorem; `order_four_and_eight`, with `Nat.prime_two` given, `mul_comm_of_card_eq_four` and
+`dihedral_four_not_comm`). `FewerAxioms.lean` stays the root's last import and now imports
+`Counting`; the `@goal` leaves `conjugation`.
+
+Departures from the entry. (1) **Orbit–stabilizer goes through Mathlib's
+`ofQuotientStabilizer`**, a function on the cosets proved injective, before the equivalence; the
+entry named only the equivalence. (2) **Block counting is over the blocks of any function**, not
+over a finite set of orbits: `card_filter_mem_mod` compares two finite sets block by block, and the
+orbits enter as the blocks of `Quotient.mk (orbitRel G X)`, so no claim that the orbits partition
+`X` is needed beyond `card_block_eq_card_orbit`. The congruence is `%`, since `Nat.ModEq` is
+outside the fence. `Finset.induction_on` has its problem of its own, as the entry asked, on empty
+blocks, a count with nothing to compute. (3) **The
+involution example is not built**: `Bool` acting on a set needs an action built from a function,
+an additive `p`-group and their prose for one example; Lemma 5.1 is used once, on conjugation. (4)
+**`IsPGroup.dvd_card_center` takes `Fintype.card G = p ^ n` and `0 < n`**, since `IsPGroup` admits
+the trivial group; the nontrivial centre is `∃ z ∈ center G, z ≠ 1`, not Mathlib's `Nontrivial`.
+(5) **`D₄`'s `8 = 1 + 1 + 2 + 2 + 2` is not computed**: `Fintype.card` of a classical subtype does
+not reduce under `decide`; `D₄` is the running `2`-group (`isPGroup_dihedral_four`), its centre
+is §5's, and `dihedral_four_not_comm` shows the bound `p²` sharp. (6) Nine problems over the
+entry's sixteen: the coset function and its injectivity before the equivalence, the Finset
+devices split across five problems, the fixed point alone in its orbit, the blocks of a fixed
+point, and the representatives of a cyclic quotient and the central-factor identity before 4.19.
+
 ## The goal
 
 `prime_square`'s theorem, *every group of order `p ^ 2` is commutative*, closes the subject.

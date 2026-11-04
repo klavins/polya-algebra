@@ -134,7 +134,7 @@ example {G : Type u} {H : Type v} [Group G] [Group H] (f : G →* H)
 @preamble
 A homomorphism `f : G →* H` is surjective onto its image `f.range`, of the section on homomorphisms, a group as `f.range.carrier`. We write `f.rangeRestrict` for `f` taken as a homomorphism *onto its image*: it sends `a` to `f.toFun a`, as an element of `f.range.carrier`.
 
-An element of `f.range.carrier` is a pair `⟨y, hy⟩` of an element of `H` and a proof that it lies in the image, which by definition is `∃ x, f.toFun x = y`. The product of two such pairs has as its element of `H` the product of theirs, by definition. The context holds core Lean's `Subtype.ext` and `GroupHom.map_mul` of the section on homomorphisms.
+An element of `f.range.carrier` is a pair `⟨y, hy⟩` of an element of `H` and a proof that it lies in the image, which by definition is `∃ x, f.toFun x = y`. The product of two such pairs has as its element of `H` the product of theirs, by definition. The context holds `GroupHom.map_mul` of the section on homomorphisms and core Lean's `Subtype.ext`.
 @description
 Define `GroupHom.rangeRestrict f`, the homomorphism from `G` onto the image of `f` that sends `a` to `f.toFun a`, and show that its function is surjective, under the name `GroupHom.rangeRestrict_surjective`.
 -/

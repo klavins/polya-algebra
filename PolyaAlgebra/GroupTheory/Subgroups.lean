@@ -360,7 +360,7 @@ theorem Subgroup.eq_of_coe_eq {G : Type u} [Group G] {H : Subgroup G} {a b : H.c
 @preamble
 A subgroup is determined by its elements: two subgroups with the same members are equal, as two sets are. We name this `Subgroup.ext`. A subgroup opens into its four fields as an element of `H.carrier` opened into two in the previous problem. Two subgroups with the same carrier differ only in three proofs, which make no difference, as the proof in a pair made none.
 @description
-Show that two subgroups `H` and `K` with `x ∈ H ↔ x ∈ K` for every `x` are equal. `Set.ext` of the first section may be useful.
+Show that two subgroups `H` and `K` with `x ∈ H ↔ x ∈ K` for every `x` are equal. Mathlib's `Set.ext`, met in the first section, may be useful.
 -/
 @[to_additive AddSubgroup.ext]
 theorem Subgroup.ext {G : Type u} [Group G] {H K : Subgroup G} (h : ∀ x, x ∈ H ↔ x ∈ K) :

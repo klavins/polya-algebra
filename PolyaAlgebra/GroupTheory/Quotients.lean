@@ -713,7 +713,7 @@ theorem GroupHom.eq_of_inv_mul_mem_ker {G : Type u} {H : Type v} [Group G] [Grou
 @concept universal_property
 
 @preamble
-Let `f : G →* H` be a homomorphism whose kernel contains a normal subgroup `N`, written `hN : N ≤ f.ker`. Then `f` is constant on each coset of `N`, so it defines a function on `G ⧸ N` through `Quotient.lift` of the first section, and that function is a homomorphism. We write it `QuotientGroup.lift N f hN`. As in multiplying cosets, `a ≈ b` on `G` is `a⁻¹ * b ∈ N` by definition. The lift sends the class of `a` to `f.toFun a`, by definition: `QuotientGroup.lift_mk`.
+Let `f : G →* H` be a homomorphism whose kernel contains a normal subgroup `N`, written `hN : N ≤ f.ker`. Then `f` is constant on each coset of `N`, so it defines a function on `G ⧸ N` through core Lean's `Quotient.lift`, met in the first section, and that function is a homomorphism. We write it `QuotientGroup.lift N f hN`. As in multiplying cosets, `a ≈ b` on `G` is `a⁻¹ * b ∈ N` by definition. The lift sends the class of `a` to `f.toFun a`, by definition: `QuotientGroup.lift_mk`.
 
 The context holds `GroupHom.eq_of_inv_mul_mem_ker` of the previous problem, `QuotientGroup.mk_mul` of this section, `QuotientGroup.mk_surjective` of the section on cosets, and `GroupHom.map_mul` of the section on homomorphisms.
 @description
